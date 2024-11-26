@@ -30,6 +30,7 @@ function App() {
     setTasks([...tasks, newTask]);
   };
 
+  // Cập nhật tasks khi người dùng đánh dấu complete/incomplete
   const toggleTask = (id) => {
     setTasks(
       tasks.map((task) =>
@@ -38,6 +39,7 @@ function App() {
     );
   };
 
+  // Cập nhật filteredTasks khi người dùng thay đổi filter
   const filteredTasks = tasks.filter((task) =>
     task.title.toLowerCase().includes(filter.toLowerCase())
   );
