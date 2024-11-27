@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useContext } from "react";
+import React, { createContext, useReducer, useContext, useEffect } from "react";
 
 // Khởi tạo Context
 const TaskContext = createContext();
@@ -36,7 +36,24 @@ const taskReducer = (state, action) => {
 // Tạo Provider để chia sẻ trạng thái
 export const TaskProvider = ({ children }) => {
   const initialState = { tasks: [], filter: "" };
-  const [state, dispatch] = useReducer(taskReducer, initialState);
+
+  // Khôi phục dữ liệu từ localStorage khi ứng dụng khởi động
+  const loadTasksFromLocalStorage = () => {
+    const savedTasks = localStorage.getItem("tasks");
+    if (savedTasks) {
+      return { tasks: JSON.parse(savedTasks), filter: "" }; // Trả về dữ liệu từ localStorage
+    }
+    return initialState; // Nếu không có dữ liệu, sử dụng giá trị mặc định
+  };
+
+  const [state, dispatch] = useReducer(taskReducer, initialState, loadTasksFromLocalStorage);
+
+  // Cập nhật localStorage mỗi khi tasks thay đổi
+  useEffect(() => {
+    if (state.tasks.length > 0) {
+      localStorage.setItem("tasks", JSON.stringify(state.tasks)); // Lưu tasks vào localStorage
+    }
+  }, [state.tasks]);
 
   return (
     <TaskContext.Provider value={{ state, dispatch }}>
