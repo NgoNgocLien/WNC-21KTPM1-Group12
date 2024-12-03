@@ -9,7 +9,7 @@ function Home() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('auth');
+    localStorage.removeItem('token');
     navigate('/login');
   };
 

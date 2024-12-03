@@ -15,37 +15,36 @@ const Login = () => {
       setErrorMessage('');
   
       // API call to authenticate and get access token
-      // try {
-      //   const response = await fetch('http://localhost:3000/auth/login', {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify({
-      //       username,
-      //       password,
-      //     }),
-      //   });
+      try {
+        const response = await fetch('http://localhost:8080/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            password,
+          }),
+        });
   
-      //   if (!response.ok) {
-      //     const errorData = await response.json();
-      //     throw new Error(errorData.message || 'Network response was not ok');
-      //   }
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Network response was not ok');
+        }
   
-      //   const data = await response.json();
-      //   const { accessToken } = data;
+        const data = await response.json();
+        const { accessToken } = data;
   
-      //   if (accessToken) {
-          localStorage.setItem('auth', 'true');
-          // localStorage.setItem('token', accessToken);
+        if (accessToken) {
+          localStorage.setItem('token', accessToken);
           navigate('/');
-        // } else {
-        //   setErrorMessage('Username or password is wrong');
-        // }
-      // } catch (error) {
-      //   console.error('Error during login:', error);
-      //   setErrorMessage('System error');
-      // }
+        } else {
+          setErrorMessage('Username or password is wrong');
+        }
+      } catch (error) {
+        console.error('Error during login:', error);
+        setErrorMessage('System error');
+      }
     };
 
   return (
