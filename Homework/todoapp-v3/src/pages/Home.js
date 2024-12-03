@@ -17,13 +17,15 @@ function Home() {
     <TaskProvider>
       <div>
         <h1>Todo App</h1>
-        <div className="container">
+        <div className="container home">
           <AddTask />
           <FilterTask />
           <TaskList />
-          <button type="button" className="btn btn-dark" onClick={handleLogout}>
-            Logout
-          </button>
+          <div className="logout-button">
+            <button type="button" className="btn btn-dark" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
         </div>
       </div>
     </TaskProvider>

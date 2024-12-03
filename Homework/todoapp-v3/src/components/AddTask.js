@@ -3,12 +3,12 @@ import { useTasks } from "../TaskContext";
 
 function AddTask() {
     const [taskTitle, setTaskTitle] = useState("");
-    const { dispatch } = useTasks();
+    const { addTask } = useTasks();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (taskTitle.trim()) {
-            dispatch({ type: "ADD_TASK", payload: taskTitle.trim() });
+            await addTask(taskTitle)
             setTaskTitle("");
         }
     };
