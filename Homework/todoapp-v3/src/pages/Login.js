@@ -3,49 +3,49 @@ import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const navigate = useNavigate();
-  
-    const handleLogin = async (e) => {
-      e.preventDefault();
-  
-      // Clear previous error message
-      setErrorMessage('');
-  
-      // API call to authenticate and get access token
-      try {
-        const response = await fetch('http://localhost:8080/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username,
-            password,
-          }),
-        });
-  
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Network response was not ok');
-        }
-  
-        const data = await response.json();
-        const { accessToken } = data;
-  
-        if (accessToken) {
-          localStorage.setItem('token', accessToken);
-          navigate('/');
-        } else {
-          setErrorMessage('Username or password is wrong');
-        }
-      } catch (error) {
-        console.error('Error during login:', error);
-        setErrorMessage('System error');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    // Clear previous error message
+    setErrorMessage('');
+
+    // API call to authenticate and get access token
+    try {
+      const response = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Network response was not ok');
       }
-    };
+
+      const data = await response.json();
+      const { accessToken } = data;
+
+      if (accessToken) {
+        localStorage.setItem('token', accessToken);
+        navigate('/');
+      } else {
+        setErrorMessage('Username or password is wrong');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      setErrorMessage('System error');
+    }
+  };
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">

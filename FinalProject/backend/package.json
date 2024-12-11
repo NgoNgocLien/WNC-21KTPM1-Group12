@@ -1,5 +1,5 @@
 {
-  "name": "serverB",
+  "name": "backend",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -22,20 +22,12 @@
   "dependencies": {
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
-    "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
-    "@nestjs/swagger": "^7.4.2",
-    "@prisma/client": "^5.21.0",
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.1",
+    "backend": "file:",
     "nest-winston": "^1.9.7",
-    "prisma": "^5.21.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "serverB": "file:",
-    "winston": "^3.15.0",
-    "winston-daily-rotate-file": "^5.0.0",
-    "winston-logger": "file:"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

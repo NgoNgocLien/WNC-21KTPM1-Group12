@@ -1,6 +1,6 @@
 import React from "react";
 import { useFormik } from "formik";
-import "../styles/signup-form.css";
+// import "../styles/signup-form.css";
 
 const SignupForm = () => {
   const formik = useFormik({
