@@ -11,6 +11,7 @@ import { CustomersModule } from './customers/customers.module';
 import { EmployeesModule } from './employees/employees.module';
 import { AdminsModule } from './admins/admins.module';
 import { DebtsModule } from './debts/debts.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { DebtsModule } from './debts/debts.module';
     EmployeesModule,
     AdminsModule,
     DebtsModule,
+    TransactionsModule,
   ],
   controllers: [],
   providers: [PrismaService],
