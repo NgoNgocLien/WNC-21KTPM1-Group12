@@ -39,7 +39,6 @@ export class AuthService {
     }
 
     if (!user) {
-      console.log('1');
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -48,11 +47,10 @@ export class AuthService {
       user.password,
     );
     if (!passwordMatches) {
-      console.log('2');
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: user.id, username: user.username, role: role };
 
     const access_token = await this.getAccessToken(payload);
     const refresh_token = await this.getRefreshToken(payload);
@@ -104,7 +102,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: user.id, username: user.username, role: role };
 
     const access_token = await this.getAccessToken(payload);
 
