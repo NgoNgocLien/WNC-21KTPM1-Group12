@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 
 import { CustomersService } from 'src/customers/customers.service';
 import { EmployeesService } from 'src/employees/employees.service';
+import { AdminsService } from 'src/admins/admins.service';
 import { JwtPayload } from './types/JwtPayload';
 import { Role } from './types/Role';
 
@@ -12,6 +13,7 @@ export class AuthService {
   constructor(
     private customersService: CustomersService,
     private employeesService: EmployeesService,
+    private adminsService: AdminsService,
     private jwtService: JwtService,
   ) {}
 
@@ -28,6 +30,9 @@ export class AuthService {
         break;
       case Role.EMPLOYEE:
         user = await this.employeesService.findByUsername(username);
+        break;
+      case Role.ADMIN:
+        user = await this.adminsService.findByUsername(username);
         break;
       default:
         throw new UnauthorizedException('Invalid role');
@@ -63,6 +68,8 @@ export class AuthService {
         return this.customersService.update(id, { refresh_token: null });
       case Role.EMPLOYEE:
         return this.employeesService.update(id, { refresh_token: null });
+      case Role.ADMIN:
+        return this.adminsService.update(id, { refresh_token: null });
       default:
         throw new UnauthorizedException('Invalid role');
     }
@@ -76,6 +83,9 @@ export class AuthService {
         break;
       case Role.EMPLOYEE:
         user = await this.employeesService.findOne(id);
+        break;
+      case Role.ADMIN:
+        user = await this.adminsService.findOne(id);
         break;
       default:
         throw new UnauthorizedException('Invalid role');
@@ -112,14 +122,14 @@ export class AuthService {
   async getAccessToken(payload: JwtPayload): Promise<string> {
     return this.jwtService.signAsync(payload, {
       secret: process.env.ACCESS_TOKEN_SECRET,
-      expiresIn: '600s',
+      expiresIn: '100d',
     });
   }
 
   async getRefreshToken(payload: JwtPayload): Promise<string> {
     return this.jwtService.signAsync(payload, {
       secret: process.env.REFRESH_TOKEN_SECRET,
-      expiresIn: '1d',
+      expiresIn: '100d',
     });
   }
 

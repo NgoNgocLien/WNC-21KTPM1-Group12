@@ -7,9 +7,15 @@ import { AccessTokenGuard } from './guards/accessToken.guard';
 import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
 import { EmployeesModule } from 'src/employees/employees.module';
+import { AdminsModule } from 'src/admins/admins.module';
 
 @Module({
-  imports: [JwtModule.register({}), CustomersModule, EmployeesModule],
+  imports: [
+    JwtModule.register({}),
+    CustomersModule,
+    EmployeesModule,
+    AdminsModule,
+  ],
   controllers: [AuthController],
   providers: [
     AuthService,
