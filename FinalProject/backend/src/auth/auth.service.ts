@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CustomersService } from 'src/customers/customers.service';
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './types/JwtPayload';
+import { Role } from './types/Role';
 
 @Injectable()
 export class AuthService {
@@ -13,57 +14,80 @@ export class AuthService {
 
   async login(
     username: string,
-    pass: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
-    const customer = await this.customersService.findByUsername(username);
+    password: string,
+    role: Role,
+  ): Promise<{ access_token: string; refresh_token: string }> {
+    let user = null;
 
-    if (!customer) {
+    switch (role) {
+      case Role.CUSTOMER:
+        user = await this.customersService.findByUsername(username);
+        break;
+      default:
+        throw new UnauthorizedException('Invalid role');
+    }
+
+    if (!user) {
+      console.log('1');
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const passwordMatches = await this.compareHashedData(
-      pass,
-      customer.password,
+      password,
+      user.password,
     );
     if (!passwordMatches) {
+      console.log('2');
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: customer.id, username: customer.username };
+    const payload = { sub: user.id, username: user.username };
 
-    const accessToken = await this.getAccessToken(payload);
-    const refreshToken = await this.getRefreshToken(payload);
+    const access_token = await this.getAccessToken(payload);
+    const refresh_token = await this.getRefreshToken(payload);
 
-    await this.updateRefreshToken(customer.id, refreshToken);
+    await this.updateRefreshToken(user.id, refresh_token);
 
-    return { accessToken, refreshToken };
+    return { access_token, refresh_token };
   }
 
-  async logout(id: number) {
-    return this.customersService.update(id, { refresh_token: null });
+  async logout(id: number, role: Role) {
+    switch (role) {
+      case Role.CUSTOMER:
+        return this.customersService.update(id, { refresh_token: null });
+      default:
+        throw new UnauthorizedException('Invalid role');
+    }
   }
 
-  async refresh(id: number, refreshToken: string) {
-    const customer = await this.customersService.findOne(id);
+  async refresh(id: number, refresh_token: string, role: Role) {
+    let user = null;
+    switch (role) {
+      case Role.CUSTOMER:
+        user = await this.customersService.findOne(id);
+        break;
+      default:
+        throw new UnauthorizedException('Invalid role');
+    }
 
-    if (!customer || !customer.refresh_token) {
+    if (!user || !user.refresh_token) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const refreshTokenMatches = await this.compareHashedData(
-      refreshToken,
-      customer.refresh_token,
+      refresh_token,
+      user.refresh_token,
     );
 
     if (!refreshTokenMatches) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: customer.id, username: customer.username };
+    const payload = { sub: user.id, username: user.username };
 
-    const accessToken = await this.getAccessToken(payload);
+    const access_token = await this.getAccessToken(payload);
 
-    return { accessToken, refreshToken };
+    return { access_token, refresh_token };
   }
 
   async hashData(data: string): Promise<string> {
