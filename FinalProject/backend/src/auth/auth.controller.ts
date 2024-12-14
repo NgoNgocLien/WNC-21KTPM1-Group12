@@ -13,6 +13,7 @@ import { Public } from './decorators/public.decorator';
 import { Request } from 'express';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
 import { Role } from './types/Role';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -21,25 +22,29 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Body() body: { username: string; password: string; role: Role }) {
-    return this.authService.login(body.username, body.password, body.role);
+  login(@Body() loginDto: LoginDto) {
+    return this.authService.login(
+      loginDto.username,
+      loginDto.password,
+      loginDto.role,
+    );
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('logout')
-  logout(@Req() req: Request, @Body() body: { role: Role }) {
-    return this.authService.logout(req.user['sub'], body.role);
+  logout(@Req() req: Request) {
+    return this.authService.logout(req.user['sub'], req.user['role']);
   }
 
   @Public()
   @UseGuards(RefreshTokenGuard)
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
-  refresh(@Req() req: Request, @Body() body: { role: Role }) {
+  refresh(@Req() req: Request) {
     return this.authService.refresh(
       req.user['sub'],
       req.user['refreshToken'],
-      body.role,
+      req.user['role'],
     );
   }
 

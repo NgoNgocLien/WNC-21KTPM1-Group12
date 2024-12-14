@@ -1,7 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CustomersService } from 'src/customers/customers.service';
 import * as bcrypt from 'bcrypt';
+
+import { CustomersService } from 'src/customers/customers.service';
+import { EmployeesService } from 'src/employees/employees.service';
+import { AdminsService } from 'src/admins/admins.service';
 import { JwtPayload } from './types/JwtPayload';
 import { Role } from './types/Role';
 
@@ -9,6 +12,8 @@ import { Role } from './types/Role';
 export class AuthService {
   constructor(
     private customersService: CustomersService,
+    private employeesService: EmployeesService,
+    private adminsService: AdminsService,
     private jwtService: JwtService,
   ) {}
 
@@ -23,12 +28,17 @@ export class AuthService {
       case Role.CUSTOMER:
         user = await this.customersService.findByUsername(username);
         break;
+      case Role.EMPLOYEE:
+        user = await this.employeesService.findByUsername(username);
+        break;
+      case Role.ADMIN:
+        user = await this.adminsService.findByUsername(username);
+        break;
       default:
         throw new UnauthorizedException('Invalid role');
     }
 
     if (!user) {
-      console.log('1');
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -37,11 +47,10 @@ export class AuthService {
       user.password,
     );
     if (!passwordMatches) {
-      console.log('2');
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: user.id, username: user.username, role: role };
 
     const access_token = await this.getAccessToken(payload);
     const refresh_token = await this.getRefreshToken(payload);
@@ -55,6 +64,10 @@ export class AuthService {
     switch (role) {
       case Role.CUSTOMER:
         return this.customersService.update(id, { refresh_token: null });
+      case Role.EMPLOYEE:
+        return this.employeesService.update(id, { refresh_token: null });
+      case Role.ADMIN:
+        return this.adminsService.update(id, { refresh_token: null });
       default:
         throw new UnauthorizedException('Invalid role');
     }
@@ -65,6 +78,12 @@ export class AuthService {
     switch (role) {
       case Role.CUSTOMER:
         user = await this.customersService.findById(id);
+        break;
+      case Role.EMPLOYEE:
+        user = await this.employeesService.findOne(id);
+        break;
+      case Role.ADMIN:
+        user = await this.adminsService.findOne(id);
         break;
       default:
         throw new UnauthorizedException('Invalid role');
@@ -83,7 +102,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: user.id, username: user.username, role: role };
 
     const access_token = await this.getAccessToken(payload);
 
@@ -101,14 +120,14 @@ export class AuthService {
   async getAccessToken(payload: JwtPayload): Promise<string> {
     return this.jwtService.signAsync(payload, {
       secret: process.env.ACCESS_TOKEN_SECRET,
-      expiresIn: '600s',
+      expiresIn: '100d',
     });
   }
 
   async getRefreshToken(payload: JwtPayload): Promise<string> {
     return this.jwtService.signAsync(payload, {
       secret: process.env.REFRESH_TOKEN_SECRET,
-      expiresIn: '1d',
+      expiresIn: '100d',
     });
   }
 

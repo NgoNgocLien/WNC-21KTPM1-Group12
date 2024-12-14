@@ -4,12 +4,13 @@ import { UpdateCustomerDto } from './dto/updateCustomer.dto';
 import { CreateContactDto } from './dto/createContact.dto';
 import { UpdateContactDto } from './dto/updateContact.dto';
 import { DeleteContactDto } from './dto/deleteContact.dto';
+import { CreateCustomerDto } from './dto/createCustomer.dto';
 
 @Injectable()
 export class CustomersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllCustomers(){
+  async getAllCustomers() {
     return this.prisma.customers.findMany();
   }
 
@@ -23,10 +24,10 @@ export class CustomersService {
 
   async findById(id: number) {
     return this.prisma.customers.findUnique({
-      where:{
-        id: Number(id)
-      }
-    })
+      where: {
+        id: Number(id),
+      },
+    });
   }
 
   async update(id: number, updateCustomerDto: UpdateCustomerDto) {
@@ -40,6 +41,14 @@ export class CustomersService {
         id: id,
       },
       data: updateCustomerDto,
+    });
+  }
+
+  async create(createCustomerDto: CreateCustomerDto) {
+    // TODO: Hash the password before saving it to the database
+
+    return this.prisma.customers.create({
+      data: createCustomerDto,
     });
   }
 
