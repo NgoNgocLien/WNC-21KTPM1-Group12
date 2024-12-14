@@ -1,8 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateCustomerDto } from './dto/updateCustomer.dto';
-import { DatabaseService } from '../database/database.service';
-import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class CustomersService {
@@ -14,10 +12,10 @@ export class CustomersService {
 
   async findByUsername(username: string) {
     return this.prisma.customers.findUnique({
-      where:{
-        username
-      }
-    })
+      where: {
+        username,
+      },
+    });
   }
 
   async findById(id: string) {
@@ -28,14 +26,18 @@ export class CustomersService {
     })
   }
 
-
-  async update(id: string, data: UpdateCustomerDto) {
+  async update(id: number, updateCustomerDto: UpdateCustomerDto) {
     const customerExists = await this.prisma.customers.findUnique({ where: { id: Number(id) } });
     if (!customerExists) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
-    return this.prisma.customers.update({ where: { id: Number(id) }, data });
+    const customer = this.prisma.customers.update({
+      where: {
+        id: id,
+      },
+      data: updateCustomerDto,
+    });
+    return null;
   }
 }
-
