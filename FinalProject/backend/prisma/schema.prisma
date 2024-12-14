@@ -137,6 +137,7 @@ model transactions {
   fee_payment_method                          String?         @db.VarChar(10)
   transaction_time                            DateTime        @db.Timestamp(6)
   digital_signature                           String?
+  recipient_name                              String?         @db.VarChar(100)
   debt_payments                               debt_payments[]
   banks_transactions_id_recipient_bankTobanks banks           @relation("transactions_id_recipient_bankTobanks", fields: [id_recipient_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
   banks_transactions_id_sender_bankTobanks    banks           @relation("transactions_id_sender_bankTobanks", fields: [id_sender_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
