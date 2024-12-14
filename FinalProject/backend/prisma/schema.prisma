@@ -16,9 +16,10 @@ model accounts {
 }
 
 model admins {
-  id       Int    @id @default(autoincrement())
-  username String @unique @db.VarChar(50)
-  password String @db.VarChar(100)
+  id            Int     @id @default(autoincrement())
+  username      String  @unique @db.VarChar(50)
+  password      String  @db.VarChar(100)
+  refresh_token String?
 }
 
 model banks {
@@ -47,6 +48,7 @@ model customers {
   fullname                           String           @db.VarChar(100)
   email                              String           @unique @db.VarChar(100)
   phone                              String           @unique @db.VarChar(15)
+  refresh_token                      String?
   accounts                           accounts[]
   contacts                           contacts[]
   debt_deletions                     debt_deletions[]
@@ -100,13 +102,14 @@ model deposits {
 }
 
 model employees {
-  id       Int        @id @default(autoincrement())
-  username String     @unique @db.VarChar(50)
-  password String     @db.VarChar(100)
-  fullname String     @db.VarChar(100)
-  email    String     @unique @db.VarChar(100)
-  phone    String     @unique @db.VarChar(15)
-  deposits deposits[]
+  id            Int        @id @default(autoincrement())
+  username      String     @unique @db.VarChar(50)
+  password      String     @db.VarChar(100)
+  fullname      String     @db.VarChar(100)
+  email         String     @unique @db.VarChar(100)
+  phone         String     @unique @db.VarChar(15)
+  refresh_token String?
+  deposits      deposits[]
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -133,6 +136,7 @@ model transactions {
   transaction_message                         String?
   fee_payment_method                          String?         @db.VarChar(10)
   transaction_time                            DateTime        @db.Timestamp(6)
+  digital_signature                           String?
   debt_payments                               debt_payments[]
   banks_transactions_id_recipient_bankTobanks banks           @relation("transactions_id_recipient_bankTobanks", fields: [id_recipient_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
   banks_transactions_id_sender_bankTobanks    banks           @relation("transactions_id_sender_bankTobanks", fields: [id_sender_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
