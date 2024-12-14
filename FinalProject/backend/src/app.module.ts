@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { CustomersService } from './customers/customers.service';
-import { CustomersModule } from './customers/customers.module';
+// import { CustomersService } from './customers/customers.service';
+// import { CustomersModule } from './customers/customers.module';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule, utilities } from 'nest-winston';
 import { AuthModule } from './auth/auth.module';
@@ -27,8 +27,8 @@ import * as winston from 'winston';
         }),
       ],
     }),
-    CustomersModule,
     AuthModule,
   ],
 })
-export class AppModule {}
+export class AppModule {
+}
