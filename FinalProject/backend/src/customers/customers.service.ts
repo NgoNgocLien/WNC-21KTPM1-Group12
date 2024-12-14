@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { DatabaseService } from '../database/database.service';
+import { PrismaClient } from '@prisma/client';
+import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 export type Customer = {
   id: string;
@@ -12,6 +15,7 @@ export type Customer = {
 
 @Injectable()
 export class CustomersService {
+  constructor(private readonly databaseService: DatabaseService) {}
   private readonly customers = [
     {
       id: '1',
@@ -33,20 +37,29 @@ export class CustomersService {
     },
   ];
 
-  async findOne(username: string) {
-    return this.customers.find((customer) => customer.username === username);
+  async findOne(id: number) {
+    return this.databaseService.customers.findUnique({
+      where: {
+        id: id,
+      },
+    });
   }
 
-  async findById(id: string) {
-    return this.customers.find((customer) => customer.id === id);
+  async findByUsername(username: string) {
+    return this.databaseService.customers.findUnique({
+      where: {
+        username: username,
+      },
+    });
   }
 
-  async update(id: string, update: Partial<Customer>) {
-    const customer = this.customers.find((customer) => customer.id === id);
-    if (customer) {
-      Object.assign(customer, update);
-      return customer;
-    }
+  async update(id: number, updateCustomerDto: UpdateCustomerDto) {
+    const customer = this.databaseService.customers.update({
+      where: {
+        id: id,
+      },
+      data: updateCustomerDto,
+    });
     return null;
   }
 }
