@@ -5,9 +5,9 @@ import { ConfigModule } from '@nestjs/config';
 import { WinstonModule, utilities } from 'nest-winston';
 import { AuthModule } from './auth/auth.module';
 import { CustomersModule } from './customers/customers.module';
-import { DatabaseModule } from './database/database.module';
 import * as winston from 'winston';
 import { PrismaService } from './prisma/prisma.service';
+import { EmployeesModule } from './employees/employees.module';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { PrismaService } from './prisma/prisma.service';
     }),
     AuthModule,
     CustomersModule,
-    DatabaseModule,
+    EmployeesModule,
   ],
   controllers: [],
   providers: [PrismaService],

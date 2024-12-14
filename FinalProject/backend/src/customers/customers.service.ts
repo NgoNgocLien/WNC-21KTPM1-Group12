@@ -29,6 +29,6 @@ export class CustomersService {
       },
       data: updateCustomerDto,
     });
-    return null;
+    return customer;
   }
 }

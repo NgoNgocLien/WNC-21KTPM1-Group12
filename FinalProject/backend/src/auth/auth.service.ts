@@ -1,7 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CustomersService } from 'src/customers/customers.service';
 import * as bcrypt from 'bcrypt';
+
+import { CustomersService } from 'src/customers/customers.service';
+import { EmployeesService } from 'src/employees/employees.service';
 import { JwtPayload } from './types/JwtPayload';
 import { Role } from './types/Role';
 
@@ -9,6 +11,7 @@ import { Role } from './types/Role';
 export class AuthService {
   constructor(
     private customersService: CustomersService,
+    private employeesService: EmployeesService,
     private jwtService: JwtService,
   ) {}
 
@@ -22,6 +25,9 @@ export class AuthService {
     switch (role) {
       case Role.CUSTOMER:
         user = await this.customersService.findByUsername(username);
+        break;
+      case Role.EMPLOYEE:
+        user = await this.employeesService.findByUsername(username);
         break;
       default:
         throw new UnauthorizedException('Invalid role');
@@ -55,6 +61,8 @@ export class AuthService {
     switch (role) {
       case Role.CUSTOMER:
         return this.customersService.update(id, { refresh_token: null });
+      case Role.EMPLOYEE:
+        return this.employeesService.update(id, { refresh_token: null });
       default:
         throw new UnauthorizedException('Invalid role');
     }
@@ -65,6 +73,9 @@ export class AuthService {
     switch (role) {
       case Role.CUSTOMER:
         user = await this.customersService.findOne(id);
+        break;
+      case Role.EMPLOYEE:
+        user = await this.employeesService.findOne(id);
         break;
       default:
         throw new UnauthorizedException('Invalid role');
