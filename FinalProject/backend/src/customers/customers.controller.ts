@@ -21,23 +21,24 @@ export class CustomersController {
     private readonly logger: LoggerService,
   ) {}
 
-//   @HttpCode(HttpStatus.OK)
-//   @Get('')
-//   getAllCustomers() {
-//     return this.customersService.getAllCustomers();
-//   }
+  @HttpCode(HttpStatus.OK)
+  @Get('')
+  getAllCustomers() {
+    return this.customersService.getAllCustomers();
+  }
 
-//   @HttpCode(HttpStatus.OK)
-//   @Get('profile')
-//   getCustomerProfile() {
-//     return this.customersService.getCustomerProfile();
-//   }
+  // @HttpCode(HttpStatus.OK)
+  // @Get('profile')
+  // getCustomerProfile(@Req() req: Request) {
+  //   console.log(req.user)
+  //   return this.customersService.findById();
+  // }
 
-//   @HttpCode(HttpStatus.OK)
-//   @Get('accounts')
-//   getAllAccounts() {
-//     return this.customersService.getAllAccounts();
-//   }
+  // @HttpCode(HttpStatus.OK)
+  // @Get('accounts')
+  // getAllAccounts() {
+  //   return this.customersService.getAllAccounts();
+  // }
 
 //   @HttpCode(HttpStatus.OK)
 //   @Post('')

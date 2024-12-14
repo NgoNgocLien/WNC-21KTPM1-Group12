@@ -72,7 +72,7 @@ export class AuthService {
     let user = null;
     switch (role) {
       case Role.CUSTOMER:
-        user = await this.customersService.findOne(id);
+        user = await this.customersService.findById(id.toString());
         break;
       case Role.EMPLOYEE:
         user = await this.employeesService.findOne(id);
