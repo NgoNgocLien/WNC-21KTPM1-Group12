@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-// import { CustomersService } from './customers/customers.service';
-// import { CustomersModule } from './customers/customers.module';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule, utilities } from 'nest-winston';
 import { PrismaService } from './prisma/prisma.service';
