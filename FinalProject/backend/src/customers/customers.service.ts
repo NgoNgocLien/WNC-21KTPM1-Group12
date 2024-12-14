@@ -8,7 +8,7 @@ import { PrismaClient } from '@prisma/client';
 export class CustomersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findOne(username: string) {
+  async findByUsername(username: string) {
     return this.prisma.customers.findUnique({
       where:{
         username

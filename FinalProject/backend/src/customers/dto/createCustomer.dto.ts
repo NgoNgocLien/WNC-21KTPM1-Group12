@@ -21,5 +21,5 @@ export class CreateCustomerDto implements Prisma.customersCreateInput {
     phone: string;
 
     @IsOptional()
-    refreshToken: string;
+    refresh_token: string;
 }

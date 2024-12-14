@@ -29,22 +29,22 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: customer.id.toString(), username: customer.username };
+    const payload = { sub: customer.id, username: customer.username };
 
     const accessToken = await this.getAccessToken(payload);
     const refreshToken = await this.getRefreshToken(payload);
 
-    await this.updateRefreshToken(customer.id.toString(), refreshToken);
+    await this.updateRefreshToken(customer.id, refreshToken);
 
     return { accessToken, refreshToken };
   }
 
   async logout(id: number) {
-    return this.customersService.update(id, { refresh_token: null });
+    return this.customersService.update(id.toString(), { refresh_token: null });
   }
 
   async refresh(id: number, refreshToken: string) {
-    const customer = await this.customersService.findOne(id);
+    const customer = await this.customersService.findById(id.toString());
 
     if (!customer || !customer.refresh_token) {
       throw new UnauthorizedException('Invalid credentials');
@@ -59,7 +59,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: customer.id.toString(), username: customer.username };
+    const payload = { sub: customer.id, username: customer.username };
 
     const accessToken = await this.getAccessToken(payload);
 
@@ -90,7 +90,7 @@ export class AuthService {
 
   async updateRefreshToken(id: number, refresh_token: string) {
     const hashedRefreshToken = await this.hashData(refresh_token);
-    return this.customersService.update(id, {
+    return this.customersService.update(id.toString(), {
       refresh_token: hashedRefreshToken,
     });
   }
