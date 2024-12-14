@@ -28,12 +28,12 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: customer.id, username: customer.username };
+    const payload = { sub: customer.id.toString(), username: customer.username };
 
     const accessToken = await this.getAccessToken(payload);
     const refreshToken = await this.getRefreshToken(payload);
 
-    await this.updateRefreshToken(customer.id, refreshToken);
+    await this.updateRefreshToken(customer.id.toString(), refreshToken);
 
     return { accessToken, refreshToken };
   }
@@ -45,20 +45,20 @@ export class AuthService {
   async refresh(id: string, refreshToken: string) {
     const customer = await this.customersService.findById(id);
 
-    if (!customer || !customer.refreshToken) {
+    if (!customer || !customer.refresh_token) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const refreshTokenMatches = await this.compareHashedData(
       refreshToken,
-      customer.refreshToken,
+      customer.refresh_token,
     );
 
     if (!refreshTokenMatches) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: customer.id, username: customer.username };
+    const payload = { sub: customer.id.toString(), username: customer.username };
 
     const accessToken = await this.getAccessToken(payload);
 

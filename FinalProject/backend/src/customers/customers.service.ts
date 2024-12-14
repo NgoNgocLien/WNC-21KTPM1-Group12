@@ -1,52 +1,33 @@
-import { Injectable } from '@nestjs/common';
-
-export type Customer = {
-  id: string;
-  username: string;
-  password: string;
-  fullname: string;
-  email: string;
-  phone: string;
-  refreshToken: string;
-};
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateCustomerDto } from './dto/updateCustomer.dto';
 
 @Injectable()
 export class CustomersService {
-  private readonly customers = [
-    {
-      id: '1',
-      username: 'johndoe',
-      password: '$2b$10$fsW9WYvtyKVNHmXv3YzuVuMI2h1fdGmt5P1hsHa74RzOnwNozQcGC',
-      fullname: 'John Doe',
-      email: 'john.doe@gmail.com',
-      phone: '0901231234',
-      refreshToken: '',
-    },
-    {
-      id: '2',
-      username: 'janedoe',
-      password: '$2b$10$fsW9WYvtyKVNHmXv3YzuVuMI2h1fdGmt5P1hsHa74RzOnwNozQcGC',
-      fullname: 'Jane Doe',
-      email: 'jane.doe@gmail.com',
-      phone: '0901231235',
-      refreshToken: '',
-    },
-  ];
+  constructor(private readonly prisma: PrismaService) {}
 
   async findOne(username: string) {
-    return this.customers.find((customer) => customer.username === username);
+    return this.prisma.customers.findUnique({
+      where:{
+        username
+      }
+    })
   }
 
   async findById(id: string) {
-    return this.customers.find((customer) => customer.id === id);
+    return this.prisma.customers.findUnique({
+      where:{
+        id: Number(id)
+      }
+    })
   }
 
-  async update(id: string, update: Partial<Customer>) {
-    const customer = this.customers.find((customer) => customer.id === id);
-    if (customer) {
-      Object.assign(customer, update);
-      return customer;
+  async update(id: string, data: UpdateCustomerDto) {
+    const customerExists = await this.prisma.customers.findUnique({ where: { id: Number(id) } });
+    if (!customerExists) {
+      throw new NotFoundException(`Customer with id ${id} not found`);
     }
-    return null;
+
+    return this.prisma.customers.update({ where: { id: Number(id) }, data });
   }
 }
