@@ -64,7 +64,7 @@ export class AuthService {
     let user = null;
     switch (role) {
       case Role.CUSTOMER:
-        user = await this.customersService.findById(id.toString());
+        user = await this.customersService.findById(id);
         break;
       default:
         throw new UnauthorizedException('Invalid role');
