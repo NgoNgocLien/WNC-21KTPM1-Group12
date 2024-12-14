@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDebtDto } from './dto/createDebt.dto';
 import { UpdateDebtDto } from './dto/updateDebt.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 
 @Injectable()
 export class DebtsService {
@@ -53,16 +53,33 @@ export class DebtsService {
     });
   }
 
-  update(id: number, updateDebtDto: UpdateDebtDto) {
+  deleteDebt(id: number) {
     return this.prisma.debts.update({
       where: {
-        id: id,
+        id,
       },
-      data: updateDebtDto,
+      data: { status: 'DELETED' },
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} debt`;
+  payDebt(id: number, transactionData: { id_transaction: number }) {
+    this.prisma.debts.update({
+      where: {
+        id,
+      },
+      data: { status: 'PAID' },
+    });
+
+    this.prisma.debt_payments.create({
+      data: {
+        id_debt: id,
+        id_transaction: transactionData.id_transaction,
+      },
+    });
+
+    // SEND NOTIFICATION TO DEBTOR AND CREDITOR
+    return {
+      message: 'Debt paid successfully',
+    };
   }
 }

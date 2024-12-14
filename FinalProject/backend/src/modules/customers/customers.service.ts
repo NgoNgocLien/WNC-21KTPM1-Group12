@@ -1,5 +1,9 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { UpdateCustomerDto } from './dto/updateCustomer.dto';
 import { CreateContactDto } from './dto/createContact.dto';
 import { UpdateContactDto } from './dto/updateContact.dto';
@@ -31,7 +35,9 @@ export class CustomersService {
   }
 
   async update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    const customerExists = await this.prisma.customers.findUnique({ where: { id } });
+    const customerExists = await this.prisma.customers.findUnique({
+      where: { id },
+    });
     if (!customerExists) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
@@ -52,28 +58,32 @@ export class CustomersService {
     });
   }
 
-  async getAllAccounts(id: number){
-    const customerExists = await this.prisma.customers.findUnique({ where: { id } });
+  async getAllAccounts(id: number) {
+    const customerExists = await this.prisma.customers.findUnique({
+      where: { id },
+    });
     if (!customerExists) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
     return this.prisma.accounts.findMany({
-      where:{
-        id_customer: id
-      }
+      where: {
+        id_customer: id,
+      },
     });
   }
 
-  async getAllContacts(id: number){
-    const customerExists = await this.prisma.customers.findUnique({ where: { id } });
+  async getAllContacts(id: number) {
+    const customerExists = await this.prisma.customers.findUnique({
+      where: { id },
+    });
     if (!customerExists) {
       throw new NotFoundException(`Customer with id ${id} not found`);
     }
 
     return this.prisma.contacts.findMany({
-      where:{
-        id_customer: id
+      where: {
+        id_customer: id,
       },
       include: {
         banks: {
@@ -85,65 +95,67 @@ export class CustomersService {
     });
   }
 
-  async createOneContact(data: CreateContactDto){
-    const customerExists = await this.prisma.customers.findUnique({ where: { id: data.id_customer } });
+  async createOneContact(data: CreateContactDto) {
+    const customerExists = await this.prisma.customers.findUnique({
+      where: { id: data.id_customer },
+    });
     if (!customerExists) {
-      throw new NotFoundException(`Customer with id ${data.id_customer} not found`);
+      throw new NotFoundException(
+        `Customer with id ${data.id_customer} not found`,
+      );
     }
 
-    const contactExists = await this.prisma.contacts.findFirst({ 
-      where: { 
+    const contactExists = await this.prisma.contacts.findFirst({
+      where: {
         id_customer: data.id_customer,
-        contact_account_number: data.contact_account_number
-      } 
+        contact_account_number: data.contact_account_number,
+      },
     });
     if (contactExists) {
       throw new ConflictException(`Contact exists`);
     }
 
     return this.prisma.contacts.create({
-      data
+      data,
     });
   }
 
-  async updateOneContact(id_customer: number, data: UpdateContactDto){
-    const contactExists = await this.prisma.contacts.findFirst({ 
-      where: { 
+  async updateOneContact(id_customer: number, data: UpdateContactDto) {
+    const contactExists = await this.prisma.contacts.findFirst({
+      where: {
         id: data.id,
-        contact_account_number: data.contact_account_number
-      } 
+        contact_account_number: data.contact_account_number,
+      },
     });
     if (!contactExists) {
       throw new NotFoundException(`Contact not found`);
     }
 
     return this.prisma.contacts.update({
-      where:{
+      where: {
         id: data.id,
-        id_customer
+        id_customer,
       },
-      data:{
-        nickname: data.nickname
-      }
+      data: {
+        nickname: data.nickname,
+      },
     });
   }
 
-  async deleteOneContact(data: DeleteContactDto){
-    const contactExists = await this.prisma.contacts.findFirst({ 
-      where: { 
-        id: data.id
-      } 
+  async deleteOneContact(data: DeleteContactDto) {
+    const contactExists = await this.prisma.contacts.findFirst({
+      where: {
+        id: data.id,
+      },
     });
     if (!contactExists) {
       throw new NotFoundException(`Contact not found`);
     }
 
     return this.prisma.contacts.delete({
-      where:{
-        id: data.id
-      }
-    })
+      where: {
+        id: data.id,
+      },
+    });
   }
-
-
 }

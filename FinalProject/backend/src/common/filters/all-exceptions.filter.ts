@@ -12,13 +12,6 @@ import { Request, Response } from 'express';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
-type ResponseObject = {
-  statusCode: number;
-  timestamp: string;
-  path: string;
-  response: string | object;
-};
-
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
   constructor(
@@ -34,34 +27,30 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    const responseObject: ResponseObject = {
-      statusCode: 500,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      response: '',
-    };
+    let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+    let responseObject = {};
 
     if (exception instanceof HttpException) {
-      responseObject.statusCode = exception.getStatus();
-      responseObject.response = exception.getResponse();
+      statusCode = exception.getStatus();
+      responseObject = exception.getResponse();
     } else if (exception instanceof PrismaClientKnownRequestError) {
-      responseObject.statusCode = HttpStatus.BAD_REQUEST;
-      responseObject.response = {
+      statusCode = HttpStatus.BAD_REQUEST;
+      responseObject = {
         statusCode: HttpStatus.BAD_REQUEST,
         message: exception.message,
       };
     } else {
-      responseObject.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-      responseObject.response = {
+      statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+      responseObject = {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Internal Server Error',
       };
     }
 
-    response.status(responseObject.statusCode).json(responseObject.response);
+    // response.status(statusCode).json(responseObject);
 
     // Log the error with stack trace if available
-    const errorMessage = 'Response: ' + JSON.stringify(responseObject);
+    const errorMessage = `Response: ${request.method} ${request.originalUrl} - Status: ${statusCode} - Body: ${JSON.stringify(responseObject)} - ${request.ip}`;
     const stack = exception instanceof Error ? exception.stack : null;
 
     this.logger.error(

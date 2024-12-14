@@ -9,10 +9,9 @@ import {
   Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Public } from './decorators/public.decorator';
+import { Public } from 'src/common/decorators/public.decorator';
 import { Request } from 'express';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
-import { Role } from './types/Role';
 import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')

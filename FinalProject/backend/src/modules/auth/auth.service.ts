@@ -2,9 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { CustomersService } from 'src/customers/customers.service';
-import { EmployeesService } from 'src/employees/employees.service';
-import { AdminsService } from 'src/admins/admins.service';
+import { CustomersService } from 'src/modules/customers/customers.service';
+import { EmployeesService } from 'src/modules/employees/employees.service';
+import { AdminsService } from 'src/modules/admins/admins.service';
 import { JwtPayload } from './types/JwtPayload';
 import { Role } from './types/Role';
 

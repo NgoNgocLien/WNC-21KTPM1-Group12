@@ -38,16 +38,17 @@ export class DebtsController {
     return this.debtsService.findIncoming(id_customer);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateDebtDto: UpdateDebtDto,
-  ) {
-    return this.debtsService.update(id, updateDebtDto);
+  @Patch('/delete/:id')
+  deleteDebt(@Param('id', ParseIntPipe) id: number) {
+    return this.debtsService.deleteDebt(id);
   }
 
-  // @Delete(':id')
-  // remove(@Param('id', ParseIntPipe) id: number) {
-  //   return this.debtsService.remove(id);
-  // }
+  // CALL AFTER AN TRANSACTION IS CREATED FOR DEBT
+  @Post('/pay/:id')
+  payDebt(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() transactionData: { id_transaction: number },
+  ) {
+    return this.debtsService.payDebt(id, transactionData);
+  }
 }
