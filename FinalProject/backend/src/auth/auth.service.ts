@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CustomersService } from 'src/customers/customers.service';
 import * as bcrypt from 'bcrypt';
+import { JwtPayload } from './types/JwtPayload';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
     username: string,
     pass: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const customer = await this.customersService.findOne(username);
+    const customer = await this.customersService.findByUsername(username);
 
     if (!customer) {
       throw new UnauthorizedException('Invalid credentials');
@@ -38,12 +39,12 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async logout(id: string) {
-    return this.customersService.update(id, { refreshToken: null });
+  async logout(id: number) {
+    return this.customersService.update(id, { refresh_token: null });
   }
 
-  async refresh(id: string, refreshToken: string) {
-    const customer = await this.customersService.findById(id);
+  async refresh(id: number, refreshToken: string) {
+    const customer = await this.customersService.findOne(id);
 
     if (!customer || !customer.refresh_token) {
       throw new UnauthorizedException('Invalid credentials');
@@ -73,30 +74,24 @@ export class AuthService {
     return bcrypt.compare(data, hashedData);
   }
 
-  async getAccessToken(payload: {
-    sub: string;
-    username: string;
-  }): Promise<string> {
+  async getAccessToken(payload: JwtPayload): Promise<string> {
     return this.jwtService.signAsync(payload, {
       secret: process.env.ACCESS_TOKEN_SECRET,
       expiresIn: '600s',
     });
   }
 
-  async getRefreshToken(payload: {
-    sub: string;
-    username: string;
-  }): Promise<string> {
+  async getRefreshToken(payload: JwtPayload): Promise<string> {
     return this.jwtService.signAsync(payload, {
       secret: process.env.REFRESH_TOKEN_SECRET,
       expiresIn: '1d',
     });
   }
 
-  async updateRefreshToken(id: string, refreshToken: string) {
-    const hashedRefreshToken = await this.hashData(refreshToken);
+  async updateRefreshToken(id: number, refresh_token: string) {
+    const hashedRefreshToken = await this.hashData(refresh_token);
     return this.customersService.update(id, {
-      refreshToken: hashedRefreshToken,
+      refresh_token: hashedRefreshToken,
     });
   }
 }

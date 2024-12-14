@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateCustomerDto } from './dto/updateCustomer.dto';
+import { DatabaseService } from '../database/database.service';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class CustomersService {
@@ -31,3 +33,4 @@ export class CustomersService {
     return this.prisma.customers.update({ where: { id: Number(id) }, data });
   }
 }
+

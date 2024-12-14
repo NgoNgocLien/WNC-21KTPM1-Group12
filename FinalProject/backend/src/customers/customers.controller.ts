@@ -7,13 +7,19 @@ import {
   Post,
   UseGuards,
   Get,
+  Inject, LoggerService
 } from '@nestjs/common';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { CustomersService } from './customers.service';
 import { Request } from 'express';
 
 @Controller('customers')
 export class CustomersController {
-  constructor(private readonly customersService: CustomersService) {}
+  constructor(
+    private readonly customersService: CustomersService,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
+  ) {}
 
 //   @HttpCode(HttpStatus.OK)
 //   @Get('')
