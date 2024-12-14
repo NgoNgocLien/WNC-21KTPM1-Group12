@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { CustomersModule } from './customers/customers.module';
 import { DatabaseModule } from './database/database.module';
 import * as winston from 'winston';
+import { PrismaService } from './prisma/prisma.service';
 
 @Module({
   imports: [
@@ -33,5 +34,7 @@ import * as winston from 'winston';
     CustomersModule,
     DatabaseModule,
   ],
+  controllers: [],
+  providers: [PrismaService],
 })
 export class AppModule {}

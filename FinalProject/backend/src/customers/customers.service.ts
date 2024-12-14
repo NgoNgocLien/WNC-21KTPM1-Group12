@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '../database/database.service';
-import { PrismaClient } from '@prisma/client';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateCustomerDto } from './dto/updateCustomer.dto';
 
 @Injectable()
 export class CustomersService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async findOne(id: number) {
-    return this.databaseService.customers.findUnique({
+    return this.prisma.customers.findUnique({
       where: {
         id: id,
       },
@@ -16,15 +15,15 @@ export class CustomersService {
   }
 
   async findByUsername(username: string) {
-    return this.databaseService.customers.findUnique({
+    return this.prisma.customers.findUnique({
       where: {
-        username: username,
+        username,
       },
     });
   }
 
   async update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    const customer = this.databaseService.customers.update({
+    const customer = this.prisma.customers.update({
       where: {
         id: id,
       },
