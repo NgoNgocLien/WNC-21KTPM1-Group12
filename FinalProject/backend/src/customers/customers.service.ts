@@ -8,6 +8,10 @@ import { PrismaClient } from '@prisma/client';
 export class CustomersService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getAllCustomers(){
+    return this.prisma.customers.findMany();
+  }
+
   async findByUsername(username: string) {
     return this.prisma.customers.findUnique({
       where:{
@@ -23,6 +27,7 @@ export class CustomersService {
       }
     })
   }
+
 
   async update(id: string, data: UpdateCustomerDto) {
     const customerExists = await this.prisma.customers.findUnique({ where: { id: Number(id) } });
