@@ -10,26 +10,33 @@ export class TransactionsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createInternalTransaction(createTransactionDto: CreateTransactionDto) {
-    const dtoInstance = plainToClass(CreateTransactionDto, createTransactionDto);
+    try{
+      const transaction = await this.prisma.transactions.create({
+        data: {
+          sender_account_number: createTransactionDto.sender_account_number,
+          id_sender_bank: createTransactionDto.id_sender_bank,
+          recipient_account_number: createTransactionDto.recipient_account_number,
+          id_recipient_bank: createTransactionDto.id_recipient_bank,
+          transaction_amount: new Prisma.Decimal(createTransactionDto.transaction_amount),
+          transaction_message: createTransactionDto.transaction_message,
+          fee_payment_method: createTransactionDto.fee_payment_method,
+          transaction_time: new Date(createTransactionDto.transaction_time),
+          recipient_name: createTransactionDto.recipient_name,
+        },
+      });
 
-    return this.prisma.transactions.create({
-      data: {
-        sender_account_number: createTransactionDto.sender_account_number,
-        id_sender_bank: createTransactionDto.id_sender_bank,
-        recipient_account_number: createTransactionDto.recipient_account_number,
-        id_recipient_bank: createTransactionDto.id_recipient_bank,
-        transaction_amount: new Prisma.Decimal(createTransactionDto.transaction_amount),
-        transaction_message: createTransactionDto.transaction_message,
-        fee_payment_method: createTransactionDto.fee_payment_method,
-        transaction_time: new Date(createTransactionDto.transaction_time),
-        recipient_name: createTransactionDto.recipient_name,
-      },
-    });
-
+      return {
+        message: 'Transaction created successfully',
+        data: transaction,
+      };
+    } catch (error) {
+      throw new Error('Error creating transaction: ' + error.message);
+    }
   }
 
   async createExternalTransaction(createTransactionDto: CreateTransactionDto) {
-    return this.prisma.transactions.create({
+    try {
+    const transaction = await this.prisma.transactions.create({
       data: {
         sender_account_number: createTransactionDto.sender_account_number,
         id_sender_bank: createTransactionDto.id_sender_bank,
@@ -43,5 +50,12 @@ export class TransactionsService {
         recipient_name: createTransactionDto.recipient_name,
       },
     });
+    return {
+      message: 'Transaction created successfully',
+      data: transaction,
+    };
+  } catch (error) {
+    throw new Error('Error creating transaction: ' + error.message);
+  }
   }
 }

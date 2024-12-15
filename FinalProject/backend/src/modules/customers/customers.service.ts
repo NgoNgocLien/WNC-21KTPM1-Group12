@@ -15,147 +15,241 @@ export class CustomersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getAllCustomers() {
-    return this.prisma.customers.findMany();
+    try {
+      const customers = await this.prisma.customers.findMany();
+
+      return {
+        message: 'Customers fetched successfully',
+        data: customers,
+      };
+    } catch (error) {
+      throw new Error('Error fetching customers: ' + error.message);
+    }
   }
 
   async findByUsername(username: string) {
-    return this.prisma.customers.findUnique({
-      where: {
-        username,
-      },
-    });
+    try {
+      const customer = await this.prisma.customers.findUnique({
+        where: {
+          username,
+        },
+      });
+
+      return {
+        message: 'Customer found successfully',
+        data: customer,
+      };
+    } catch (error) {
+      throw new Error('Error finding customer: ' + error.message);
+    }
   }
 
   async findById(id: number) {
-    return this.prisma.customers.findUnique({
-      where: {
-        id: Number(id),
-      },
-    });
+    try {
+      const customer = await this.prisma.customers.findUnique({
+        where: {
+          id: Number(id),
+        },
+      });
+
+      return {
+        message: 'Customer found successfully',
+        data: customer,
+      };
+    } catch (error) {
+      throw new Error('Error finding customer: ' + error.message);
+    }
   }
 
   async update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    const customerExists = await this.prisma.customers.findUnique({
-      where: { id },
-    });
-    if (!customerExists) {
-      throw new NotFoundException(`Customer with id ${id} not found`);
-    }
+    try {
+      const customerExists = await this.prisma.customers.findUnique({
+        where: { id },
+      });
+      if (!customerExists) {
+        throw new NotFoundException(`Customer with id ${id} not found`);
+      }
 
-    return this.prisma.customers.update({
-      where: {
-        id: id,
-      },
-      data: updateCustomerDto,
-    });
+      const customer = this.prisma.customers.update({
+        where: {
+          id: id,
+        },
+        data: updateCustomerDto,
+      });
+
+      return {
+        message: 'Customer updated successfully',
+        data: customer,
+      };
+
+    } catch (error) {
+      throw new Error('Error updating customer: ' + error.message);
+    }
   }
 
   async create(createCustomerDto: CreateCustomerDto) {
     // TODO: Hash the password before saving it to the database
+    try {
+      const customer = await this.prisma.customers.create({
+        data: createCustomerDto,
+      });
 
-    return this.prisma.customers.create({
-      data: createCustomerDto,
-    });
+      return {
+        message: 'Customer created successfully',
+        data: customer,
+      };
+
+    } catch (error) {
+      throw new Error('Error creating customer: ' + error.message);
+    }
   }
 
   async getAllAccounts(id: number) {
-    const customerExists = await this.prisma.customers.findUnique({
-      where: { id },
-    });
-    if (!customerExists) {
-      throw new NotFoundException(`Customer with id ${id} not found`);
-    }
+    try{
+      const customerExists = await this.prisma.customers.findUnique({
+        where: { id },
+      });
+      if (!customerExists) {
+        throw new NotFoundException(`Customer with id ${id} not found`);
+      }
 
-    return this.prisma.accounts.findMany({
-      where: {
-        id_customer: id,
-      },
-    });
+      const accounts = await this.prisma.accounts.findMany({
+        where: {
+          id_customer: id,
+        },
+      });
+
+      return {
+        message: 'Accounts found successfully',
+        data: accounts,
+      };
+
+    } catch (error) {
+      throw new Error('Error fetching accounts: ' + error.message);
+    }
   }
 
   async getAllContacts(id: number) {
-    const customerExists = await this.prisma.customers.findUnique({
-      where: { id },
-    });
-    if (!customerExists) {
-      throw new NotFoundException(`Customer with id ${id} not found`);
-    }
+    try{
+      const customerExists = await this.prisma.customers.findUnique({
+        where: { id },
+      });
+      if (!customerExists) {
+        throw new NotFoundException(`Customer with id ${id} not found`);
+      }
 
-    return this.prisma.contacts.findMany({
-      where: {
-        id_customer: id,
-      },
-      include: {
-        banks: {
-          select: {
-            name: true,
+      const contacts = await this.prisma.contacts.findMany({
+        where: {
+          id_customer: id,
+        },
+        include: {
+          banks: {
+            select: {
+              name: true,
+            },
           },
         },
-      },
-    });
+      });
+
+      return {
+        message: 'Contacts found successfully',
+        data: contacts,
+      };
+
+    } catch (error) {
+      throw new Error('Error fetching contacts: ' + error.message);
+    }
   }
 
   async createOneContact(data: CreateContactDto) {
-    const customerExists = await this.prisma.customers.findUnique({
-      where: { id: data.id_customer },
-    });
-    if (!customerExists) {
-      throw new NotFoundException(
-        `Customer with id ${data.id_customer} not found`,
-      );
-    }
+    try{
+      const customerExists = await this.prisma.customers.findUnique({
+        where: { id: data.id_customer },
+      });
+      if (!customerExists) {
+        throw new NotFoundException(
+          `Customer with id ${data.id_customer} not found`,
+        );
+      }
 
-    const contactExists = await this.prisma.contacts.findFirst({
-      where: {
-        id_customer: data.id_customer,
-        contact_account_number: data.contact_account_number,
-      },
-    });
-    if (contactExists) {
-      throw new ConflictException(`Contact exists`);
-    }
+      const contactExists = await this.prisma.contacts.findFirst({
+        where: {
+          id_customer: data.id_customer,
+          contact_account_number: data.contact_account_number,
+        },
+      });
+      if (contactExists) {
+        throw new ConflictException(`Contact exists`);
+      }
 
-    return this.prisma.contacts.create({
-      data,
-    });
+      const contact = await this.prisma.contacts.create({
+        data,
+      });
+
+      return {
+        message: 'Contact created successfully',
+        data: contact,
+      };
+
+    } catch (error) {
+      throw new Error('Error creating contact: ' + error.message);
+    }
   }
 
   async updateOneContact(id_customer: number, data: UpdateContactDto) {
-    const contactExists = await this.prisma.contacts.findFirst({
-      where: {
-        id: data.id,
-        contact_account_number: data.contact_account_number,
-      },
-    });
-    if (!contactExists) {
-      throw new NotFoundException(`Contact not found`);
-    }
+    try{
+      const contactExists = await this.prisma.contacts.findFirst({
+        where: {
+          id: data.id,
+          contact_account_number: data.contact_account_number,
+        },
+      });
+      if (!contactExists) {
+        throw new NotFoundException(`Contact not found`);
+      }
 
-    return this.prisma.contacts.update({
-      where: {
-        id: data.id,
-        id_customer,
-      },
-      data: {
-        nickname: data.nickname,
-      },
-    });
+      const contact = await this.prisma.contacts.update({
+        where: {
+          id: data.id,
+          id_customer,
+        },
+        data: {
+          nickname: data.nickname,
+        },
+      });
+
+      return {
+        message: 'Contact updated successfully',
+        data: contact,
+      };
+
+    } catch (error) {
+      throw new Error('Error updating contact: ' + error.message);
+    }
   }
 
   async deleteOneContact(data: DeleteContactDto) {
-    const contactExists = await this.prisma.contacts.findFirst({
-      where: {
-        id: data.id,
-      },
-    });
-    if (!contactExists) {
-      throw new NotFoundException(`Contact not found`);
-    }
+    try {
+      const contactExists = await this.prisma.contacts.findFirst({
+        where: {
+          id: data.id,
+        },
+      });
+      if (!contactExists) {
+        throw new NotFoundException(`Contact not found`);
+      }
 
-    return this.prisma.contacts.delete({
-      where: {
-        id: data.id,
-      },
-    });
+      await this.prisma.contacts.delete({
+        where: {
+          id: data.id,
+        },
+      });
+
+      return {
+        message: 'Contact deleted successfully',
+      };
+    } catch (error) {
+      throw new Error('Error deleting contact: ' + error.message);
+    }
   }
 }

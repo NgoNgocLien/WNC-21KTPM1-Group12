@@ -1,5 +1,5 @@
 import { IsString, IsInt, IsDecimal, IsOptional, IsDateString, MaxLength, MinLength, Matches } from 'class-validator';
-import { Type } from 'class-transformer';
+import { FeePayment } from '../types/FeePayment.type';
 
 export class CreateTransactionDto {
   @IsString()
@@ -29,7 +29,7 @@ export class CreateTransactionDto {
   @IsOptional()
   @IsString()
   @MaxLength(10, { message: 'Fee payment method must not exceed 10 characters.' })
-  fee_payment_method?: string;
+  fee_payment_method?: FeePayment;
 
   @Matches(
     /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))$/,

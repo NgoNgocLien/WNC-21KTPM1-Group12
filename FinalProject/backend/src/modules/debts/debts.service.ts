@@ -27,7 +27,7 @@ export class DebtsService {
 
   async findAll() {
     try {
-      const debts = this.prisma.debts.findMany();
+      const debts = await this.prisma.debts.findMany();
 
       return {
         message: 'Debts fetched successfully',
@@ -40,7 +40,7 @@ export class DebtsService {
 
   async findOne(id: number) {
     try {
-      const debt = this.prisma.debts.findUnique({
+      const debt = await this.prisma.debts.findUnique({
         where: {
           id,
         },
@@ -57,7 +57,7 @@ export class DebtsService {
 
   async findOutgoing(id_customer: number) {
     try {
-      const debts = this.prisma.debts.findMany({
+      const debts = await this.prisma.debts.findMany({
         where: {
           id_creditor: id_customer,
         },
@@ -84,7 +84,7 @@ export class DebtsService {
 
   async findIncoming(id_customer: number) {
     try {
-      const debts = this.prisma.debts.findMany({
+      const debts = await this.prisma.debts.findMany({
         where: {
           id_debtor: id_customer,
         },
