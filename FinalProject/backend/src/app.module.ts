@@ -11,7 +11,6 @@ import { CustomersModule } from './customers/customers.module';
 import { EmployeesModule } from './employees/employees.module';
 import { AdminsModule } from './admins/admins.module';
 import { TransactionsModule } from './transactions/transactions.module';
-import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [

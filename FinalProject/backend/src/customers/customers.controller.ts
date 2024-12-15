@@ -60,11 +60,11 @@ export class CustomersController {
   @Post('contacts')
   createOneContact(
     @Req() req: Request, 
-    @Body() body: CreateContactDto
+    @Body() createContactDto: CreateContactDto
   ) {
     return this.customersService.createOneContact({
       id_customer: req.user['sub'],
-      ...body
+      ...createContactDto
     });
   }
 
@@ -72,27 +72,15 @@ export class CustomersController {
   @Patch('contacts')
   updateOneContact(
     @Req() req: Request,
-    @Body() body: UpdateContactDto
+    @Body() updateContactDto: UpdateContactDto
   ) {
-    return this.customersService.updateOneContact(req.user['sub'], body);
+    return this.customersService.updateOneContact(req.user['sub'], updateContactDto);
   }
 
   @HttpCode(HttpStatus.OK)
   @Delete('contacts')
-  deleteOneContact(@Body() body: DeleteContactDto) {
-    return this.customersService.deleteOneContact(body);
+  deleteOneContact(@Body() deleteContactDto: DeleteContactDto) {
+    return this.customersService.deleteOneContact(deleteContactDto);
   }
-
-  // @HttpCode(HttpStatus.OK)
-  // @Post('transaction/internal')
-  // createOneInternalTransaction(@Body() ) {
-  //   return this.customersService.createOneInternalTransaction(body.username, body.password);
-  // }
-
-//   @HttpCode(HttpStatus.OK)
-//   @Post('transaction/external')
-//   createOneExternalTransaction(@Body() body: { username: string; password: string }) {
-//     return this.customersService.createOneExternalTransaction(body.username, body.password);
-//   }
 
 }
