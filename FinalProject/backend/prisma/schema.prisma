@@ -78,16 +78,17 @@ model debt_payments {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model debts {
-  id                                     Int              @id @default(autoincrement())
-  id_creditor                            Int
-  id_debtor                              Int
-  debt_amount                            Decimal          @db.Decimal(15, 2)
-  debt_message                           String?
-  status                                 String?          @db.VarChar(10)
-  debt_deletions                         debt_deletions[]
-  debt_payments                          debt_payments[]
-  customers_debts_id_creditorTocustomers customers        @relation("debts_id_creditorTocustomers", fields: [id_creditor], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  customers_debts_id_debtorTocustomers   customers        @relation("debts_id_debtorTocustomers", fields: [id_debtor], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             Int              @id @default(autoincrement())
+  id_creditor    Int
+  id_debtor      Int
+  debt_amount    Decimal          @db.Decimal(15, 2)
+  debt_message   String?
+  status         String?          @db.VarChar(10)
+  created_at     DateTime         @db.Timestamp(6)
+  debt_deletions debt_deletions[]
+  debt_payments  debt_payments[]
+  creditor       customers        @relation("debts_id_creditorTocustomers", fields: [id_creditor], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  debtor         customers        @relation("debts_id_debtorTocustomers", fields: [id_debtor], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model deposits {
