@@ -42,7 +42,7 @@ export class AuthController {
   refresh(@Req() req: Request) {
     return this.authService.refresh(
       req.user['sub'],
-      req.user['refreshToken'],
+      req.user['refresh_token'],
       req.user['role'],
     );
   }

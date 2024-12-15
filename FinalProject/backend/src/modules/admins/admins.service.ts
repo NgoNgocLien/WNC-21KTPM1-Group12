@@ -8,37 +8,83 @@ export class AdminsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createAdminDto: CreateAdminDto) {
-    return 'This action adds a new admin';
+    try {
+      const admin = await this.prisma.admins.create({
+        data: createAdminDto,
+      });
+
+      return {
+        message: 'Admin created successfully',
+        data: admin,
+      };
+    } catch (error) {
+      throw new Error('Error creating admin: ' + error.message);
+    }
   }
 
   async findAll() {
-    return `This action returns all admins`;
+    try {
+      const admins = await this.prisma.admins.findMany();
+
+      return {
+        message: 'Admins fetched successfully',
+        data: admins,
+      };
+    } catch (error) {
+      throw new Error('Error fetching admins: ' + error.message);
+    }
   }
 
-  async findOne(id: number) {
-    return this.prisma.admins.findUnique({
-      where: {
-        id,
-      },
-    });
+  async findById(id: number) {
+    try {
+      const admin = await this.prisma.admins.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      return {
+        message: 'Admin found successfully',
+        data: admin,
+      };
+    } catch (error) {
+      throw new Error('Error finding admin: ' + error.message);
+    }
   }
 
   async findByUsername(username: string) {
-    return this.prisma.admins.findUnique({
-      where: {
-        username,
-      },
-    });
+    try {
+      const admin = await this.prisma.admins.findUnique({
+        where: {
+          username,
+        },
+      });
+
+      return {
+        message: 'Admin found successfully',
+        data: admin,
+      };
+    } catch (error) {
+      throw new Error('Error finding admin: ' + error.message);
+    }
   }
 
   async update(id: number, updateAdminDto: UpdateAdminDto) {
-    const admin = this.prisma.admins.update({
-      where: {
-        id,
-      },
-      data: updateAdminDto,
-    });
-    return admin;
+    try {
+      const admin = await this.prisma.admins.update({
+        where: {
+          id,
+        },
+        data: updateAdminDto,
+      });
+
+      return {
+        message: 'Admin updated successfully',
+        data: admin,
+      };
+    } catch (error) {
+      throw new Error('Error updating admin: ' + error.message);
+    }
   }
 
   async remove(id: number) {

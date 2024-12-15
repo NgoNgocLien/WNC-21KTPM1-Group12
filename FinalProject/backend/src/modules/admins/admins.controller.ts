@@ -28,7 +28,7 @@ export class AdminsController {
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.adminsService.findOne(id);
+    return this.adminsService.findById(id);
   }
 
   @Patch(':id')

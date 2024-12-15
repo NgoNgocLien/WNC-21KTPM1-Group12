@@ -12,33 +12,67 @@ export class EmployeesService {
   }
 
   async findAll() {
-    return `This action returns all employees`;
+    try {
+      const employees = await this.prisma.employees.findMany();
+
+      return {
+        message: 'Employees fetched successfully',
+        data: employees,
+      };
+    } catch (error) {
+      throw new Error('Error fetching employees: ' + error.message);
+    }
   }
 
-  async findOne(id: number) {
-    return this.prisma.employees.findUnique({
-      where: {
-        id,
-      },
-    });
+  async findById(id: number) {
+    try {
+      const employee = await this.prisma.employees.findUnique({
+        where: {
+          id,
+        },
+      });
+      return {
+        message: 'Employee found successfully',
+        data: employee,
+      };
+    } catch (error) {
+      throw new Error('Error finding employee: ' + error.message);
+    }
   }
 
   async findByUsername(username: string) {
-    return this.prisma.employees.findUnique({
-      where: {
-        username,
-      },
-    });
+    try {
+      const employee = await this.prisma.employees.findUnique({
+        where: {
+          username,
+        },
+      });
+
+      return {
+        message: 'Employee found successfully',
+        data: employee,
+      };
+    } catch (error) {
+      throw new Error('Error finding employee: ' + error.message);
+    }
   }
 
   async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    const employee = this.prisma.employees.update({
-      where: {
-        id,
-      },
-      data: updateEmployeeDto,
-    });
-    return employee;
+    try {
+      const employee = await this.prisma.employees.update({
+        where: {
+          id,
+        },
+        data: updateEmployeeDto,
+      });
+
+      return {
+        message: 'Employee updated successfully',
+        data: employee,
+      };
+    } catch (error) {
+      throw new Error('Error updating employee: ' + error.message);
+    }
   }
 
   async remove(id: number) {

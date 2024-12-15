@@ -38,24 +38,28 @@ export class AuthService {
         throw new UnauthorizedException('Invalid role');
     }
 
-    if (!user) {
+    if (!user || !user.data) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const passwordMatches = await this.compareHashedData(
       password,
-      user.password,
+      user.data.password,
     );
     if (!passwordMatches) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: user.id, username: user.username, role: role };
+    const payload = {
+      sub: user.data.id,
+      username: user.data.username,
+      role: role,
+    };
 
     const access_token = await this.getAccessToken(payload);
     const refresh_token = await this.getRefreshToken(payload);
 
-    await this.updateRefreshToken(user.id, refresh_token);
+    await this.updateRefreshToken(user.data.id, refresh_token, role);
 
     return { access_token, refresh_token };
   }
@@ -80,29 +84,35 @@ export class AuthService {
         user = await this.customersService.findById(id);
         break;
       case Role.EMPLOYEE:
-        user = await this.employeesService.findOne(id);
+        user = await this.employeesService.findById(id);
         break;
       case Role.ADMIN:
-        user = await this.adminsService.findOne(id);
+        user = await this.adminsService.findById(id);
         break;
       default:
         throw new UnauthorizedException('Invalid role');
     }
 
-    if (!user || !user.refresh_token) {
+    if (!user || !user.data.refresh_token) {
+      console.log(user);
+      console.log(user.data);
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const refreshTokenMatches = await this.compareHashedData(
       refresh_token,
-      user.refresh_token,
+      user.data.refresh_token,
     );
 
     if (!refreshTokenMatches) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: user.id, username: user.username, role: role };
+    const payload = {
+      sub: user.data.id,
+      username: user.data.username,
+      role: role,
+    };
 
     const access_token = await this.getAccessToken(payload);
 
@@ -131,10 +141,23 @@ export class AuthService {
     });
   }
 
-  async updateRefreshToken(id: number, refresh_token: string) {
+  async updateRefreshToken(id: number, refresh_token: string, role: string) {
     const hashedRefreshToken = await this.hashData(refresh_token);
-    return this.customersService.update(id, {
-      refresh_token: hashedRefreshToken,
-    });
+    switch (role) {
+      case Role.CUSTOMER:
+        return this.customersService.update(id, {
+          refresh_token: hashedRefreshToken,
+        });
+      case Role.EMPLOYEE:
+        return this.employeesService.update(id, {
+          refresh_token: hashedRefreshToken,
+        });
+      case Role.ADMIN:
+        return this.adminsService.update(id, {
+          refresh_token: hashedRefreshToken,
+        });
+      default:
+        throw new UnauthorizedException('Invalid role');
+    }
   }
 }
