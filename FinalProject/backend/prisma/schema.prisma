@@ -59,13 +59,13 @@ model customers {
 }
 
 model debt_deletions {
-  id             Int       @id @default(autoincrement())
-  id_debt        Int
-  id_deleter     Int
-  delete_message String?
-  deletion_time  DateTime  @db.Timestamp(6)
-  debts          debts     @relation(fields: [id_debt], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  customers      customers @relation(fields: [id_deleter], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id               Int       @id @default(autoincrement())
+  id_debt          Int       @unique
+  id_deleter       Int
+  deletion_message String?
+  deletion_time    DateTime  @db.Timestamp(6)
+  debts            debts     @relation(fields: [id_debt], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  customers        customers @relation(fields: [id_deleter], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model debt_payments {
@@ -78,17 +78,17 @@ model debt_payments {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model debts {
-  id             Int              @id @default(autoincrement())
+  id             Int             @id @default(autoincrement())
   id_creditor    Int
   id_debtor      Int
-  debt_amount    Decimal          @db.Decimal(15, 2)
+  debt_amount    Decimal         @db.Decimal(15, 2)
   debt_message   String?
-  status         String?          @db.VarChar(10)
-  created_at     DateTime         @db.Timestamp(6)
-  debt_deletions debt_deletions[]
+  status         String?         @db.VarChar(10)
+  created_at     DateTime        @db.Timestamp(6)
+  debt_deletions debt_deletions?
   debt_payments  debt_payments[]
-  creditor       customers        @relation("debts_id_creditorTocustomers", fields: [id_creditor], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  debtor         customers        @relation("debts_id_debtorTocustomers", fields: [id_debtor], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  creditor       customers       @relation("debts_id_creditorTocustomers", fields: [id_creditor], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  debtor         customers       @relation("debts_id_debtorTocustomers", fields: [id_debtor], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model deposits {
@@ -128,18 +128,18 @@ model notifications {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model transactions {
-  id                                          Int             @id @default(autoincrement())
-  sender_account_number                       String          @db.VarChar(20)
-  id_sender_bank                              Int
-  recipient_account_number                    String          @db.VarChar(20)
-  id_recipient_bank                           Int
-  transaction_amount                          Decimal         @db.Decimal(15, 2)
-  transaction_message                         String?
-  fee_payment_method                          String?         @db.VarChar(10)
-  transaction_time                            DateTime        @db.Timestamp(6)
-  digital_signature                           String?
-  recipient_name                              String?         @db.VarChar(100)
-  debt_payments                               debt_payments[]
-  banks_transactions_id_recipient_bankTobanks banks           @relation("transactions_id_recipient_bankTobanks", fields: [id_recipient_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  banks_transactions_id_sender_bankTobanks    banks           @relation("transactions_id_sender_bankTobanks", fields: [id_sender_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                       Int             @id @default(autoincrement())
+  sender_account_number    String          @db.VarChar(20)
+  id_sender_bank           Int
+  recipient_account_number String          @db.VarChar(20)
+  id_recipient_bank        Int
+  transaction_amount       Decimal         @db.Decimal(15, 2)
+  transaction_message      String?
+  fee_payment_method       String?         @db.VarChar(10)
+  transaction_time         DateTime        @db.Timestamp(6)
+  digital_signature        String?
+  recipient_name           String?         @db.VarChar(100)
+  debt_payments            debt_payments[]
+  recipient_bank           banks           @relation("transactions_id_recipient_bankTobanks", fields: [id_recipient_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sender_bank              banks           @relation("transactions_id_sender_bankTobanks", fields: [id_sender_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
