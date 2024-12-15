@@ -2,45 +2,34 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  ParseIntPipe,
+  Body
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/createTransaction.dto';
-import { UpdateTransactionDto } from './dto/updateTransaction.dto';
 
 @Controller('transactions')
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
-  @Post()
-  create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionsService.create(createTransactionDto);
+
+  @Post('internal')
+  createInternalTransaction(@Body() createTransactionDto: CreateTransactionDto) {
+    return this.transactionsService.createInternalTransaction(createTransactionDto);
   }
 
-  @Get()
-  findAll() {
-    return this.transactionsService.findAll();
+  @Post('external')
+  createExternalTransaction(@Body() createTransactionDto: CreateTransactionDto) {
+    return this.transactionsService.createExternalTransaction(createTransactionDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.transactionsService.findOne(id);
-  }
+  // @Get('account')
+  // findAccountTransactions() {
+  //   return this.transactionsService.findAccountTransactions();
+  // }
 
-  @Patch(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateTransactionDto: UpdateTransactionDto,
-  ) {
-    return this.transactionsService.update(id, updateTransactionDto);
-  }
+  // @Get('bank')
+  // findBankTransactions() {
+  //   return this.transactionsService.findBankTransactions(+id);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.transactionsService.remove(id);
-  }
 }
