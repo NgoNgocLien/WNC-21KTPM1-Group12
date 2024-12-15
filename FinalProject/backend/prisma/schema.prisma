@@ -128,18 +128,18 @@ model notifications {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model transactions {
-  id                                          Int             @id @default(autoincrement())
-  sender_account_number                       String          @db.VarChar(20)
-  id_sender_bank                              Int
-  recipient_account_number                    String          @db.VarChar(20)
-  id_recipient_bank                           Int
-  transaction_amount                          Decimal         @db.Decimal(15, 2)
-  transaction_message                         String?
-  fee_payment_method                          String?         @db.VarChar(10)
-  transaction_time                            DateTime        @db.Timestamp(6)
-  digital_signature                           String?
-  recipient_name                              String?         @db.VarChar(100)
-  debt_payments                               debt_payments[]
-  banks_transactions_id_recipient_bankTobanks banks           @relation("transactions_id_recipient_bankTobanks", fields: [id_recipient_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  banks_transactions_id_sender_bankTobanks    banks           @relation("transactions_id_sender_bankTobanks", fields: [id_sender_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                       Int             @id @default(autoincrement())
+  sender_account_number    String          @db.VarChar(20)
+  id_sender_bank           Int
+  recipient_account_number String          @db.VarChar(20)
+  id_recipient_bank        Int
+  transaction_amount       Decimal         @db.Decimal(15, 2)
+  transaction_message      String?
+  fee_payment_method       String?         @db.VarChar(10)
+  transaction_time         DateTime        @db.Timestamp(6)
+  digital_signature        String?
+  recipient_name           String?         @db.VarChar(100)
+  debt_payments            debt_payments[]
+  recipient_bank           banks           @relation("transactions_id_recipient_bankTobanks", fields: [id_recipient_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sender_bank              banks           @relation("transactions_id_sender_bankTobanks", fields: [id_sender_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
