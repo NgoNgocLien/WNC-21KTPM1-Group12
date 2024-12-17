@@ -42,6 +42,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    if (role === Role.EMPLOYEE && user.data.status === 'DELETED') {
+      throw new UnauthorizedException('Account has been deleted');
+    }
+
     const passwordMatches = await this.compareHashedData(
       password,
       user.data.password,

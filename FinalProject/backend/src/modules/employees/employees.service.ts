@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/createEmployee.dto';
 import { UpdateEmployeeDto } from './dto/updateEmployee.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
+import { employee_status } from '@prisma/client';
 const bcrypt = require('bcrypt');
 
 @Injectable()
@@ -17,6 +18,7 @@ export class EmployeesService {
           fullname: createEmployeeDto.fullname,
           email: createEmployeeDto.email,
           phone: createEmployeeDto.phone,
+          status: employee_status.ACTIVE
         },
       });
 
@@ -39,6 +41,7 @@ export class EmployeesService {
           fullname: true,
           email: true,
           phone: true,
+          status: true
         },
       });
 
@@ -63,6 +66,7 @@ export class EmployeesService {
           fullname: true,
           email: true,
           phone: true,
+          status: true
         },
       });
       return {
@@ -79,13 +83,6 @@ export class EmployeesService {
       const employee = await this.prisma.employees.findUnique({
         where: {
           username,
-        },
-        select: {
-          id: true,
-          username: true,
-          fullname: true,
-          email: true,
-          phone: true,
         },
       });
 
@@ -105,12 +102,37 @@ export class EmployeesService {
           id,
         },
         data: updateEmployeeDto,
+      });
+
+      return {
+        message: 'Employee updated successfully',
+        data: employee,
+      };
+    } catch (error) {
+      throw new Error('Error updating employee: ' + error.message);
+    }
+  }
+
+  async updateEmployee(id: number, updateEmployeeDto: UpdateEmployeeDto) {
+    try {
+      const employee = await this.prisma.employees.update({
+        where: {
+          id,
+        },
+        data: {
+          username: updateEmployeeDto.username,
+          password: bcrypt.hashSync(updateEmployeeDto.password, 10),
+          fullname: updateEmployeeDto.fullname,
+          email: updateEmployeeDto.email,
+          phone: updateEmployeeDto.phone,
+        },
         select: {
           id: true,
           username: true,
           fullname: true,
           email: true,
           phone: true,
+          status: true
         },
       });
 
@@ -124,6 +146,30 @@ export class EmployeesService {
   }
 
   async remove(id: number) {
-    return `This action removes a #${id} employee`;
+    try {
+      const employeeExists = await this.prisma.employees.findFirst({
+        where: {
+          id,
+        },
+      });
+      if (!employeeExists) {
+        throw new NotFoundException(`Employee not found`);
+      }
+
+      await this.prisma.employees.update({
+        where: {
+          id,
+        },
+        data:{
+          status: employee_status.DELETED
+        }
+      });
+
+      return {
+        message: 'Employee deleted successfully'
+      };
+    } catch (error) {
+      throw new Error('Error deleting employee: ' + error.message);
+    }
   }
 }
