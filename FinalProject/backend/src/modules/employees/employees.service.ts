@@ -80,6 +80,13 @@ export class EmployeesService {
         where: {
           username,
         },
+        select: {
+          id: true,
+          username: true,
+          fullname: true,
+          email: true,
+          phone: true,
+        },
       });
 
       return {
@@ -98,6 +105,13 @@ export class EmployeesService {
           id,
         },
         data: updateEmployeeDto,
+        select: {
+          id: true,
+          username: true,
+          fullname: true,
+          email: true,
+          phone: true,
+        },
       });
 
       return {
