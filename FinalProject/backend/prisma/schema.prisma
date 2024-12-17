@@ -103,13 +103,14 @@ model deposits {
 }
 
 model employees {
-  id            Int        @id @default(autoincrement())
-  username      String     @unique @db.VarChar(50)
-  password      String     @db.VarChar(100)
-  fullname      String     @db.VarChar(100)
-  email         String     @unique @db.VarChar(100)
-  phone         String     @unique @db.VarChar(15)
+  id            Int             @id @default(autoincrement())
+  username      String          @unique @db.VarChar(50)
+  password      String          @db.VarChar(100)
+  fullname      String          @db.VarChar(100)
+  email         String          @unique @db.VarChar(100)
+  phone         String          @unique @db.VarChar(15)
   refresh_token String?
+  status        employee_status @default(ACTIVE)
   deposits      deposits[]
 }
 
@@ -142,4 +143,9 @@ model transactions {
   debt_payments            debt_payments[]
   recipient_bank           banks           @relation("transactions_id_recipient_bankTobanks", fields: [id_recipient_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sender_bank              banks           @relation("transactions_id_sender_bankTobanks", fields: [id_sender_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum employee_status {
+  ACTIVE
+  DELETED
 }
