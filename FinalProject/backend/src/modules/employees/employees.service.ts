@@ -2,13 +2,32 @@ import { Injectable } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/createEmployee.dto';
 import { UpdateEmployeeDto } from './dto/updateEmployee.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
+const bcrypt = require('bcrypt');
 
 @Injectable()
 export class EmployeesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createEmployeeDto: CreateEmployeeDto) {
-    return 'This action adds a new employee';
+    try {
+      const employee = await this.prisma.employees.create({
+        data: {
+          username: createEmployeeDto.username,
+          password: bcrypt.hashSync(createEmployeeDto.password, 10),
+          fullname: createEmployeeDto.fullname,
+          email: createEmployeeDto.email,
+          phone: createEmployeeDto.phone,
+        },
+      });
+
+      return {
+        message: 'Employee created successfully',
+        data: employee
+      };
+
+    } catch (error) {
+      throw new Error('Error creating employee: ' + error.message);
+    }
   }
 
   async findAll() {

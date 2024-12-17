@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/createEmployee.dto';
@@ -16,6 +18,7 @@ import { ParseIntPipe } from '@nestjs/common';
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
+  @HttpCode(HttpStatus.OK)
   @Post()
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
     return this.employeesService.create(createEmployeeDto);
