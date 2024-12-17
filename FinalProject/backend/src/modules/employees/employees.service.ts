@@ -32,7 +32,15 @@ export class EmployeesService {
 
   async findAll() {
     try {
-      const employees = await this.prisma.employees.findMany();
+      const employees = await this.prisma.employees.findMany({
+        select: {
+          id: true,
+          username: true,
+          fullname: true,
+          email: true,
+          phone: true,
+        },
+      });
 
       return {
         message: 'Employees fetched successfully',
@@ -48,6 +56,13 @@ export class EmployeesService {
       const employee = await this.prisma.employees.findUnique({
         where: {
           id,
+        },
+        select: {
+          id: true,
+          username: true,
+          fullname: true,
+          email: true,
+          phone: true,
         },
       });
       return {
