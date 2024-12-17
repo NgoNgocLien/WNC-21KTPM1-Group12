@@ -67,8 +67,7 @@ export class TransactionsService {
   
       if (!account) throw new NotFoundException(`Customer with id ${id_customer} not found`);
   
-      const { account_number, account_balance } = account;
-      let currentBalance = account_balance.toNumber();
+      const { account_number } = account;
 
       // Lấy danh sách giao dịch chuyển khoản (Sender)
       const sentTransactions = await this.prisma.transactions.findMany({
@@ -133,7 +132,7 @@ export class TransactionsService {
   
       const depositsWithType = deposits.map((d) => ({
         ...d,
-        type: 'Recipient',
+        type: 'Deposit',
         transaction_time: d.deposit_time,
         transaction_amount: d.deposit_amount.toNumber(),
         current_balance: 0
@@ -153,37 +152,30 @@ export class TransactionsService {
 
       const transactionsWithBalance = [];
 
-// Duyệt qua tất cả giao dịch từ cuối lên đầu
-for (let i = allTransactions.length - 1; i >= 0; i--) {
-  const currentTransaction = allTransactions[i];
+      for (let i = allTransactions.length - 1; i >= 0; i--) {
+        const currentTransaction = allTransactions[i];
 
-  // Nếu là giao dịch đầu tiên (cuối cùng trong mảng), gán current_balance là 0 cộng với amount
-  if (i === allTransactions.length - 1) {
-    currentTransaction.current_balance += currentTransaction.transaction_amount;
-  } else {
-    // Cập nhật current_balance cho giao dịch hiện tại dựa vào current_balance của giao dịch trước đó
-    const previousTransaction = allTransactions[i + 1];
-    currentTransaction.current_balance = previousTransaction.current_balance;
+        if (i === allTransactions.length - 1) {
+          currentTransaction.current_balance += currentTransaction.transaction_amount;
+        } else {
+          const previousTransaction = allTransactions[i + 1];
+          currentTransaction.current_balance = previousTransaction.current_balance;
 
-    // Cập nhật current_balance của giao dịch hiện tại
-    if (currentTransaction.type === 'Sender' || currentTransaction.type === 'Sender (Debt)') {
-      currentTransaction.current_balance -= currentTransaction.transaction_amount;
-    } else if (currentTransaction.type === 'Recipient' || currentTransaction.type === 'Recipient (Debt)') {
-      currentTransaction.current_balance += currentTransaction.transaction_amount;
-    }
-  }
+          if (currentTransaction.type === 'Sender' || currentTransaction.type === 'Sender (Debt)') {
+            currentTransaction.current_balance -= currentTransaction.transaction_amount;
+          } else if (currentTransaction.type === 'Deposit' || currentTransaction.type === 'Recipient' || currentTransaction.type === 'Recipient (Debt)') {
+            currentTransaction.current_balance += currentTransaction.transaction_amount;
+          }
+        }
 
-  // Thêm giao dịch đã cập nhật vào mảng kết quả
-  transactionsWithBalance.unshift(currentTransaction);
-}
+        transactionsWithBalance.unshift(currentTransaction);
+      }
 
-return {
-  transactions: transactionsWithBalance,
-};
-
-      // Trả về kết quả sắp xếp từ mới đến cũ
       return {
-        transactions: transactionsWithBalance,
+        message: 'Get account transactions successfully',
+        data: {
+          transactions: transactionsWithBalance,
+        },
       };
     } catch (error) {
       throw new Error('Error fetching account transactions: ' + error.message);

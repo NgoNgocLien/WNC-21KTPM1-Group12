@@ -9,6 +9,8 @@ import { CreateContactDto } from './dto/createContact.dto';
 import { UpdateContactDto } from './dto/updateContact.dto';
 import { DeleteContactDto } from './dto/deleteContact.dto';
 import { CreateCustomerDto } from './dto/createCustomer.dto';
+const bcrypt = require('bcrypt');
+import { generateAccountNumber } from '../../common/utils/checksum.util';
 
 @Injectable()
 export class CustomersService {
@@ -87,20 +89,38 @@ export class CustomersService {
     }
   }
 
-  async create(createCustomerDto: CreateCustomerDto) {
-    // TODO: Hash the password before saving it to the database
+  async createOneCustomer(createCustomerDto: CreateCustomerDto) {
     try {
       const customer = await this.prisma.customers.create({
-        data: createCustomerDto,
+        data: {
+          username: createCustomerDto.username,
+          password: bcrypt.hashSync(createCustomerDto.password, 10),
+          fullname: createCustomerDto.fullname,
+          email: createCustomerDto.email,
+          phone: createCustomerDto.phone,
+        },
+      });
+      // account_number có format kèm checksum sử dụng Luhn Algorithm để đảm bảo tính hợp lệ của số tài khoản
+      const accountNumber = generateAccountNumber(customer.id);
+
+      const account = await this.prisma.accounts.create({
+        data: {
+          id_customer: customer.id,
+          account_number: accountNumber,
+          account_balance: 0, 
+        },
       });
 
       return {
-        message: 'Customer created successfully',
-        data: customer,
+        message: 'Customer and account created successfully',
+        data: {
+          customer,
+          account,
+        },
       };
 
     } catch (error) {
-      throw new Error('Error creating customer: ' + error.message);
+      throw new Error('Error creating customer and account: ' + error.message);
     }
   }
 

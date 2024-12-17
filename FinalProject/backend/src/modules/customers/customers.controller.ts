@@ -17,6 +17,7 @@ import { Request } from 'express';
 import { CreateContactDto } from './dto/createContact.dto';
 import { UpdateContactDto } from './dto/updateContact.dto';
 import { DeleteContactDto } from './dto/deleteContact.dto';
+import { CreateCustomerDto } from './dto/createCustomer.dto';
 
 @Controller('customers')
 export class CustomersController {
@@ -44,11 +45,11 @@ export class CustomersController {
     return this.customersService.getAllAccounts(req.user['sub']);
   }
 
-//   @HttpCode(HttpStatus.OK)
-//   @Post('')
-//   createOneCustomer(@Body() body: { }) {
-//     return this.customersService.createOneCustomer();
-//   }
+  @HttpCode(HttpStatus.OK)
+  @Post('')
+  createOneCustomer(@Body() createCustomerDto: CreateCustomerDto) {
+    return this.customersService.createOneCustomer(createCustomerDto);
+  }
 
   @HttpCode(HttpStatus.OK)
   @Get('contacts')

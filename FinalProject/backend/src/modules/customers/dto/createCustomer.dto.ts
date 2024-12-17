@@ -7,7 +7,7 @@ export class CreateCustomerDto implements Prisma.customersCreateInput {
     username: string;
   
     @IsString()
-    @Length(8, 100)
+    @Length(6, 100)
     password: string;
   
     @IsString()
@@ -17,7 +17,7 @@ export class CreateCustomerDto implements Prisma.customersCreateInput {
     @IsEmail()
     email: string;
   
-    @IsPhoneNumber(null) // Assuming no specific region, you can provide a region code for validation
+    @IsPhoneNumber('VN')
     phone: string;
 
     @IsOptional()
