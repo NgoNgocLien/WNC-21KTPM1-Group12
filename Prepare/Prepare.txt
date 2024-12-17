@@ -1,0 +1,41 @@
+# Backend
+
+nest new <project-name>
+
+## Prisma
+
+yarn add prisma --dev
+yarn add @prisma/client
+npx prisma init
+
+.env:
+DATABASE_URL=mysql://USER:PASSWORD@HOST:PORT/DATABASE
+
+schema.prisma:
+update provider
+
+npx prisma db pull
+npx prisma generate
+
+nest g res <resource-name>
+
+## Validation
+
+yarn add class-validator class-transformer
+
+## Security
+
+yarn add @nestjs/passport @nestjs/jwt passport-jwt
+yarn add @types/passport-jwt --dev
+
+nest g res auth
+
+yarn add bcrypt
+yarn add @types/bcrypt --dev
+
+- password: 123456
+- hashed password: $2b$10$fsW9WYvtyKVNHmXv3YzuVuMI2h1fdGmt5P1hsHa74RzOnwNozQcGC
+
+## Read .env:
+
+yarn add @nestjs/config

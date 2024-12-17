@@ -22,9 +22,8 @@ export class EmployeesService {
 
       return {
         message: 'Employee created successfully',
-        data: employee
+        data: employee,
       };
-
     } catch (error) {
       throw new Error('Error creating employee: ' + error.message);
     }
