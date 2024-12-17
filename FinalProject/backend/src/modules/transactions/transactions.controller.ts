@@ -2,8 +2,12 @@ import {
   Controller,
   Get,
   Post,
-  Body
+  Body,
+  Req,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/createTransaction.dto';
 
@@ -22,10 +26,11 @@ export class TransactionsController {
     return this.transactionsService.createExternalTransaction(createTransactionDto);
   }
 
-  // @Get('account')
-  // findAccountTransactions() {
-  //   return this.transactionsService.findAccountTransactions();
-  // }
+  @HttpCode(HttpStatus.OK)
+  @Get('account')
+  findAccountTransactions(@Req() req: Request) {
+    return this.transactionsService.getAccountTransactions(req.user['sub']);
+  }
 
   // @Get('bank')
   // findBankTransactions() {
