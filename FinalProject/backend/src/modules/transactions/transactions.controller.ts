@@ -6,6 +6,8 @@ import {
   Req,
   HttpCode,
   HttpStatus,
+  ParseIntPipe,
+  Param,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { TransactionsService } from './transactions.service';
@@ -15,6 +17,10 @@ import { CreateTransactionDto } from './dto/createTransaction.dto';
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
+  @Get('recipient_profile/:account_number')
+  findRecipientProfile(@Param('account_number') account_number: string) {
+    return this.transactionsService.findRecipientProfile(account_number);
+  }
 
   @Post('internal')
   createInternalTransaction(@Body() createTransactionDto: CreateTransactionDto) {
@@ -26,7 +32,6 @@ export class TransactionsController {
     return this.transactionsService.createExternalTransaction(createTransactionDto);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Get('account')
   findAccountTransactions(@Req() req: Request) {
     return this.transactionsService.getAccountTransactions(req.user['sub']);

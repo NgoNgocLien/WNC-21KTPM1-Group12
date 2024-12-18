@@ -2,12 +2,35 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 
 import { CreateTransactionDto } from './dto/createTransaction.dto';
-import { plainToClass } from 'class-transformer';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TransactionsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async findRecipientProfile(account_number: string){
+    try{
+      const profile = await this.prisma.accounts.findUnique({
+        where:{
+          account_number: account_number,
+        },
+        include:{
+          customers: {
+            select:{
+              fullname: true
+            }
+          }
+        }
+      })
+
+      return {
+        message: "Profile fetched successfully",
+        data: profile
+      }
+    } catch(error){
+      throw new Error('Error fetching profile: ' + error.message);
+    }
+  }
 
   async createInternalTransaction(createTransactionDto: CreateTransactionDto) {
     try{
