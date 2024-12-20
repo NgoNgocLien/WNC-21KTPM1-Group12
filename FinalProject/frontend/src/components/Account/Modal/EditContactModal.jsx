@@ -1,6 +1,10 @@
 import React, {useState, useEffect} from 'react';
+import { useDispatch } from 'react-redux'
+import { updateOneContact } from './../../../redux/userThunk';
 
 const EditContactModal = ({ isOpen, closeModal, contact }) => {
+  const dispatch = useDispatch();
+
   const [nickname, setNickname] = useState('');
 
   useEffect(() => {
@@ -9,16 +13,15 @@ const EditContactModal = ({ isOpen, closeModal, contact }) => {
     }
   }, [contact]);
 
-  if (!isOpen || !contact) return null;
-
-  
-
   const handleEdit = () => {
-
+    dispatch(updateOneContact({
+      id: contact.id,
+      nickname: nickname
+    }))
+    closeModal();
   }
 
-  console.log(contact)
-  console.log(nickname)
+  if (!isOpen || !contact) return null;
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">

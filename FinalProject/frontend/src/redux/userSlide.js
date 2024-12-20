@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserAccountInfo, fetchUserContacts, deleteOneContact } from './userThunk';
+import { fetchUserAccountInfo, fetchUserContacts, deleteOneContact, updateOneContact } from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from './../util/config'
 
 const userSlice = createSlice({
@@ -55,17 +55,34 @@ const userSlice = createSlice({
         state.status = FAILED;
         state.error = action.payload;
       })
+      .addCase(updateOneContact.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(updateOneContact.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+        const updatedContactIndex = state.contacts.findIndex(
+          (contact) => contact.id === action.payload.data.id
+        );
+        if (updatedContactIndex !== -1) {
+          state.contacts[updatedContactIndex] = {
+            ...state.contacts[updatedContactIndex],
+            nickname: action.payload.data.nickname
+          };
+        }
+      })
+      .addCase(updateOneContact.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
+      })
       .addCase(deleteOneContact.pending, (state) => {
         state.status = LOADING;
         state.error = null;
       })
       .addCase(deleteOneContact.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
-        console.log(action.payload.id)
-        console.log(state.contacts)
         const filteredContacts = state.contacts.filter(contact => contact.id !== action.payload.id);
         state.contacts = [...filteredContacts]
-        console.log(filteredContacts)
       })
       .addCase(deleteOneContact.rejected, (state, action) => {
         state.status = FAILED;

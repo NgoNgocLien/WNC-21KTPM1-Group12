@@ -88,7 +88,7 @@ export const createOneContact = createAsyncThunk(
 
 export const updateOneContact = createAsyncThunk(
     'user/updateOneContact',
-    async (_, { rejectWithValue, getState }) => {
+    async (body, { rejectWithValue, getState }) => {
         const state = getState();
         const access_token = state.auth.access_token; 
   
@@ -99,6 +99,10 @@ export const updateOneContact = createAsyncThunk(
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${access_token}`, 
             },
+            body: JSON.stringify({ 
+                id: body.id,
+                nickname: body.nickname
+            })
             });
     
             if (!response.ok) {
@@ -107,7 +111,7 @@ export const updateOneContact = createAsyncThunk(
             }
     
             const data = await response.json();
-            return data;
+            return {data: body, message: data.message};
         } catch (error) {
         return rejectWithValue(error.message);
         }

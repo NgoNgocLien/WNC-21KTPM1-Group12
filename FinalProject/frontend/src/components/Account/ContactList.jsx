@@ -37,16 +37,6 @@ export default function ContactList() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedContact, setSelectedContact] = useState(null);
 
-    const changeActiveTab = (selectedTab) => {
-        // console.log(selectedTab)
-        setActiveTab(selectedTab)
-        const newContacts = contacts.filter(
-            contact => (selectedTab === INTERNAL && contact.bank_name === 'NoMeoBank') || (selectedTab === EXTERNAL && contact.bank_name !== 'NoMeoBank')
-        )
-        // console.log(newContacts)
-        setFilterContacts([...newContacts])
-    }
-
     const openAddModal = () => setIsAddModalOpen(true);
     const openEditModal = (contact) => {
         setSelectedContact(contact);
@@ -64,8 +54,6 @@ export default function ContactList() {
         setSelectedContact(null);
     };
 
-
-
     return (
     <>
     <div className="flex justify-between">
@@ -81,13 +69,13 @@ export default function ContactList() {
         <div className="flex space-x-4 p-[2px] bg-gray-200 rounded-lg">
             <button
                 className={`w-1/2 py-2 px-4 rounded-lg font-semibold text-gray-500 ${activeTab === INTERNAL ? 'text-red-800 bg-white' : 'bg-gray-200'}`}
-                onClick={() => changeActiveTab(INTERNAL)}
+                onClick={() => setActiveTab(INTERNAL)}
             >
                 Nội bộ
             </button>
             <button
                 className={`w-1/2 py-2 px-4 rounded-lg font-semibold text-gray-500 ${activeTab === EXTERNAL ? 'text-red-800 bg-white' : 'bg-gray-200'}`}
-                onClick={() => changeActiveTab(EXTERNAL)}
+                onClick={() => setActiveTab(EXTERNAL)}
             >
                 Liên ngân hàng
             </button>

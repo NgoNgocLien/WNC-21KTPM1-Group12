@@ -282,7 +282,7 @@ export class CustomersService {
       const contactExists = await this.prisma.contacts.findFirst({
         where: {
           id: data.id,
-          contact_account_number: data.contact_account_number,
+          // contact_account_number: data.contact_account_number,
         },
       });
       if (!contactExists) {
@@ -292,7 +292,7 @@ export class CustomersService {
       const contact = await this.prisma.contacts.update({
         where: {
           id: data.id,
-          id_customer,
+          // id_customer,
         },
         data: {
           nickname: data.nickname,
@@ -301,7 +301,6 @@ export class CustomersService {
 
       return {
         message: 'Contact updated successfully',
-        data: contact,
       };
 
     } catch (error) {
