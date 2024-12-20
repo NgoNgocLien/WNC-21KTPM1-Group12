@@ -15,7 +15,7 @@ import DebtList from './pages/SignIn/Debt/DebtList';
 
 import NotFound from './pages/NotFound';
 
-const ProtectedRoute = ({ element, redirectTo }) => {
+const GuestRoute = ({ element, redirectTo }) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   return isAuthenticated ? <Navigate to={redirectTo} /> : element;
 };
@@ -25,7 +25,7 @@ const AuthenticatedRoute = ({ element, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} />;
 };
 
-function LayoutGuest() {
+function GuestLayout() {
   return (
     <div className="layout">
       <Header />
@@ -34,7 +34,7 @@ function LayoutGuest() {
   );
 }
 
-function LayoutSignIn() {
+function AuthenticatedLayout() {
   return (
     <div className="layout">
       <Sidebar />
@@ -50,7 +50,7 @@ function App() {
         <Route
           path="/"
           element={
-            <ProtectedRoute element={<LayoutGuest />} redirectTo="/account" />
+            <GuestRoute element={<GuestLayout />} redirectTo="/account" />
           }
         >
           <Route path="home" element={<Home />} />
@@ -59,10 +59,10 @@ function App() {
 
         <Route
           path="login"
-          element={<ProtectedRoute element={<Login />} redirectTo="/account" />}
+          element={<GuestRoute element={<Login />} redirectTo="/account" />}
         />
 
-        <Route path="/" element={<AuthenticatedRoute element={<LayoutSignIn />} redirectTo="/home" />}>
+        <Route path="/" element={<AuthenticatedRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
           <Route path="account" element={<Account />} />
           <Route path="transfer-internal" element={<TransferInternal />} />
           <Route path="transfer-external" element={<TransferExternal />} />

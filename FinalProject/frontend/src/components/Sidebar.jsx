@@ -31,19 +31,19 @@ const Sidebar = () => {
                 </div>
                 <nav className="mt-8 w-5/6 mx-auto text-black">
                     <NavLink 
-                        to="/dashboard" 
+                        to="/transfer-internal" 
                         className="block bg-white my-4 py-3 px-4 rounded transition duration-200"
                     >
                         Chuyển tiền
                     </NavLink>
                     <NavLink 
-                        to="/profile" 
+                        to="/deft" 
                         className="block bg-white my-4 py-3 px-4 rounded transition duration-200"
                     >
                         Quản lí nhắc nợ
                     </NavLink>
                     <NavLink 
-                        to="/settings" 
+                        to="/account" 
                         className="block bg-white my-4 py-3 px-4 rounded transition duration-200"
                     >
                         Tài khoản
