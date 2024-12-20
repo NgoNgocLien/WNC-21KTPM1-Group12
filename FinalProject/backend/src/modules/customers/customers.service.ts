@@ -212,6 +212,7 @@ export class CustomersService {
           id_customer: id,
         },
         select:{
+          id: true,
           nickname: true,
           contact_account_number: true,
           banks:{
@@ -223,9 +224,17 @@ export class CustomersService {
         }
       });
 
+      const transformedContacts = contacts.map(contact => ({
+        id: contact.id,
+        nickname: contact.nickname,
+        account_number: contact.contact_account_number,
+        bank_name: contact.banks.name,
+        bank_logo: contact.banks.logo,
+      }));
+  
       return {
-        message: 'Contacts found successfully',
-        data: contacts,
+        message: "Contacts found successfully",
+        data: transformedContacts,
       };
 
     } catch (error) {

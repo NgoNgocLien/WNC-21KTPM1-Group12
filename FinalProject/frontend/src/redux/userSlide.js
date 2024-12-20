@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserAccountInfo, fetchUserContacts } from './userThunk';
+import { fetchUserAccountInfo, fetchUserContacts, deleteOneContact } from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from './../util/config'
 
 const userSlice = createSlice({
@@ -8,12 +8,7 @@ const userSlice = createSlice({
     fullname: '',
     account_number: '',
     balance: 0,
-    contacts: [{
-      nickname: "aaaa",
-      account_number: "aaaa",
-      bank_name: "NoMeoBank",
-      bank_logo: "",
-    },],
+    contacts: [],
     status: IDLE,
     error: null,
   },
@@ -60,6 +55,22 @@ const userSlice = createSlice({
         state.status = FAILED;
         state.error = action.payload;
       })
+      .addCase(deleteOneContact.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(deleteOneContact.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+        console.log(action.payload.id)
+        console.log(state.contacts)
+        const filteredContacts = state.contacts.filter(contact => contact.id !== action.payload.id);
+        state.contacts = [...filteredContacts]
+        console.log(filteredContacts)
+      })
+      .addCase(deleteOneContact.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
+      });
     }
 });
 

@@ -1,10 +1,15 @@
 import React from 'react';
+import { useDispatch } from 'react-redux'
+import { deleteOneContact } from './../../../redux/userThunk';
 
 const DeleteContactModal = ({ isOpen, closeModal, contact }) => {
+  const dispatch = useDispatch();
+
   if (!isOpen || !contact) return null;
 
   const handleDelete = (contact) => {
     console.log('Deleted contact:', contact);
+    dispatch(deleteOneContact(contact.id))
 };
 
   return (

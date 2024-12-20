@@ -23,9 +23,14 @@ export default function ContactList() {
     }, [status, dispatch]);
 
     const [activeTab, setActiveTab] = useState(INTERNAL);
-    const [filterContacts, setFilterContacts] = useState(contacts.filter(
-        contact => contact?.banks?.name === 'NoMeoBank'
-    ));
+    const [filterContacts, setFilterContacts] = useState([]);
+  
+    useEffect(() => {
+      const newContacts = contacts.filter(
+        contact => (activeTab === INTERNAL && contact.bank_name === 'NoMeoBank') || (activeTab === EXTERNAL && contact.bank_name !== 'NoMeoBank')
+      );
+      setFilterContacts(newContacts);
+    }, [contacts, activeTab]);
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -36,7 +41,7 @@ export default function ContactList() {
         // console.log(selectedTab)
         setActiveTab(selectedTab)
         const newContacts = contacts.filter(
-            contact => (selectedTab === INTERNAL && contact.banks.name === 'NoMeoBank') || (selectedTab === EXTERNAL && contact.banks.name !== 'NoMeoBank')
+            contact => (selectedTab === INTERNAL && contact.bank_name === 'NoMeoBank') || (selectedTab === EXTERNAL && contact.bank_name !== 'NoMeoBank')
         )
         // console.log(newContacts)
         setFilterContacts([...newContacts])
@@ -91,14 +96,14 @@ export default function ContactList() {
             {
             filterContacts.length === 0 
             ?
-                <p>Chưa có người nhận</p>
+                <p className="text-center">Chưa có người nhận</p>
             :
                 
                 filterContacts.map((contact) => (
-                    <div key={`${contact.account_number}${contact.banks.name}`} className="flex justify-between items-center">
+                    <div key={`${contact.id}`} className="flex justify-between items-center">
                         <div className="flex space-x-3">
                             <img 
-                                src={contact.banks.logo || "https://via.placeholder.com/150" } 
+                                src={contact.bank_logo || "https://via.placeholder.com/150" } 
                                 alt="Bank Logo" 
                                 className="w-12 h-12 rounded-full "
                             />
@@ -107,7 +112,7 @@ export default function ContactList() {
                                     {contact.nickname}
                                 </p>
                                 <p className="text-gray-500">
-                                    {contact.banks.name}
+                                    {contact.bank_name}
                                 </p>
                             </div>
                         </div>

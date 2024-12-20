@@ -57,3 +57,88 @@ export const fetchUserContacts = createAsyncThunk(
         }
     }
 );
+
+export const createOneContact = createAsyncThunk(
+    'user/createOneContact',
+    async (_, { rejectWithValue, getState }) => {
+        const state = getState();
+        const access_token = state.auth.access_token; 
+  
+        try {
+            const response = await fetch(`${BASE_URL}/customers/contacts`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access_token}`, 
+            },
+            });
+    
+            if (!response.ok) {
+                console.log(response)
+            throw new Error('Failed to fetch user account info');
+            }
+    
+            const data = await response.json();
+            return data;
+        } catch (error) {
+        return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const updateOneContact = createAsyncThunk(
+    'user/updateOneContact',
+    async (_, { rejectWithValue, getState }) => {
+        const state = getState();
+        const access_token = state.auth.access_token; 
+  
+        try {
+            const response = await fetch(`${BASE_URL}/customers/contacts`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access_token}`, 
+            },
+            });
+    
+            if (!response.ok) {
+                console.log(response)
+            throw new Error('Failed to fetch user account info');
+            }
+    
+            const data = await response.json();
+            return data;
+        } catch (error) {
+        return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const deleteOneContact = createAsyncThunk(
+    'user/deleteOneContact',
+    async (id, { rejectWithValue, getState }) => {
+        const state = getState();
+        const access_token = state.auth.access_token; 
+  
+        try {
+            const response = await fetch(`${BASE_URL}/customers/contacts`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access_token}`, 
+            },
+            body: JSON.stringify({ id: id })
+            });
+    
+            if (!response.ok) {
+                console.log(response)
+            throw new Error('Failed to fetch user account info');
+            }
+    
+            const data = await response.json();
+            return { id, message: data.message };
+        } catch (error) {
+        return rejectWithValue(error.message);
+        }
+    }
+);
