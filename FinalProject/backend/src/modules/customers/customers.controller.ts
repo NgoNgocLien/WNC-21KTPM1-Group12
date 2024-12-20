@@ -36,7 +36,7 @@ export class CustomersController {
   @HttpCode(HttpStatus.OK)
   @Get('profile')
   getCustomerProfile(@Req() req: Request) {
-    return this.customersService.findById(req.user['sub']);
+    return this.customersService.getProfile(req.user['sub']);
   }
 
   @HttpCode(HttpStatus.OK)

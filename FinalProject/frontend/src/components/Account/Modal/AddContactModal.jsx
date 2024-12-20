@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormik } from 'formik';
-import banks from './../../../stores/banks'
+import banks from './banks'
 import Select from 'react-select';
 import * as Yup from 'yup';
 

@@ -1,12 +1,25 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { logout } from './../stores/authSlide'
-import { reset } from './../stores/userSlide'
+import { logout } from './../redux/authSlide'
+import { reset } from './../redux/userSlide'
+import { fetchUserAccountInfo } from './../redux/userThunk';
+import { IDLE, LOADING, FAILED } from './../util/config'
+
 const Sidebar = () => {
-    const { fullname, account_number } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const { account_number, fullname, status, error } = useSelector((state) => state.user);
+  
+    useEffect(() => {
+        if (status === IDLE) {
+            dispatch(fetchUserAccountInfo());
+        }
+    }, [status, dispatch]);
+  
+    // if (status === LOADING) return <p>Loading...</p>;
+    // if (status === FAILED) return <p className="text-red-500">Error: {error}</p>;
 
     const handleLogout = () => {
         dispatch(logout()); 

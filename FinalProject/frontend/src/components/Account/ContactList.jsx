@@ -1,20 +1,30 @@
-import React, {useState} from 'react';
-import { useSelector } from 'react-redux';
+import React, {useState, useEffect} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { FaTrash, FaPen  } from 'react-icons/fa';
 
 import AddContactModal from './Modal/AddContactModal'
 import EditContactModal from './Modal/EditContactModal'
 import DeleteContactModal from './Modal/DeleteContactModal'
 
+import { fetchUserContacts } from './../../redux/userThunk';
+import { IDLE, LOADING, FAILED } from './../../util/config';
+
 const INTERNAL = 'internal'
 const EXTERNAL = 'external'
 
 export default function ContactList() {
-    const {contacts} = useSelector((state) => state.user)
+    const dispatch = useDispatch();
+    const {contacts, status, error} = useSelector((state) => state.user)
+
+    useEffect(() => {
+        if (status === IDLE) {
+            dispatch(fetchUserContacts());
+        }
+    }, [status, dispatch]);
 
     const [activeTab, setActiveTab] = useState(INTERNAL);
     const [filterContacts, setFilterContacts] = useState(contacts.filter(
-        contact => contact.bank_name === 'NoMeoBank'
+        contact => contact?.banks?.name === 'NoMeoBank'
     ));
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -23,12 +33,12 @@ export default function ContactList() {
     const [selectedContact, setSelectedContact] = useState(null);
 
     const changeActiveTab = (selectedTab) => {
-        console.log(selectedTab)
+        // console.log(selectedTab)
         setActiveTab(selectedTab)
         const newContacts = contacts.filter(
-            contact => (selectedTab === INTERNAL && contact.bank_name === 'NoMeoBank') || (selectedTab === EXTERNAL && contact.bank_name !== 'NoMeoBank')
+            contact => (selectedTab === INTERNAL && contact.banks.name === 'NoMeoBank') || (selectedTab === EXTERNAL && contact.banks.name !== 'NoMeoBank')
         )
-        console.log(newContacts)
+        // console.log(newContacts)
         setFilterContacts([...newContacts])
     }
 
@@ -85,10 +95,10 @@ export default function ContactList() {
             :
                 
                 filterContacts.map((contact) => (
-                    <div key={`${contact.account_number}${contact.bank_name}`} className="flex justify-between items-center">
+                    <div key={`${contact.account_number}${contact.banks.name}`} className="flex justify-between items-center">
                         <div className="flex space-x-3">
                             <img 
-                                src="https://via.placeholder.com/150" 
+                                src={contact.banks.logo || "https://via.placeholder.com/150" } 
                                 alt="Bank Logo" 
                                 className="w-12 h-12 rounded-full "
                             />
@@ -97,7 +107,7 @@ export default function ContactList() {
                                     {contact.nickname}
                                 </p>
                                 <p className="text-gray-500">
-                                    {contact.bank_name} - {contact.fullname.toUpperCase()}
+                                    {contact.banks.name}
                                 </p>
                             </div>
                         </div>

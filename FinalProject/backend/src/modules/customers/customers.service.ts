@@ -51,8 +51,34 @@ export class CustomersService {
     try {
       const customer = await this.prisma.customers.findUnique({
         where: {
-          id: Number(id),
+          id
         },
+      });
+
+      return {
+        message: 'Customer found successfully',
+        data: customer,
+      };
+    } catch (error) {
+      throw new Error('Error finding customer: ' + error.message);
+    }
+  }
+
+  async getProfile(id: number) {
+    try {
+      const customer = await this.prisma.customers.findUnique({
+        where: {
+          id
+        },
+        select: {
+          fullname: true,  // Only select the fullname field
+          accounts: {
+            select: {
+              account_number: true,
+              account_balance: true
+            }
+          }
+        }
       });
 
       return {
@@ -185,13 +211,16 @@ export class CustomersService {
         where: {
           id_customer: id,
         },
-        include: {
-          banks: {
-            select: {
+        select:{
+          nickname: true,
+          contact_account_number: true,
+          banks:{
+            select:{
               name: true,
-            },
+              logo: true
+            }
           },
-        },
+        }
       });
 
       return {
