@@ -27,7 +27,8 @@ const Sidebar = () => {
         navigate("/home")
     };
     return (
-        <div className="fixed h-screen w-64 bg-red-800 text-white font-semibold flex flex-col justify-between">
+        <div className="fixed h-screen w-64 p-1">
+            <div className="h-full w-64 bg-red-800 text-white font-semibold flex flex-col justify-between rounded-xl">
             <div>
                 <div className="p-4 text-center">
                     <div className="p-4 bg-red-900 rounded-md">
@@ -50,7 +51,7 @@ const Sidebar = () => {
                         Chuyển tiền
                     </NavLink>
                     <NavLink 
-                        to="/deft" 
+                        to="/debt" 
                         className="block bg-white my-4 py-3 px-4 rounded transition duration-200"
                     >
                         Quản lí nhắc nợ
@@ -71,6 +72,7 @@ const Sidebar = () => {
                     Đăng xuất
                 </NavLink>
             </nav>
+        </div>
         </div>
     );
 };

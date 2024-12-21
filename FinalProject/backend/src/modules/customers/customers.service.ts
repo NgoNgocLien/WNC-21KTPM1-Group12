@@ -73,6 +73,9 @@ export class CustomersService {
         select: {
           id: true,
           fullname: true,  // Only select the fullname field
+          email: true,
+          username: true,
+          phone: true,
           accounts: {
             select: {
               account_number: true,

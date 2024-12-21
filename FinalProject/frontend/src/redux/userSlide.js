@@ -4,24 +4,27 @@ import {
   fetchUserContacts, createOneContact, deleteOneContact, updateOneContact } from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from './../util/config'
 
+const  initialState = { 
+  id: 0,
+  fullname: '',
+  username: '',
+  email: '',
+  phone: '',
+  account_number: '',
+  balance: 0,
+  contacts: [],
+  status: IDLE,
+  error: null,
+}
+
 const userSlice = createSlice({
   name: 'user',
   initialState: { 
-    id: 0,
-    fullname: '',
-    account_number: '',
-    balance: 0,
-    contacts: [],
-    status: IDLE,
-    error: null,
+    ...initialState
   },
   reducers: {
     reset: (state) => {
-      state.id = 0;
-      state.fullname = '';
-      state.account_number = '';
-      state.balance = 0;
-      state.contacts = [];
+      return {...initialState}
     },
   },
   extraReducers: (builder) => {
@@ -35,6 +38,9 @@ const userSlice = createSlice({
         state.status = SUCCEEDED;
         state.id = action.payload.data.id;
         state.fullname = action.payload.data.fullname;
+        state.email = action.payload.data.email;
+        state.username = action.payload.data.username;
+        state.phone = action.payload.data.phone;
         state.account_number = action.payload.data.accounts[0].account_number;
         state.balance = action.payload.data.accounts[0].account_balance;
       })

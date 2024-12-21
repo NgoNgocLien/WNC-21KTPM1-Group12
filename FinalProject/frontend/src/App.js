@@ -10,7 +10,7 @@ import Login from './pages/Guest/Login';
 import Sidebar from './components/Sidebar';
 import Account from './pages/SignIn/Account';
 import Transfer from './pages/SignIn/Transfer/Transfer';
-import TransferInternal from './pages/SignIn/Transfer/TransferInternal';
+import TransferInternal from './pages/SignIn/Transfer/TransferInternal/TransferInternal';
 import TransferExternal from './pages/SignIn/Transfer/TransferExternal';
 import DebtList from './pages/SignIn/Debt/DebtList';
 

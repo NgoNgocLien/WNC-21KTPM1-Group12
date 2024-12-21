@@ -5,7 +5,7 @@ import Select from 'react-select';
 import * as Yup from 'yup';
 
 import { createOneContact } from './../../../redux/userThunk';
-import { BASE_URL } from './../../../util/config'
+import getFullname from '../../../util/getFullname'
 import banks from './banks'
 
 const bankOptions = banks.map(bank => ({
@@ -13,7 +13,7 @@ const bankOptions = banks.map(bank => ({
   label: (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <img
-        src={bank.bank_avatar}
+        src={bank.brand_logo}
         alt="Bank Logo"
         style={{ width: 20, height: 20, borderRadius: '50%', marginRight: 10 }}
       />
@@ -47,37 +47,12 @@ const AddContactModal = ({ isOpen, closeModal }) => {
     },
   });
 
-  const getContactFullname = async (account_number, bank_id) => {
-    try {
-      let response = null;
-      if (bank_id === 1){
-        response = await fetch(`${BASE_URL}/transactions/recipient_profile/${account_number}`, {
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${access_token}`, 
-          },
-          });
-      }
-       
-      if (!response.ok) {
-        throw new Error('Failed to fetch fullname');
-      }
-      const result = await response.json();
-      return result.data.customers.fullname;
-    } catch (error) {
-      console.error('Error fetching fullname:', error);
-      return '';
-    }
-  };
-
   const handleAccountNumberBlur = async (e) => {
     formik.handleBlur(e);
     const account_number = e.target.value;
     if (account_number) {
       const bank_id = formik.getFieldProps('bank_id').value
-      // console.log({account_number, bank_id});
-      const contact_fullname = await getContactFullname(account_number, bank_id);
+      const contact_fullname = await getFullname(access_token, account_number, bank_id);
       formik.setFieldValue('contact_fullname', contact_fullname);
       formik.setFieldValue('nickname', contact_fullname);
     }
@@ -90,7 +65,7 @@ const AddContactModal = ({ isOpen, closeModal }) => {
       const account_number = formik.getFieldProps('account_number').value;
       // console.log({account_number, bank_id});
       if (account_number) {
-        const contact_fullname = await getContactFullname(account_number, bank_id);
+        const contact_fullname = await getFullname(access_token, account_number, bank_id);
         formik.setFieldValue('contact_fullname', contact_fullname);
         formik.setFieldValue('nickname', contact_fullname);
       }
@@ -170,11 +145,6 @@ const AddContactModal = ({ isOpen, closeModal }) => {
             </button>
             <button
               type="submit"
-              disabled={
-                formik.errors.account_number || 
-                formik.errors.nickname ||
-                formik.values.account_number === '' ||
-                formik.values.nickname === ''}
               className="px-4 py-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400"
             >
               Thêm người nhận

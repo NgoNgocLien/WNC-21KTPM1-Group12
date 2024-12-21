@@ -7,3 +7,7 @@ export const LOADING = "LOADING";
 export const SUCCEEDED = "SUCCEEDED";
 
 export const FAILED = "FAILED";
+
+export const SENDER = "SENDER";
+
+export const RECIPIENT = 'RECIPIENT';
