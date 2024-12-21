@@ -44,7 +44,7 @@ const Sidebar = () => {
                 </div>
                 <nav className="mt-8 w-5/6 mx-auto text-black">
                     <NavLink 
-                        to="/transfer-internal" 
+                        to="/transfer" 
                         className="block bg-white my-4 py-3 px-4 rounded transition duration-200"
                     >
                         Chuyển tiền

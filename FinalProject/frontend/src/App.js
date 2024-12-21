@@ -9,8 +9,9 @@ import Login from './pages/Guest/Login';
 
 import Sidebar from './components/Sidebar';
 import Account from './pages/SignIn/Account';
-import TransferInternal from './pages/SignIn/TransferInternal';
-import TransferExternal from './pages/SignIn/TransferExternal';
+import Transfer from './pages/SignIn/Transfer/Transfer';
+import TransferInternal from './pages/SignIn/Transfer/TransferInternal';
+import TransferExternal from './pages/SignIn/Transfer/TransferExternal';
 import DebtList from './pages/SignIn/Debt/DebtList';
 
 import NotFound from './pages/NotFound';
@@ -64,6 +65,7 @@ function App() {
 
         <Route path="/" element={<AuthenticatedRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
           <Route path="account" element={<Account />} />
+          <Route path="transfer" element={<Transfer />} />
           <Route path="transfer-internal" element={<TransferInternal />} />
           <Route path="transfer-external" element={<TransferExternal />} />
           <Route path="debt" element={<DebtList />} />
