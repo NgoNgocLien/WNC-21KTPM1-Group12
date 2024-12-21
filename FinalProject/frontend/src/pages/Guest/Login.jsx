@@ -43,6 +43,7 @@ export default function Login() {
 
       setAccessToken(data.access_token);
       setRefreshToken(data.refresh_token);
+      
 
       window.location.href = '/account';
 

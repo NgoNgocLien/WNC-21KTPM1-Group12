@@ -1,12 +1,12 @@
 // userThunks.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { BASE_URL } from './../util/config'
+import { getAccessToken } from './../util/cookie'
 
 export const fetchUserAccountInfo = createAsyncThunk(
     'user/fetchUserAccountInfo',
     async (_, { rejectWithValue, getState }) => {
-        const state = getState();
-        const access_token = state.auth.access_token; 
+        const access_token = getAccessToken(); 
   
         try {
             const response = await fetch(`${BASE_URL}/customers/profile`, {
@@ -33,8 +33,7 @@ export const fetchUserAccountInfo = createAsyncThunk(
 export const fetchUserContacts = createAsyncThunk(
     'user/fetchUserContacts',
     async (_, { rejectWithValue, getState }) => {
-        const state = getState();
-        const access_token = state.auth.access_token; 
+        const access_token = getAccessToken(); 
   
         try {
             const response = await fetch(`${BASE_URL}/customers/contacts`, {
@@ -62,7 +61,7 @@ export const createOneContact = createAsyncThunk(
     'user/createOneContact',
     async (values, { rejectWithValue, getState }) => {
         const state = getState();
-        const access_token = state.auth.access_token; 
+        const access_token = getAccessToken(); 
         console.log({
             id_customer: state.user.id,
             contact_account_number: values.account_number,
@@ -102,8 +101,7 @@ export const createOneContact = createAsyncThunk(
 export const updateOneContact = createAsyncThunk(
     'user/updateOneContact',
     async (body, { rejectWithValue, getState }) => {
-        const state = getState();
-        const access_token = state.auth.access_token; 
+        const access_token = getAccessToken(); 
   
         try {
             const response = await fetch(`${BASE_URL}/customers/contacts`, {
@@ -134,8 +132,7 @@ export const updateOneContact = createAsyncThunk(
 export const deleteOneContact = createAsyncThunk(
     'user/deleteOneContact',
     async (id, { rejectWithValue, getState }) => {
-        const state = getState();
-        const access_token = state.auth.access_token; 
+        const access_token = getAccessToken(); 
   
         try {
             const response = await fetch(`${BASE_URL}/customers/contacts`, {
