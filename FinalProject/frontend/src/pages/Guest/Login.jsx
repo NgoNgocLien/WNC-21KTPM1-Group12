@@ -1,10 +1,14 @@
 import { useParams } from "react-router-dom";
+import { useState, useCallback } from "react";
 
 import { Formik } from "formik";
 import { Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+
+import { GoogleReCaptchaProvider, GoogleReCaptcha } from "react-google-recaptcha-v3";
+
 import { BASE_URL } from "../../util/config";
-import { getAccessToken, getRefreshToken, setAccessToken, setRefreshToken } from "../../util/cookie";
+import { setAccessToken, setRefreshToken } from "../../util/cookie";
 
 const loginSchema = Yup.object().shape({
   username: Yup.string().required("Vui lòng nhập tên đăng nhập"),
@@ -14,7 +18,10 @@ const loginSchema = Yup.object().shape({
 export default function Login() {
   const { role } = useParams()
 
-  const handleSubmit = async (values) => {
+  const [token, setToken] = useState();
+  const [refreshReCaptcha, setRefreshReCaptcha] = useState(false);
+
+  const login = async (values) => {
     try {
       const response = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
@@ -37,10 +44,53 @@ export default function Login() {
       setAccessToken(data.access_token);
       setRefreshToken(data.refresh_token);
 
+      window.location.href = '/account';
+
     } catch (error) {
       console.log(error)
     }
   }
+
+  const verifyToken = async (token, values) => {
+    try {
+      const response = await fetch(`${BASE_URL}/auth/verify-recaptcha`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: token,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to verify token');
+      } else {
+        console.log('Token verified');
+        login(values);
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleSubmit = async (values) => {
+    console.log(values);
+    console.log(token);
+    console.log(process.env.REACT_APP_RECAPTCHA_SITE_KEY);
+    if (token) {
+      verifyToken(token, values);
+      setRefreshReCaptcha(false);
+    } else {
+      console.log('Token not verified');
+      setRefreshReCaptcha(true);
+    }
+  }
+
+  const onVerify = useCallback((token) => {
+    setToken(token);
+  }, []);
 
   return (
     <div className="h-screen bg-red-50">
@@ -59,7 +109,7 @@ export default function Login() {
             initialValues={{ username: "", password: "" }}
             validationSchema={loginSchema}
             onSubmit={(values) => {
-              handleSubmit(values);
+              handleSubmit(values)
             }}
           >
             <Form className="space-y-6">
@@ -104,14 +154,16 @@ export default function Login() {
                 <ErrorMessage name="password" component="div" className="text-red-800" />
               </div>
 
-              <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-xl bg-red-800 px-3 py-3 text-lg/6 font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-800"
-                >
-                  Đăng nhập
-                </button>
-              </div>
+              <button type="submit" className="flex w-full justify-center rounded-xl bg-red-800 px-3 py-3 text-lg/6 font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-800">
+                Đăng nhập
+              </button>
+
+              <GoogleReCaptchaProvider reCaptchaKey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}>
+                <GoogleReCaptcha
+                  onVerify={onVerify}
+                  refreshReCaptcha={refreshReCaptcha}
+                />
+              </GoogleReCaptchaProvider>
             </Form>
           </Formik>
         </div>

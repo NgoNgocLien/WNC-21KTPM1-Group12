@@ -13,6 +13,7 @@ import { Public } from 'src/common/decorators/public.decorator';
 import { Request } from 'express';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
 import { LoginDto } from './dto/login.dto';
+import { Http } from 'winston/lib/winston/transports';
 
 @Controller('auth')
 export class AuthController {
@@ -50,5 +51,11 @@ export class AuthController {
   @Get('profile')
   getProfile(@Req() req: Request) {
     return req.user;
+  }
+
+  @Public()
+  @Post('verify-recaptcha')
+  verifyRecaptcha(@Body() body: { token: string }) {
+    return this.authService.verifyRecaptcha(body.token);
   }
 }
