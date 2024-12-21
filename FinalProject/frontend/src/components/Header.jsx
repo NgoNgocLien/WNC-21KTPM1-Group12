@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
 export default function Header() {
 
   return (
-    <header className="w-screen fixed bg-red-800 text-white font-semibold">
+    <header className="fixed w-screen bg-red-800 text-white font-semibold">
       <nav className="flex items-center max-w-6xl justify-between mx-auto py-4 px-4" >
         <div className="flex items-center justify-start gap-2 cursor-default">
           <image src="https://via.placeholder.com/150" alt="Logo" className="w-8 h-8 rounded-full border-2 border-white" />

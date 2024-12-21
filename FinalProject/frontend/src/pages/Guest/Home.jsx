@@ -2,8 +2,9 @@
 
 export default function Home() {
   return (
-    <main>
-      {/* <Header /> */}
+    <main className="max-w-screen max-h-screen w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url('bg-home.jpg')` }}>
+
     </main>
+    // <img src="bg-home.jpg" alt="background" className="object-cover md:object-scale-down max-h-screen" />
   )
 }

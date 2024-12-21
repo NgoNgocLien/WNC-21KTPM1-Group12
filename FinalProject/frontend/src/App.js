@@ -28,9 +28,8 @@ const AuthenticatedRoute = ({ element, redirectTo }) => {
 
 function GuestLayout() {
   return (
-    <div className="layout">
+    <div className="h-screen bg-cover bg-center" style={{ backgroundImage: `url('bg-home.jpg')` }}>
       <Header />
-      <Outlet />
     </div>
   );
 }
@@ -55,9 +54,7 @@ function App() {
           }
         >
           <Route path="home" element={<Home />} />
-          <Route path="about" element={<About />} />
         </Route>
-
         <Route
           path="login"
           element={<GuestRoute element={<Login />} redirectTo="/account" />}
