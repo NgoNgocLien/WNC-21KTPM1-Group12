@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { Formik } from "formik";
 import { Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { BASE_URL } from "../../util/config";
+import { getAccessToken, getRefreshToken, setAccessToken, setRefreshToken } from "../../util/cookie";
 
 const loginSchema = Yup.object().shape({
   username: Yup.string().required("Vui lòng nhập tên đăng nhập"),
@@ -11,6 +13,34 @@ const loginSchema = Yup.object().shape({
 
 export default function Login() {
   const { role } = useParams()
+
+  const handleSubmit = async (values) => {
+    try {
+      const response = await fetch(`${BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          role: role,
+          username: values.username,
+          password: values.password,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to login');
+      }
+
+      const data = await response.json();
+
+      setAccessToken(data.access_token);
+      setRefreshToken(data.refresh_token);
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div className="h-screen bg-red-50">
@@ -26,10 +56,10 @@ export default function Login() {
             Tài khoản khách hàng
           </p>
           <Formik
-            initialValues={{ username: 0, password: 0 }}
+            initialValues={{ username: "", password: "" }}
             validationSchema={loginSchema}
             onSubmit={(values) => {
-              console.log(values)
+              handleSubmit(values);
             }}
           >
             <Form className="space-y-6">
@@ -43,7 +73,6 @@ export default function Login() {
                     name="username"
                     type="text"
                     required
-                    autoComplete="username"
                     placeholder="Nhập tên đăng nhập"
                     className="block w-full rounded-xl bg-white px-3 py-3 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-red-800 text-md/6"
                   />
@@ -68,7 +97,6 @@ export default function Login() {
                     name="password"
                     type="password"
                     required
-                    autoComplete="current-password"
                     placeholder="Nhập mật khẩu"
                     className="block w-full rounded-xl bg-white px-3 py-3 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-red-800 text-md/6"
                   />
