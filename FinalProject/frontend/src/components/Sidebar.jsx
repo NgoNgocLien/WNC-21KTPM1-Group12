@@ -46,11 +46,11 @@ const Sidebar = () => {
             </div>
           </div>
 
-          <nav className="w-full mx-auto text-black flex flex-col gap-3">
+          <nav className="w-full mx-auto flex flex-col gap-3 text-black font-semibold">
 
             <NavLink
               to="/transfer"
-              className="bg-white py-2 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3"
+              className="bg-white py-2 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3 hover:text-red-800"
             >
               <div className="flex size-8 flex-none items-center justify-center rounded-3xl bg-red-800 group-hover:bg-white">
                 <ArrowsRightLeftIcon className="size-5 text-white group-hover:text-red-800" />
@@ -60,7 +60,7 @@ const Sidebar = () => {
 
             <NavLink
               to="/debt"
-              className="bg-white py-2 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3"
+              className="bg-white py-2 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3 hover:text-red-800"
             >
               <div className="flex size-8 flex-none items-center justify-center rounded-3xl bg-red-800 group-hover:bg-white">
                 <BanknotesIcon className="size-5 text-white group-hover:text-red-800" />
@@ -70,7 +70,7 @@ const Sidebar = () => {
 
             <NavLink
               to="/account"
-              className="bg-white py-2 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3"
+              className="bg-white py-2 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3 hover:text-red-800"
             >
               <div className="flex size-8 flex-none items-center justify-center rounded-3xl bg-red-800 group-hover:bg-white">
                 <BuildingLibraryIcon className="size-5 text-white group-hover:text-red-800" />

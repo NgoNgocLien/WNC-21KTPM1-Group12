@@ -25,7 +25,7 @@ const AuthenticatedRoute = ({ element, redirectTo }) => {
 
 function AuthenticatedLayout() {
   return (
-    <div className="layout">
+    <div>
       <Sidebar />
       <Outlet />
     </div>
