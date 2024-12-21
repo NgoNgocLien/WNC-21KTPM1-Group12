@@ -8,8 +8,7 @@ import { SENDER, RECIPIENT } from '../../../../util/config';
 import getFullname from '../../../../util/getFullname';
 
 export default function TransferInternalStep1({ setCurrentStep, setValues }) {
-  const dispatch = useDispatch();
-  const { access_token } = useSelector((state) => state.auth);
+  const { access_token } = useSelector((state) => state.auth)
   const { account_number, balance } = useSelector((state) => state.user);
 
   const formik = useFormik({
@@ -53,12 +52,12 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
     <>
       <TransferAccount formik={formik} />
 
-      <div className="w-8/12 mx-auto p-4 flex flex-col bg-white rounded-lg space-y-4 ">
-        <div className="w-full flex justify-between">
+      <div className="w-8/12 mx-auto p-6 flex flex-col bg-white rounded-lg space-y-4 ">
+        <div className="w-full flex justify-between items-center">
           <div className="w-3/12 font-semibold">
             Tài khoản thụ hưởng
           </div>
-          <div className="w-7/12 font-semibold">
+          <div className="w-7/12">
             <input
               type="text"
               name="recipient_account_number"
@@ -73,40 +72,41 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
           </div>
         </div>
 
-        <div className="w-full flex justify-between">
-          <div className="w-3/12 font-semibold">Tên người nhận</div>
-          <div className="w-7/12 font-semibold">
-            <input
-              type="text"
-              name="recipient_name"
-              value={formik.values.recipient_name}
-              readOnly
-              disabled
-              className="w-full border-2 p-2 rounded-lg"
-            />
-          </div>
-        </div>
-
-        <div className="w-full flex justify-between">
+        {
+          formik.values.recipient_name && (
+            <div className="w-full flex justify-between items-center">
+              <div className="w-3/12 font-semibold">Tên người thụ hưởng</div>
+              <div className="w-7/12 ">
+                {formik.values.recipient_name}
+              </div>
+            </div>
+          )
+        }
+        
+        <div className="w-full flex justify-between items-center">
           <div className="w-3/12 font-semibold">Số tiền</div>
-          <div className="w-7/12 font-semibold">
-            <input
-              type="number"
-              name="transaction_amount"
-              value={formik.values.transaction_amount}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className="w-full border-2 p-2 rounded-lg"
-            />
+          <div className="w-7/12 ">
+            <div className="flex items-center">
+              <input
+                  type="number"
+                  name="transaction_amount"
+                  value={formik.values.transaction_amount}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="w-full border-2 p-2 rounded-lg"
+                />
+               <p className="ms-2">VNĐ</p>
+            </div>
+            
             {formik.touched.transaction_amount && formik.errors.transaction_amount && (
               <div className="text-red-500 text-sm mt-1">{formik.errors.transaction_amount}</div>
             )}
           </div>
         </div>
 
-        <div className="w-full flex justify-between">
+        <div className="w-full flex justify-between items-center">
           <div className="w-3/12 font-semibold">Nội dung chuyển tiền</div>
-          <div className="w-7/12 font-semibold">
+          <div className="w-7/12 ">
             <input
               type="text"
               name="transaction_message"
@@ -118,9 +118,16 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
           </div>
         </div>
 
-        <div className="w-full flex justify-between">
+        <div className="w-full flex justify-between items-center">
           <div className="w-3/12 font-semibold">Phí giao dịch</div>
-          <div className="w-7/12 font-semibold">
+          <div className="w-7/12 ">
+           {Number(1000).toLocaleString()} VNĐ
+          </div>
+        </div>
+
+        <div className="w-full flex justify-between items-center">
+          <div className="w-3/12 font-semibold">Người thanh toán phí giao dịch</div>
+          <div className="w-7/12 ">
             <div className="flex items-center space-x-4">
               <label className="w-1/2 flex items-center">
                 <input
@@ -152,7 +159,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
           type="submit"
           onClick={formik.handleSubmit}
           // disabled={!formik.isValid || formik.isSubmitting}
-          className="w-fit self-end px-4 py-2 mt-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400"
+          className="w-fit self-center px-4 py-2 mt-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400"
         >
           Tiếp tục
         </button>
