@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { 
   fetchUserAccountInfo, 
   fetchUserContacts, createOneContact, deleteOneContact, updateOneContact } from './userThunk';
-import { IDLE, LOADING, SUCCEEDED, FAILED } from './../util/config'
+import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 
 const  initialState = { 
   id: 0,

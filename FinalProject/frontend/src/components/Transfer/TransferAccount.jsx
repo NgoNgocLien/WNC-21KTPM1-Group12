@@ -25,7 +25,7 @@ export default function TransferAccount({formik}) {
     }, [account_number]);
 
     return (
-        <div className="w-8/12 mx-auto p-4 flex bg-white rounded-lg justify-between">
+        <div className="w-8/12 mx-auto p-6 flex bg-white rounded-lg justify-between">
             <div className="w-3/12 font-semibold">
                 Từ tài khoản nguồn
             </div>

@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { logout } from './../redux/authSlide'
-import { reset } from './../redux/userSlide'
+import { logout } from './../redux/authSlice'
+import { reset } from './../redux/userSlice'
 import { fetchUserAccountInfo } from './../redux/userThunk';
 import { IDLE, LOADING, FAILED } from './../util/config'
 
