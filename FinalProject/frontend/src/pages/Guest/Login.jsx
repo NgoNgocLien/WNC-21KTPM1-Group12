@@ -66,7 +66,6 @@ export default function Login() {
       if (!response.ok) {
         throw new Error('Failed to verify token');
       } else {
-        console.log('Token verified');
         login(values);
       }
 
@@ -76,9 +75,6 @@ export default function Login() {
   }
 
   const handleSubmit = async (values) => {
-    console.log(values);
-    console.log(token);
-    console.log(process.env.REACT_APP_RECAPTCHA_SITE_KEY);
     if (token) {
       verifyToken(token, values);
       setRefreshReCaptcha(false);
@@ -94,9 +90,10 @@ export default function Login() {
 
   return (
     <div className="h-screen bg-red-50">
-      <div className="fixed w-96 h-screen px-2 py-2">
+      <div className="fixed w-96 h-full px-2 py-2">
         <img src="../login-banner.jpg" alt="Banner" className="w-full h-full rounded-xl border-2 border-white object-cover object-left" />
       </div>
+
       <div className="flex flex-col justify-center ms-96 h-full">
         <div className="mx-auto w-full max-w-sm">
           <h2 className="text-start text-3xl/9 font-bold text-gray-900">

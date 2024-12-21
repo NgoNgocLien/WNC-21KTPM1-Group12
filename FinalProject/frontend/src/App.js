@@ -36,11 +36,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path="home"
-          element={<GuestRoute element={<Home />} redirectTo="/account" />}
-        />
-
+        <Route path="home" element={<GuestRoute element={<Home />} redirectTo="/account" />} />
         <Route path="login/:role" element={<GuestRoute element={<Login />} redirectTo="/account" />} />
 
         <Route path="/" element={<AuthenticatedRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
