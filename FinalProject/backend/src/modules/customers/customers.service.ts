@@ -142,28 +142,6 @@ export class CustomersService {
         },
       });
 
-      const htmlContent = `
-        <html>
-          <body>
-            <p>Dear <strong> ${createCustomerDto.fullname}</strong>,</p>
-            <p>We are pleased to inform you that your account has been successfully created in our system. Below are your login credentials:</p>
-            <p><strong>Username:</strong> ${createCustomerDto.username} </p>
-            <p><strong>Password:</strong> ${createCustomerDto.password} </p>
-            <p>For security reasons, we strongly recommend that you change your password after your first login.</p>
-            <p>If you did not request this account, please contact our support team immediately.</p>
-            <p>Thank you for choosing NoMeoBank. We are excited to have you with us!</p>
-            <p>Best regards,</p>
-            <p><strong>The NoMeoBank</strong></p>
-          </body>
-        </html>
-      `;
-
-      await sendMail(
-        createCustomerDto.email,
-        'Welcome to NoMeoBank - Your Account Details',
-        htmlContent,
-      );
-
       return {
         message: 'Customer and account created successfully',
         data: {

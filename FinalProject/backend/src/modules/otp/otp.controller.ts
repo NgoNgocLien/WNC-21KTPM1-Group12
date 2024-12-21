@@ -12,9 +12,9 @@ export class OtpController {
   }
 
   // Verify OTP
-  @Post('verify/:email')
+  @Post('verify')
   async verifyOtp(
-    @Param('email') email: string,
+    @Body('email') email: string,
     @Body('otp') otp: string,
   ): Promise<boolean> {
     return this.otpService.verifyOtp(email, otp);
