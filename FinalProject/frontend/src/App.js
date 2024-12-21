@@ -28,8 +28,9 @@ const AuthenticatedRoute = ({ element, redirectTo }) => {
 
 function GuestLayout() {
   return (
-    <div className="h-screen bg-cover bg-center" style={{ backgroundImage: `url('bg-home.jpg')` }}>
-      <Header />
+    <div className="h-screen">
+      {/* <Header /> */}
+      <Outlet />
     </div>
   );
 }
