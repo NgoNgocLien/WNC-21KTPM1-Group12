@@ -205,4 +205,21 @@ export class TransactionsService {
       throw new Error('Error fetching account transactions: ' + error.message);
     }
   }
+
+  async findBankTransactions(id_bank: number){
+    try{
+      const bank = await this.prisma.banks.findUnique({
+        where:{
+          id: Number(id_bank),
+        }
+      })
+
+      return {
+        message: "Bank fetched successfully",
+        data: bank
+      }
+    } catch(error){
+      throw new Error('Error fetching profile: ' + error.message);
+    }
+  }
 }

@@ -37,9 +37,9 @@ export class TransactionsController {
     return this.transactionsService.getAccountTransactions(req.user['sub']);
   }
 
-  // @Get('bank')
-  // findBankTransactions() {
-  //   return this.transactionsService.findBankTransactions(+id);
-  // }
+  @Get('bank/:id_bank')
+  findBankTransactions(@Param('id_bank') id_bank: number) {
+    return this.transactionsService.findBankTransactions(id_bank);
+  }
 
 }
