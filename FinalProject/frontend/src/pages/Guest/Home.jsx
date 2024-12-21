@@ -1,9 +1,9 @@
-// import Header from "../../components/Header";
+import Header from "../../components/Header";
 
 export default function Home() {
   return (
-    <main>
-      {/* <Header /> */}
+    <main className="h-screen bg-cover bg-center" style={{ backgroundImage: `url('bg-home.jpg')` }}>
+      <Header />
     </main>
   )
 }
