@@ -36,7 +36,7 @@ export default function Header() {
                 <div className="flex size-11 flex-none items-center justify-center rounded-2xl bg-gray-100 group-hover:bg-white">
                   <UserGroupIcon className="size-6 text-gray-900 group-hover:text-red-800" />
                 </div>
-                <Link to="/login" className="flex-auto block font-semibold text-gray-900">
+                <Link to="/login/customer" className="flex-auto block font-semibold text-gray-900">
                   Tài khoản khách hàng
                 </Link>
               </div>
@@ -44,14 +44,14 @@ export default function Header() {
                 <div className="flex size-11 flex-none items-center justify-center rounded-2xl bg-gray-100 group-hover:bg-white">
                   <BriefcaseIcon className="size-6 text-gray-900 group-hover:text-red-800" />
                 </div>
-                <Link to="/login" className="flex-auto block font-semibold text-gray-900">
+                <Link to="/login/employee" className="flex-auto block font-semibold text-gray-900">
                   Tài khoản nhân viên
                 </Link>
               </div><div className="group gap-x-2 relative flex items-center rounded-md p-2 text-sm/6 hover:bg-gray-100">
                 <div className="flex size-11 flex-none items-center justify-center rounded-2xl bg-gray-100 group-hover:bg-white">
                   <BuildingLibraryIcon className="size-6 text-gray-900 group-hover:text-red-800" />
                 </div>
-                <Link to="/login" className="flex-auto block font-semibold text-gray-900">
+                <Link to="/login/admin" className="flex-auto block font-semibold text-gray-900">
                   Tài khoản quản trị viên
                 </Link>
               </div>

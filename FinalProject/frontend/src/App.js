@@ -1,12 +1,9 @@
 import './App.css';
-import { BrowserRouter as Router, Route, Routes, Outlet, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Outlet, Navigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import Header from './components/Header';
 import Home from './pages/Guest/Home';
-import About from './pages/Guest/About';
 import Login from './pages/Guest/Login';
-
 import Sidebar from './components/Sidebar';
 import Account from './pages/SignIn/Account';
 import Transfer from './pages/SignIn/Transfer/Transfer';
@@ -26,15 +23,6 @@ const AuthenticatedRoute = ({ element, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} />;
 };
 
-function GuestLayout() {
-  return (
-    <div className="h-screen">
-      {/* <Header /> */}
-      <Outlet />
-    </div>
-  );
-}
-
 function AuthenticatedLayout() {
   return (
     <div className="layout">
@@ -49,17 +37,11 @@ function App() {
     <Router>
       <Routes>
         <Route
-          path="/"
-          element={
-            <GuestRoute element={<GuestLayout />} redirectTo="/account" />
-          }
-        >
-          <Route path="home" element={<Home />} />
-        </Route>
-        <Route
-          path="login"
-          element={<GuestRoute element={<Login />} redirectTo="/account" />}
+          path="home"
+          element={<GuestRoute element={<Home />} redirectTo="/account" />}
         />
+
+        <Route path="login/:role" element={<GuestRoute element={<Login />} redirectTo="/account" />} />
 
         <Route path="/" element={<AuthenticatedRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
           <Route path="account" element={<Account />} />
