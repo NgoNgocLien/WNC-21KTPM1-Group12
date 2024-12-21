@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateContactDto  {
     @IsNumber()
@@ -12,4 +12,7 @@ export class CreateContactDto  {
   
     @IsString()
     nickname: string;
+
+    @IsString()
+    contact_fullname: string;
 }

@@ -14,7 +14,8 @@ export class TransactionsService {
         where:{
           account_number: account_number,
         },
-        include:{
+        select:{
+          account_number: true,
           customers: {
             select:{
               fullname: true

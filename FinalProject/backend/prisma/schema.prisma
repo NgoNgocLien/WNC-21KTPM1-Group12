@@ -38,6 +38,7 @@ model contacts {
   contact_account_number String    @db.VarChar(20)
   id_bank                Int
   nickname               String?   @db.VarChar(100)
+  contact_fullname       String?
   banks                  banks     @relation(fields: [id_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
   customers              customers @relation(fields: [id_customer], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

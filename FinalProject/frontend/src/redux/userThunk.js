@@ -60,10 +60,16 @@ export const fetchUserContacts = createAsyncThunk(
 
 export const createOneContact = createAsyncThunk(
     'user/createOneContact',
-    async (_, { rejectWithValue, getState }) => {
+    async (values, { rejectWithValue, getState }) => {
         const state = getState();
         const access_token = state.auth.access_token; 
-  
+        console.log({
+            id_customer: state.user.id,
+            contact_account_number: values.account_number,
+            id_bank: values.bank_id,
+            nickname: values.nickname,
+            contact_fullname: values.contact_fullname
+        })
         try {
             const response = await fetch(`${BASE_URL}/customers/contacts`, {
             method: 'POST',
@@ -71,6 +77,13 @@ export const createOneContact = createAsyncThunk(
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${access_token}`, 
             },
+            body: JSON.stringify({
+                id_customer: state.user.id,
+                contact_account_number: values.account_number,
+                id_bank: values.bank_id,
+                nickname: values.nickname,
+                contact_fullname: values.contact_fullname
+            })
             });
     
             if (!response.ok) {

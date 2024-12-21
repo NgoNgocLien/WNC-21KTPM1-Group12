@@ -6,10 +6,11 @@ const EditContactModal = ({ isOpen, closeModal, contact }) => {
   const dispatch = useDispatch();
 
   const [nickname, setNickname] = useState('');
-
+  const [currentNickname, setCurrentNickname] = useState('');
   useEffect(() => {
     if (contact) {
       setNickname(contact.nickname);
+      setCurrentNickname(contact.nickname);
     }
   }, [contact]);
 
@@ -55,7 +56,7 @@ const EditContactModal = ({ isOpen, closeModal, contact }) => {
                 Họ và tên
               </p>          
               <p>
-                {contact.fullname}
+                {contact.contact_fullname}
               </p>
             </div>
           </div>
@@ -72,14 +73,16 @@ const EditContactModal = ({ isOpen, closeModal, contact }) => {
 
         </div>
         
-        <div className="flex justify-center space-x-4">
+        <div className="flex justify-center mt-4 space-x-4">
           <button 
             onClick={closeModal} 
-            className="mt-4 px-4 py-2 bg-gray-200 rounded-lg">Hủy
+            className="px-4 py-2 bg-while-200 text-red-800 border-2 border-red-800 rounded-lg 
+              disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none">Hủy
           </button>
           <button 
             onClick={handleEdit} 
-            className="mt-4 px-4 py-2 bg-red-800 text-white rounded-lg">Lưu
+            disabled={currentNickname === nickname}
+            className="px-4 py-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400">Lưu
           </button>
         </div>
       </div>

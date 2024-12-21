@@ -14,7 +14,7 @@ const BalanceDisplay = ({ balance }) => {
           {isBalanceVisible ? (
             <span>{balance} VNĐ</span> // Show balance when visible
           ) : (
-            <span className="">••••••</span> // Hidden by default
+            <span className="">•••••• VNĐ</span> // Hidden by default
           )}
         </span>
       <button 

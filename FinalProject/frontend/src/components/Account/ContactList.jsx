@@ -27,7 +27,7 @@ export default function ContactList() {
   
     useEffect(() => {
       const newContacts = contacts.filter(
-        contact => (activeTab === INTERNAL && contact.bank_name === 'NoMeoBank') || (activeTab === EXTERNAL && contact.bank_name !== 'NoMeoBank')
+        contact => (activeTab === INTERNAL && contact?.bank_name === 'NoMeoBank') || (activeTab === EXTERNAL && contact?.bank_name !== 'NoMeoBank')
       );
       setFilterContacts(newContacts);
     }, [contacts, activeTab]);
@@ -80,27 +80,27 @@ export default function ContactList() {
                 Liên ngân hàng
             </button>
         </div>
-        <div className="mt-4 px-8 flex flex-col space-y-4 max-h-[300px] overflow-y-auto">
+        <div className="mt-4 px-8 flex flex-col justify-center space-y-4 max-h-[300px] min-h-[300px] overflow-y-auto">
             {
             filterContacts.length === 0 
             ?
-                <p className="text-center">Chưa có người nhận</p>
+                <p className="self-center">Chưa có người nhận</p>
             :
                 
                 filterContacts.map((contact) => (
-                    <div key={`${contact.id}`} className="flex justify-between items-center">
+                    <div key={`${contact?.id}`} className="flex justify-between items-center mt-2">
                         <div className="flex space-x-3">
                             <img 
-                                src={contact.bank_logo || "https://via.placeholder.com/150" } 
+                                src={contact?.bank_logo || "https://via.placeholder.com/150" } 
                                 alt="Bank Logo" 
                                 className="w-12 h-12 rounded-full "
                             />
                             <div className="flex flex-col ">
                                 <p className="font-semibold">
-                                    {contact.nickname}
+                                    {contact?.nickname}
                                 </p>
                                 <p className="text-gray-500">
-                                    {contact.bank_name}
+                                    {contact?.bank_name} - {contact?.contact_fullname?.toUpperCase()}
                                 </p>
                             </div>
                         </div>

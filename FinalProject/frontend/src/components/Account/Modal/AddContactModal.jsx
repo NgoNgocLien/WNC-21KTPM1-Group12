@@ -1,8 +1,12 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik';
-import banks from './banks'
 import Select from 'react-select';
 import * as Yup from 'yup';
+
+import { createOneContact } from './../../../redux/userThunk';
+import { BASE_URL } from './../../../util/config'
+import banks from './banks'
 
 const bankOptions = banks.map(bank => ({
   value: bank.bank_id,
@@ -19,27 +23,79 @@ const bankOptions = banks.map(bank => ({
 }));
 
 const AddContactModal = ({ isOpen, closeModal }) => {
+  const dispatch = useDispatch();
+  const {access_token} = useSelector((state) => state.auth)
+
   const formik = useFormik({
     initialValues: {
       bank_id: 1, // Set default value
       account_number: '',
-      fullname: '',
+      contact_fullname: '',
       nickname: '',
     },
     validationSchema: Yup.object({
       account_number: Yup.string()
         .required('Tài khoản thanh toán là bắt buộc'),
-      fullname: Yup.string()
-        .required('Họ và tên là bắt buộc'),
-        nickname: Yup.string()
+      nickname: Yup.string()
         .required('Tên gợi nhớ là bắt buộc'),
     }),
-    onSubmit: (values) => {
-
+    onSubmit: (values, { resetForm }) => {
+      console.log(values)
+      dispatch(createOneContact(values))
       closeModal();
+      resetForm();
     },
   });
 
+  const getContactFullname = async (account_number, bank_id) => {
+    try {
+      let response = null;
+      if (bank_id === 1){
+        response = await fetch(`${BASE_URL}/transactions/recipient_profile/${account_number}`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${access_token}`, 
+          },
+          });
+      }
+       
+      if (!response.ok) {
+        throw new Error('Failed to fetch fullname');
+      }
+      const result = await response.json();
+      return result.data.customers.fullname;
+    } catch (error) {
+      console.error('Error fetching fullname:', error);
+      return '';
+    }
+  };
+
+  const handleAccountNumberBlur = async (e) => {
+    formik.handleBlur(e);
+    const account_number = e.target.value;
+    if (account_number) {
+      const bank_id = formik.getFieldProps('bank_id').value
+      // console.log({account_number, bank_id});
+      const contact_fullname = await getContactFullname(account_number, bank_id);
+      formik.setFieldValue('contact_fullname', contact_fullname);
+      formik.setFieldValue('nickname', contact_fullname);
+    }
+  };
+
+  const handleChangeBankId = async (option) => {
+    const bank_id = option.value
+    formik.setFieldValue('bank_id',bank_id)
+    if (bank_id) {
+      const account_number = formik.getFieldProps('account_number').value;
+      // console.log({account_number, bank_id});
+      if (account_number) {
+        const contact_fullname = await getContactFullname(account_number, bank_id);
+        formik.setFieldValue('contact_fullname', contact_fullname);
+        formik.setFieldValue('nickname', contact_fullname);
+      }
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -49,12 +105,12 @@ const AddContactModal = ({ isOpen, closeModal }) => {
         <h3 className="text-xl font-semibold">Thêm Mới Người Nhận</h3>
 
         <form onSubmit={formik.handleSubmit} className="w-full my-4">
-          <div className="my-4">
+          <div className="mb-4">
             <p className="text-gray-500 mb-2">Ngân hàng<span className="text-red-500">*</span></p>
             <Select
               name="bank_id"
               value={bankOptions.find(option => option.value === formik.values.bank_id)}
-              onChange={(option) => formik.setFieldValue('bank_id', option.value)}
+              onChange={(option) => handleChangeBankId(option)}
               options={bankOptions}
               styles={customStyles}
             />
@@ -68,6 +124,7 @@ const AddContactModal = ({ isOpen, closeModal }) => {
                 name="account_number"
                 value={formik.values.account_number}
                 onChange={formik.handleChange}
+                onBlur={handleAccountNumberBlur}
                 className="w-full border-2 p-2 rounded-lg"
               />
               {formik.touched.account_number && formik.errors.account_number ? (
@@ -75,17 +132,16 @@ const AddContactModal = ({ isOpen, closeModal }) => {
               ) : null}
             </div>
             <div className="w-1/2">
-              <p className="text-gray-500 mb-2">Họ và tên<span className="text-red-500">*</span></p>
+              <p className="text-gray-500 mb-2">Họ và tên</p>
               <input
                 type="text"
-                name="fullname"
-                value={formik.values.fullname}
+                name="contact_fullname"
+                value={formik.values.contact_fullname}
                 onChange={formik.handleChange}
                 className="w-full border-2 p-2 rounded-lg"
+                readOnly
+                disabled
               />
-              {formik.touched.fullname && formik.errors.fullname ? (
-                <div className="text-red-500 text-sm mt-1">{formik.errors.fullname}</div>
-              ) : null}
             </div>
           </div>
 
@@ -95,7 +151,7 @@ const AddContactModal = ({ isOpen, closeModal }) => {
             name="nickname"
             value={formik.values.nickname}
             onChange={formik.handleChange}
-            className="w-full border-2 p-2 rounded-lg"
+            className="w-full border-2 p-2 mb-4 rounded-lg"
           />
           {formik.touched.nickname && formik.errors.nickname ? (
             <div className="text-red-500 text-sm mt-1">{formik.errors.nickname}</div>
@@ -103,14 +159,23 @@ const AddContactModal = ({ isOpen, closeModal }) => {
           <div className="flex justify-center space-x-4 mt-4">
             <button
               type="button"
-              onClick={closeModal}
-              className="px-4 py-2 bg-gray-200 rounded-lg"
+              onClick={() => {
+                closeModal();
+                formik.resetForm();
+              }}
+              className="px-4 py-2 bg-while-200 text-red-800 border-2 border-red-800 rounded-lg 
+              disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-red-800 text-white rounded-lg"
+              disabled={
+                formik.errors.account_number || 
+                formik.errors.nickname ||
+                formik.values.account_number === '' ||
+                formik.values.nickname === ''}
+              className="px-4 py-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400"
             >
               Thêm người nhận
             </button>

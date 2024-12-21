@@ -1,10 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserAccountInfo, fetchUserContacts, deleteOneContact, updateOneContact } from './userThunk';
+import { 
+  fetchUserAccountInfo, 
+  fetchUserContacts, createOneContact, deleteOneContact, updateOneContact } from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from './../util/config'
 
 const userSlice = createSlice({
   name: 'user',
   initialState: { 
+    id: 0,
     fullname: '',
     account_number: '',
     balance: 0,
@@ -13,12 +16,8 @@ const userSlice = createSlice({
     error: null,
   },
   reducers: {
-    setUserAccountInfo: (state, action) => {
-      state.fullname = action.payload.fullname;
-      state.account_number = action.payload.account_number;
-      state.balance = action.payload.balance;
-    },
     reset: (state) => {
+      state.id = 0;
       state.fullname = '';
       state.account_number = '';
       state.balance = 0;
@@ -34,6 +33,7 @@ const userSlice = createSlice({
       .addCase(fetchUserAccountInfo.fulfilled, (state, action) => {
         console.log(action)
         state.status = SUCCEEDED;
+        state.id = action.payload.data.id;
         state.fullname = action.payload.data.fullname;
         state.account_number = action.payload.data.accounts[0].account_number;
         state.balance = action.payload.data.accounts[0].account_balance;
@@ -47,11 +47,26 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchUserContacts.fulfilled, (state, action) => {
-        console.log(action)
+        // console.log(action)
         state.status = SUCCEEDED;
         state.contacts = action.payload.data
       })
       .addCase(fetchUserContacts.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
+      })
+      .addCase(createOneContact.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(createOneContact.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+        state.contacts = [
+          ...state.contacts,
+          action.payload.data
+        ]
+      })
+      .addCase(createOneContact.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
       })

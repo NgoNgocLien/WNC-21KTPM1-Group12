@@ -71,6 +71,7 @@ export class CustomersService {
           id
         },
         select: {
+          id: true,
           fullname: true,  // Only select the fullname field
           accounts: {
             select: {
@@ -215,6 +216,7 @@ export class CustomersService {
           id: true,
           nickname: true,
           contact_account_number: true,
+          contact_fullname: true,
           banks:{
             select:{
               name: true,
@@ -228,6 +230,7 @@ export class CustomersService {
         id: contact.id,
         nickname: contact.nickname,
         account_number: contact.contact_account_number,
+        contact_fullname: contact.contact_fullname,
         bank_name: contact.banks.name,
         bank_logo: contact.banks.logo,
       }));
@@ -263,13 +266,30 @@ export class CustomersService {
         throw new ConflictException(`Contact exists`);
       }
 
-      const contact = await this.prisma.contacts.create({
+      const newContact = await this.prisma.contacts.create({
         data,
+        include: {
+          banks: {
+            select: {
+              name: true,
+              logo: true
+            }
+          }
+        }
       });
+
+      const transformedContact = {
+        id: newContact.id,
+        nickname: newContact.nickname,
+        account_number: newContact.contact_account_number,
+        contact_fullname: newContact.contact_fullname,
+        bank_name: newContact.banks.name,
+        bank_logo: newContact.banks.logo,
+      };
 
       return {
         message: 'Contact created successfully',
-        data: contact,
+        data: transformedContact,
       };
 
     } catch (error) {
