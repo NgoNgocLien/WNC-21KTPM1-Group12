@@ -164,4 +164,25 @@ export class AuthService {
         throw new UnauthorizedException('Invalid role');
     }
   }
+
+  async verifyRecaptcha(token: string) {
+    try {
+      if (!process.env.RECAPTCHA_SECRET_KEY) {
+        throw new Error('RECAPTCHA_SECRET_KEY is not defined');
+      }
+      const response = await fetch(
+        `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`,
+        {
+          method: 'POST',
+        },
+      );
+
+      const data = await response.json();
+
+      return data.success;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
 }
