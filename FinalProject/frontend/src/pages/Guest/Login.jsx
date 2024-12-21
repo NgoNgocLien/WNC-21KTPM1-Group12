@@ -36,7 +36,7 @@ export default function Login() {
 
       setAccessToken(data.access_token);
       setRefreshToken(data.refresh_token);
-
+      
     } catch (error) {
       console.log(error)
     }

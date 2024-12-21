@@ -10,8 +10,11 @@ import { EmployeesModule } from './modules/employees/employees.module';
 import { AdminsModule } from './modules/admins/admins.module';
 import { DebtsModule } from './modules/debts/debts.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
+import { OtpModule } from './modules/otp/otp.module';
+
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+
 
 @Module({
   imports: [
@@ -40,6 +43,7 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
     AdminsModule,
     DebtsModule,
     TransactionsModule,
+    OtpModule,
   ],
   controllers: [],
   providers: [

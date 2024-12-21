@@ -1707,12 +1707,13 @@ babel-preset-jest@^29.6.3:
     "@nestjs/platform-express" "^10.0.0"
     "@nestjs/swagger" "^8.1.0"
     "@prisma/client" "^6.0.1"
-    backend "file:C:/Users/ACER/AppData/Local/Yarn/Cache/v6/npm-backend-0.0.1-bea69e2b-e11b-4efc-984c-f5bb6cc26f2d-1734538560065/node_modules/backend"
+    backend "file:C:/Users/ACER/AppData/Local/Yarn/Cache/v6/npm-backend-0.0.1-99c07f5e-c122-40f8-ae0d-fa6cd1170405-1734788229773/node_modules/backend"
     bcrypt "^5.1.1"
     class-transformer "^0.5.1"
     class-validator "^0.14.1"
     nest-winston "^1.9.7"
     nodemailer "^6.9.16"
+    passport "^0.7.0"
     passport-jwt "^4.0.1"
     reflect-metadata "^0.2.0"
     rxjs "^7.8.1"
@@ -2209,6 +2210,11 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
+
+date-fns@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-4.1.0.tgz#64b3d83fff5aa80438f5b1a633c2e83b8a1c2d14"
+  integrity sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==
 
 debug@2.6.9:
   version "2.6.9"
