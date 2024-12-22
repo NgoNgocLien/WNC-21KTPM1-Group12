@@ -63,13 +63,37 @@ export default function TransferHistory() {
         <div className="max-h-96 overflow-y-auto space-y-4">
           {filteredTransactions.map((transaction) => {
             const uniqueKey = `${transaction.type}-${transaction.id}`;
-            const formattedTime = format(new Date(transaction.transaction_time), 'dd/MM/yyyy - HH:mm');
+            const formattedTime = format(new Date(transaction.transaction_time), 'dd/MM/yyyy - HH:mm:ss');
             const amountSign = transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? '-' : '+';
-            const bankName = transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? banks[transaction.id_recipient_bank]?.name : banks[transaction.id_sender_bank]?.name;
-            const bankId =
-            transaction.type === 'Sender' || transaction.type === 'Sender (Debt)'
-              ? transaction.id_recipient_bank
-              : transaction.id_sender_bank;
+            let bankId;
+            if (transaction.type === 'Deposit') {
+              bankId = 1; 
+            } else if (transaction.type === 'Recipient' || transaction.type === 'Recipient (Debt)') {
+              bankId = transaction.id_sender_bank; 
+            } else if (transaction.type === 'Sender' || transaction.type === 'Sender (Debt)') {
+              bankId = transaction.id_recipient_bank; 
+            }
+
+            const bankName = banks[bankId]?.name;
+            const bankLogo = banks[bankId]?.logo;
+
+            let transactionLabel = '';
+            let labelColor = '';
+    
+            if (transaction.type === 'Recipient' || transaction.type === 'Deposit') {
+              transactionLabel = 'Nhận tiền';
+              labelColor = 'bg-green-500'; 
+            } else if (transaction.type === 'Sender') {
+              transactionLabel = 'Chuyển tiền';
+              labelColor = 'bg-yellow-500'; 
+            } else if (transaction.type === 'Recipient (Debt)' || transaction.type === 'Sender (Debt)') {
+              transactionLabel = 'Thanh toán nợ';
+              labelColor = 'bg-blue-500'; 
+            }
+
+            const formattedAmount = new Intl.NumberFormat().format(transaction.transaction_amount);
+            const formattedBalance = new Intl.NumberFormat().format(transaction.current_balance);
+
             return (
               <div
                 key={uniqueKey}
@@ -77,26 +101,25 @@ export default function TransferHistory() {
               >
                 <div className="flex items-center space-x-4">
                   <img
-                    src={`https://logo.clearbit.com/${bankName}.com` || banks[bankId].logo}
+                    src={bankLogo ? bankLogo : `https://logo.clearbit.com/${bankName}.com`}
                     alt="Bank Logo"
                     className="w-10 h-10 rounded-full"
                   />
                   <div>
                     <p className="font-semibold">{transaction.transaction_message || transaction.deposit_message}</p>
-                    <p className="text-sm text-gray-600">{bankName}</p>
+                    {/* <p className="text-sm text-gray-600">{bankName}</p> */}
+                    <span className="text-sm text-gray-700 mr-5">{formattedTime}</span>
+                    <span className="text-sm">Số dư: {formattedBalance} VNĐ</span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold text-gray-800">{formattedTime}</p>
-                  <p
-                    className={`text-xl ${amountSign === '+' ? 'text-green-600' : 'text-red-600'}`}
-                  >
-                    {amountSign}{transaction.transaction_amount}
+                <div className='amount w-60 text-right'>
+                  <p className={`text-lg ${amountSign === '+' ? 'text-green-600' : 'text-red-600'}`}>
+                      {amountSign}{formattedAmount} VNĐ
                   </p>
-                  <p className="text-sm">Số dư: {transaction.current_balance}</p>
-                </div>
-                <div className="ml-4 py-1 px-3 bg-gray-100 text-sm font-medium rounded">
-                  {transaction.type}
+                </div> 
+                  
+                <div className={`ml-4 py-1 px-2 text-xs font-base rounded text-white ${labelColor}`}>
+                  {transactionLabel}
                 </div>
               </div>
             );
