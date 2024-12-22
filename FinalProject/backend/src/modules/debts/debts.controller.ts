@@ -30,19 +30,29 @@ export class DebtsController {
     return this.debtsService.findAll();
   }
 
+  @Get('/outgoing')
+  findOutgoing(@Req() req: Request) {
+    return this.debtsService.findOutgoing(req.user['sub']);
+  }
+
+  @Get('/incoming')
+  findIncoming(@Req() req: Request) {
+    return this.debtsService.findIncoming(req.user['sub']);
+  }
+
+  @Get('/pending')
+  findPending(@Req() req: Request) {
+    return this.debtsService.findPending(req.user['sub']);
+  }
+
+  @Get('/completed')
+  findCompleted(@Req() req: Request) {
+    return this.debtsService.findCompleted(req.user['sub']);
+  }
+
   @Get('/:id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.debtsService.findOne(id);
-  }
-
-  @Get('/outgoing/:id_customer')
-  findOutgoing(@Param('id_customer', ParseIntPipe) id_customer: number) {
-    return this.debtsService.findOutgoing(id_customer);
-  }
-
-  @Get('/incoming/:id_customer')
-  findIncoming(@Param('id_customer', ParseIntPipe) id_customer: number) {
-    return this.debtsService.findIncoming(id_customer);
   }
 
   @Post('/delete/:id')

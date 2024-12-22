@@ -85,7 +85,7 @@ model debts {
   id_debtor      Int
   debt_amount    Decimal         @db.Decimal(15, 2)
   debt_message   String?
-  status         String?         @db.VarChar(10)
+  status         debt_status?
   created_at     DateTime        @default(now()) @db.Timestamp(6)
   debt_deletions debt_deletions?
   debt_payments  debt_payments[]
@@ -157,4 +157,11 @@ model otp {
 enum employee_status {
   ACTIVE
   DELETED
+}
+
+enum debt_status {
+  PENDING
+  PAID
+  CANCELED
+  DECLINED
 }

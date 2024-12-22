@@ -5,13 +5,14 @@ import { ArrowsRightLeftIcon, BanknotesIcon, CreditCardIcon } from '@heroicons/r
 import { fetchAccountTransactions, fetchBankName } from '../../redux/transactionThunk';
 import { IDLE, LOADING, FAILED, SUCCEEDED } from '../../util/config';
 import { format } from 'date-fns';
+import { formatTime } from '../../util/time';
 
 export default function TransferHistory() {
   const dispatch = useDispatch();
   const { transactions, banks, status, error } = useSelector((state) => state.transaction);
-  
+
   const [filter, setFilter] = useState('all');
-  
+
   const filteredTransactions = useMemo(() => {
     switch (filter) {
       case 'transfer':
@@ -85,7 +86,7 @@ export default function TransferHistory() {
             }
 
             const uniqueKey = `${transaction.type}-${transaction.id}`;
-            const formattedTime = format(new Date(transaction.transaction_time), 'HH:mm - dd/MM/yyyy');
+            const formattedTime = formatTime(transaction.transaction_time);
             const transactionAmount = transaction.transaction_amount;
             const amountSign = transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? '-' : '+';
 
@@ -121,27 +122,27 @@ export default function TransferHistory() {
         <div className="flex justify-between items-center">
           <p className="text-xl font-bold text-red-800">{filteredTransactions.length} giao dịch</p>
           <div className="flex space-x-2">
-            <button 
+            <button
               className={`flex items-center gap-2 p-2 h-fit rounded-lg ${filter === 'receive' ? 'bg-green-500' : 'bg-gray-200'} text-white`}
               onClick={() => setFilter('receive')}>
               <BanknotesIcon className='w-6 h-6 p-0 m-0' />
               Nhận tiền
             </button>
-            <button 
+            <button
               className={`flex items-center gap-2 p-2 h-fit rounded-lg ${filter === 'transfer' ? 'bg-yellow-500' : 'bg-gray-200'} text-white`}
               onClick={() => setFilter('transfer')}>
               <ArrowsRightLeftIcon className='w-6 h-6 p-0 m-0' />
               Chuyển tiền
             </button>
-            <button 
-              className={`flex items-center gap-2 p-2 h-fit rounded-lg ${filter === 'debt' ? 'bg-blue-500' : 'bg-gray-200'} text-white`} 
+            <button
+              className={`flex items-center gap-2 p-2 h-fit rounded-lg ${filter === 'debt' ? 'bg-blue-500' : 'bg-gray-200'} text-white`}
               onClick={() => setFilter('debt')}
             >
               <CreditCardIcon className="w-6 h-6 p-0 m-0" />
               Thanh toán nợ
             </button>
-            <button 
-              className={`flex items-center gap-2 p-2 h-fit rounded-lg ${filter === 'all' ? 'bg-red-500' : 'bg-gray-200'} text-white`} 
+            <button
+              className={`flex items-center gap-2 p-2 h-fit rounded-lg ${filter === 'all' ? 'bg-red-500' : 'bg-gray-200'} text-white`}
               onClick={() => setFilter('all')}
             >
               Tất cả

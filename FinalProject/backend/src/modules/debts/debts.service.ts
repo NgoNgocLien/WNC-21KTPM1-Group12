@@ -57,9 +57,140 @@ export class DebtsService {
 
   async findOutgoing(id_customer: number) {
     try {
+      const [pendingDebts, completedDebts] = await this.prisma.$transaction([
+        this.prisma.debts.findMany({
+          where: {
+            id_creditor: id_customer,
+            status: 'PENDING',
+          },
+          include: {
+            // join with customers table to get debtor details
+            debtor: {
+              select: {
+                id: true,
+                username: true,
+                fullname: true,
+              },
+            },
+          },
+        }),
+        this.prisma.debts.findMany({
+          where: {
+            OR: [
+              {
+                id_creditor: id_customer,
+                status: 'PAID',
+              },
+              {
+                id_creditor: id_customer,
+                status: 'CANCELED',
+              },
+              {
+                id_creditor: id_customer,
+                status: 'DECLINED',
+              },
+            ],
+          },
+          include: {
+            // join with customers table to get debtor details
+            debtor: {
+              select: {
+                id: true,
+                username: true,
+                fullname: true,
+              },
+            },
+          },
+        }),
+      ]);
+
+      return {
+        message: 'Outgoing debts fetched successfully',
+        data: {
+          pending: pendingDebts,
+          completed: completedDebts,
+        },
+      };
+    } catch (error) {
+      throw new Error('Error fetching outgoing debts: ' + error.message);
+    }
+  }
+
+  async findIncoming(id_customer: number) {
+    try {
+      const [pendingDebts, completedDebts] = await this.prisma.$transaction([
+        this.prisma.debts.findMany({
+          where: {
+            id_debtor: id_customer,
+            status: 'PENDING',
+          },
+          include: {
+            // join with customers table to get creditor details
+            creditor: {
+              select: {
+                id: true,
+                username: true,
+                fullname: true,
+              },
+            },
+          },
+        }),
+        this.prisma.debts.findMany({
+          where: {
+            OR: [
+              {
+                id_debtor: id_customer,
+                status: 'PAID',
+              },
+              {
+                id_debtor: id_customer,
+                status: 'CANCELED',
+              },
+              {
+                id_debtor: id_customer,
+                status: 'DECLINED',
+              },
+            ],
+          },
+          include: {
+            // join with customers table to get creditor details
+            creditor: {
+              select: {
+                id: true,
+                username: true,
+                fullname: true,
+              },
+            },
+          },
+        }),
+      ]);
+
+      return {
+        message: 'Incoming debts fetched successfully',
+        data: {
+          pending: pendingDebts,
+          completed: completedDebts,
+        },
+      };
+    } catch (error) {
+      throw new Error('Error fetching incoming debts: ' + error.message);
+    }
+  }
+
+  async findPending(id_customer: number) {
+    try {
       const debts = await this.prisma.debts.findMany({
         where: {
-          id_creditor: id_customer,
+          OR: [
+            {
+              id_creditor: id_customer,
+              status: 'PENDING',
+            },
+            {
+              id_debtor: id_customer,
+              status: 'PENDING',
+            },
+          ],
         },
         include: {
           // join with customers table to get debtor details
@@ -70,25 +201,6 @@ export class DebtsService {
               fullname: true,
             },
           },
-        },
-      });
-
-      return {
-        message: 'Outgoing debts fetched successfully',
-        data: debts,
-      };
-    } catch (error) {
-      throw new Error('Error fetching outgoing debts: ' + error.message);
-    }
-  }
-
-  async findIncoming(id_customer: number) {
-    try {
-      const debts = await this.prisma.debts.findMany({
-        where: {
-          id_debtor: id_customer,
-        },
-        include: {
           // join with customers table to get creditor details
           creditor: {
             select: {
@@ -101,11 +213,71 @@ export class DebtsService {
       });
 
       return {
-        message: 'Incoming debts fetched successfully',
+        message: 'Pending debts fetched successfully',
         data: debts,
       };
     } catch (error) {
-      throw new Error('Error fetching incoming debts: ' + error.message);
+      throw new Error('Error fetching pending debts: ' + error.message);
+    }
+  }
+
+  async findCompleted(id_customer: number) {
+    try {
+      const debts = await this.prisma.debts.findMany({
+        where: {
+          OR: [
+            {
+              id_creditor: id_customer,
+              status: 'PAID',
+            },
+            {
+              id_debtor: id_customer,
+              status: 'PAID',
+            },
+            {
+              id_creditor: id_customer,
+              status: 'CANCELED',
+            },
+            {
+              id_debtor: id_customer,
+              status: 'CANCELED',
+            },
+            {
+              id_creditor: id_customer,
+              status: 'DECLINED',
+            },
+            {
+              id_debtor: id_customer,
+              status: 'DECLINED',
+            },
+          ],
+        },
+        include: {
+          // join with customers table to get debtor details
+          debtor: {
+            select: {
+              id: true,
+              username: true,
+              fullname: true,
+            },
+          },
+          // join with customers table to get creditor details
+          creditor: {
+            select: {
+              id: true,
+              username: true,
+              fullname: true,
+            },
+          },
+        },
+      });
+
+      return {
+        message: 'Completed debts fetched successfully',
+        data: debts,
+      };
+    } catch (error) {
+      throw new Error('Error fetching completed debts: ' + error.message);
     }
   }
 
@@ -116,7 +288,7 @@ export class DebtsService {
           where: {
             id,
           },
-          data: { status: 'DELETED' },
+          data: { status: 'DECLINED' },
         }),
         this.prisma.debt_deletions.create({
           data: {

@@ -27,7 +27,7 @@ function AuthenticatedLayout() {
   return (
     <div>
       <Sidebar />
-      <Outlet />
+      <Outlet className='ms-80' />
     </div>
   );
 }

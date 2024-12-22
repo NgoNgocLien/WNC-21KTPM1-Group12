@@ -2,11 +2,12 @@ import {
   IsDate,
   IsDateString,
   IsDefined,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
-import { DebtStatus } from '../types/DebtStatus.type';
+import { debt_status } from '@prisma/client';
 
 export class CreateDebtDto {
   @IsNumber()
@@ -25,9 +26,9 @@ export class CreateDebtDto {
   @IsOptional()
   debt_message: string;
 
-  @IsString()
+  @IsEnum(debt_status)
   @IsDefined()
-  status: DebtStatus;
+  status: debt_status;
 
   @IsDateString()
   @IsDefined()

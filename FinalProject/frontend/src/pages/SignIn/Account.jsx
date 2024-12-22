@@ -6,7 +6,7 @@ import ContactList from '../../components/Account/ContactList';
 
 export default function Account() {
   return (
-    <main className="ms-64 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
+    <main className="ms-80 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
       <AccountInfo />
       <ContactList />
     </main>

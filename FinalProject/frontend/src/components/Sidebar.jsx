@@ -28,8 +28,8 @@ const Sidebar = () => {
     navigate("/home")
   };
   return (
-    <div className="fixed h-screen w-64 p-2">
-      <div className="h-full w-64 bg-red-800 text-white font-semibold flex flex-col justify-between rounded-2xl">
+    <div className="fixed h-screen w-80 p-3">
+      <div className="h-full w-full bg-red-800 text-white font-semibold flex flex-col justify-between rounded-2xl">
         <div className='px-4 flex flex-col gap-5'>
           <h1 className="text-3xl text-center mt-5">NoMeoBank</h1>
           <div className="text-center">
@@ -46,11 +46,11 @@ const Sidebar = () => {
             </div>
           </div>
 
-          <nav className="w-full mx-auto flex flex-col gap-3 text-black font-semibold">
+          <nav className="w-full mx-auto flex flex-col gap-3 text-black font-semibold text-md">
 
             <NavLink
               to="/transfer"
-              className="bg-white py-2 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3 hover:text-red-800"
+              className="bg-white py-3 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3 hover:text-red-800"
             >
               <div className="flex size-8 flex-none items-center justify-center rounded-3xl bg-red-800 group-hover:bg-white">
                 <ArrowsRightLeftIcon className="size-5 text-white group-hover:text-red-800" />
@@ -60,17 +60,17 @@ const Sidebar = () => {
 
             <NavLink
               to="/debt"
-              className="bg-white py-2 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3 hover:text-red-800"
+              className="bg-white py-3 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3 hover:text-red-800"
             >
               <div className="flex size-8 flex-none items-center justify-center rounded-3xl bg-red-800 group-hover:bg-white">
                 <BanknotesIcon className="size-5 text-white group-hover:text-red-800" />
               </div>
-              Quản lí nhắc nợ
+              Nhắc nợ
             </NavLink>
 
             <NavLink
               to="/account"
-              className="bg-white py-2 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3 hover:text-red-800"
+              className="bg-white py-3 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3 hover:text-red-800"
             >
               <div className="flex size-8 flex-none items-center justify-center rounded-3xl bg-red-800 group-hover:bg-white">
                 <BuildingLibraryIcon className="size-5 text-white group-hover:text-red-800" />
