@@ -71,11 +71,11 @@ model debt_deletions {
 }
 
 model debt_payments {
-  id             Int          @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   id_debt        Int
-  id_transaction Int
-  debts          debts        @relation(fields: [id_debt], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  transactions   transactions @relation(fields: [id_transaction], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_transaction String?       @db.Uuid
+  debts          debts         @relation(fields: [id_debt], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  transactions   transactions? @relation(fields: [id_transaction], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -85,7 +85,7 @@ model debts {
   id_debtor      Int
   debt_amount    Decimal         @db.Decimal(15, 2)
   debt_message   String?
-  status         String?         @db.VarChar(10)
+  status         debt_status?
   created_at     DateTime        @default(now()) @db.Timestamp(6)
   debt_deletions debt_deletions?
   debt_payments  debt_payments[]
@@ -131,7 +131,6 @@ model notifications {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model transactions {
-  id                       Int             @id @default(autoincrement())
   sender_account_number    String          @db.VarChar(20)
   id_sender_bank           Int
   recipient_account_number String          @db.VarChar(20)
@@ -142,6 +141,7 @@ model transactions {
   transaction_time         DateTime        @default(now()) @db.Timestamp(6)
   digital_signature        String?
   recipient_name           String?         @db.VarChar(100)
+  id                       String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   debt_payments            debt_payments[]
   recipient_bank           banks           @relation("transactions_id_recipient_bankTobanks", fields: [id_recipient_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sender_bank              banks           @relation("transactions_id_sender_bankTobanks", fields: [id_sender_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -157,4 +157,11 @@ model otp {
 enum employee_status {
   ACTIVE
   DELETED
+}
+
+enum debt_status {
+  PENDING
+  PAID
+  CANCELED
+  DECLINED
 }

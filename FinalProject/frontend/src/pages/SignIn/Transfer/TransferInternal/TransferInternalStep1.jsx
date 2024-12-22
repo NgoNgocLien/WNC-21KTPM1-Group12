@@ -1,22 +1,23 @@
-import React, { useState} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 import TransferAccount from '../../../../components/Transfer/TransferAccount';
-import { SENDER, RECIPIENT } from '../../../../util/config';
+import { SENDER, RECIPIENT, INTERNAL_BAND_ID } from '../../../../util/config';
 import getFullname from '../../../../util/getFullname';
+import { getAccessToken } from '../../../../util/cookie';
 
 export default function TransferInternalStep1({ setCurrentStep, setValues }) {
-  const { access_token } = useSelector((state) => state.auth)
   const { account_number, balance } = useSelector((state) => state.user);
-
+  const access_token = getAccessToken();
+  
   const formik = useFormik({
     initialValues: {
       sender_account_number: account_number,
-      id_sender_bank: 1,
+      id_sender_bank: INTERNAL_BAND_ID,
       recipient_account_number: '',
-      id_recipient_bank: 1,
+      id_recipient_bank: INTERNAL_BAND_ID,
       transaction_amount: null,
       transaction_message: '',
       fee_payment_method: SENDER,

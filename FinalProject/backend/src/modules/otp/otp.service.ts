@@ -16,9 +16,9 @@ export class OtpService {
   }
 
   // Store OTP in DB and send email
-  async generateAndSendOtp(email: string): Promise<void> {
+  async generateAndSendOtp(email: string){
     const otp = this.generateOtp();
-    const expiration_time = addMinutes(new Date(), 1); // OTP expires in 1 minute
+    const expiration_time = addMinutes(new Date(), 20); // OTP expires in 1 minute
   
     // Store OTP in DB
     await this.prisma.otp.upsert({
@@ -32,25 +32,41 @@ export class OtpService {
         <body>
           <p>Chúng tôi xin thông báo mã OTP của quý khách để xác nhận giao dịch chuyển tiền là: <strong>${otp}</strong>.</p>
           <p>Quý khách vui lòng nhập mã OTP này để hoàn tất giao dịch.</p>
-          <p>Mã OTP này sẽ hết hạn sau 1 phút kể từ thời điểm nhận được. Vui lòng thực hiện giao dịch trong thời gian quy định.</p>
+          <p>Mã OTP này sẽ hết hạn sau 2 phút kể từ thời điểm nhận được. Vui lòng thực hiện giao dịch trong thời gian quy định.</p>
         </body>
       </html>
     `;
   
     await sendMail(email, 'Xác nhận giao dịch chuyển tiền', htmlContent);
+
+    return {
+      message: "Send OTP successfully",
+    }
   }
 
   // Verify OTP
-  async verifyOtp(email: string, otp: string): Promise<boolean> {
+  async verifyOtp(email: string, otp: string){
     const otpRecord = await this.prisma.otp.findUnique({
       where: { email },
     });
 
     if (!otpRecord) {
-      return false; // OTP not found for this email
+      return {
+        message: 'OTP is invalid',
+        data: false
+      }; 
     }
 
     const isOtpValid = otpRecord.otp === otp && new Date() < otpRecord.expiration_time;
-    return isOtpValid;
+    if (!isOtpValid)
+      return {
+        message: 'OTP is invalid',
+        data: false
+      }; 
+
+    return {
+      message: 'OTP is valid',
+      data: true
+    }; 
   }
 }
