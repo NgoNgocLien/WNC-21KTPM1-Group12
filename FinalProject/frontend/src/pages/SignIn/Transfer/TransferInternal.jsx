@@ -3,19 +3,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-import StepLabel from '../../../../components/Transfer/StepLabel'
-import TransferInternalStep1 from './TransferInternalStep1';
-import TransferInternalStep2 from './TransferInternalStep2';
-import TransferInternalStep3 from './TransferInternalStep3';
-import TransferInternalStep4 from './TransferInternalStep4';
+import StepLabel from '../../../components/Transfer/StepLabel'
+import TransferInternalStep1 from './../../../components/Transfer/TransferInternalStep1';
+import TransferInternalStep2 from './../../../components/Transfer/TransferInternalStep2';
+import TransferInternalStep3 from './../../../components/Transfer/TransferInternalStep3';
+import TransferInternalStep4 from './../../../components/Transfer/TransferInternalStep4';
+import AddContactModal from './../../../components/Account/Modal/AddContactModal';
 
 export default function TransferInternal() {
   const [currentStep, setCurrentStep] = useState(1)
   const [values, setValues] = useState(null)
   const [transaction, setTransaction] = useState(null)
 
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
   return (
-    <main className="ms-80 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
+    <>
       <StepLabel
         label="Chuyển tiền trong NoMeoBank"
         currentStep={currentStep} />
@@ -53,10 +56,20 @@ export default function TransferInternal() {
         currentStep === 4 && (
           <TransferInternalStep4
             transaction={transaction}
+            setIsAddModalOpen={setIsAddModalOpen}
           />
         )
       }
 
-    </main>
+      <AddContactModal 
+        isOpen={isAddModalOpen} 
+        closeModal={() => setIsAddModalOpen(false)} 
+        recipient={{
+          bank_id: transaction?.id_recipient_bank,
+          account_number: transaction?.recipient_account_number,
+          fullname: transaction?.recipient_name,
+        }}
+      />
+    </>
   )
 }

@@ -23,22 +23,20 @@ const bankOptions = banks.map(bank => ({
   ),
 }));
 
-const AddContactModal = ({ isOpen, closeModal }) => {
+const AddContactModal = ({ isOpen, closeModal, recipient }) => {
   const dispatch = useDispatch();
   const access_token = getAccessToken();
 
   const formik = useFormik({
     initialValues: {
-      bank_id: 1, // Set default value
-      account_number: '',
-      contact_fullname: '',
-      nickname: '',
+      bank_id: recipient?.bank_id || 1, 
+      account_number: recipient?.account_number || '',
+      contact_fullname: recipient?.fullname || '',
+      nickname: recipient?.fullname || '',
     },
     validationSchema: Yup.object({
       account_number: Yup.string()
         .required('Tài khoản thanh toán là bắt buộc'),
-      nickname: Yup.string()
-        .required('Tên gợi nhớ là bắt buộc'),
     }),
     onSubmit: (values, { resetForm }) => {
       console.log(values)
@@ -89,6 +87,7 @@ const AddContactModal = ({ isOpen, closeModal }) => {
               onChange={(option) => handleChangeBankId(option)}
               options={bankOptions}
               styles={customStyles}
+              isSearchable={false || recipient}
             />
           </div>
 
@@ -101,6 +100,7 @@ const AddContactModal = ({ isOpen, closeModal }) => {
                 value={formik.values.account_number}
                 onChange={formik.handleChange}
                 onBlur={handleAccountNumberBlur}
+                disabled={true && recipient}
                 className="w-full border-2 p-2 rounded-lg"
               />
               {formik.touched.account_number && formik.errors.account_number ? (
@@ -108,7 +108,7 @@ const AddContactModal = ({ isOpen, closeModal }) => {
               ) : null}
             </div>
             <div className="w-1/2">
-              <p className="text-gray-500 mb-2">Họ và tên</p>
+              <p className="text-gray-500 mb-2">Tên đăng ký</p>
               <input
                 type="text"
                 name="contact_fullname"
@@ -121,18 +121,16 @@ const AddContactModal = ({ isOpen, closeModal }) => {
             </div>
           </div>
 
-          <p className="text-gray-500 mb-2">Tên gợi nhớ<span className="text-red-500">*</span></p>
+          <p className="text-gray-500">Tên gợi nhớ</p>
+          <p className="text-sm text-gray-500 mb-2 italic">Mặc định là tên đăng ký</p>
           <input
             type="text"
             name="nickname"
             value={formik.values.nickname}
             onChange={formik.handleChange}
-            className="w-full border-2 p-2 mb-4 rounded-lg"
+            className="w-full border-2 p-2 mb-2 rounded-lg"
           />
-          {formik.touched.nickname && formik.errors.nickname ? (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.nickname}</div>
-          ) : null}
-          <div className="flex justify-center space-x-4 mt-4">
+          <div className="flex justify-center space-x-4 mt-6">
             <button
               type="button"
               onClick={() => {

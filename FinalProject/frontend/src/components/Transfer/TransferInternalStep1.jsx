@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-import TransferAccount from '../../../../components/Transfer/TransferAccount';
-import { SENDER, RECIPIENT, INTERNAL_BAND_ID } from '../../../../util/config';
-import getFullname from '../../../../util/getFullname';
-import { getAccessToken } from '../../../../util/cookie';
+import TransferAccount from './TransferAccount';
+import { SENDER, RECIPIENT, INTERNAL_BAND_ID } from '../../util/config';
+import getFullname from '../../util/getFullname';
+import { getAccessToken } from '../../util/cookie';
 
 export default function TransferInternalStep1({ setCurrentStep, setValues }) {
   const { account_number, balance } = useSelector((state) => state.user);

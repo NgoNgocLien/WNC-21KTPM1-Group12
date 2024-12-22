@@ -6,7 +6,7 @@ import Login from './pages/Guest/Login';
 import Sidebar from './components/Sidebar';
 import Account from './pages/SignIn/Account';
 import Transfer from './pages/SignIn/Transfer/Transfer';
-import TransferInternal from './pages/SignIn/Transfer/TransferInternal/TransferInternal';
+import TransferInternal from './pages/SignIn/Transfer/TransferInternal';
 import TransferExternal from './pages/SignIn/Transfer/TransferExternal';
 import DebtList from './pages/SignIn/Debt/DebtList';
 
@@ -27,7 +27,10 @@ function AuthenticatedLayout() {
   return (
     <div>
       <Sidebar />
-      <Outlet className='ms-80' />
+      <main className="ms-80 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
+        <Outlet />
+      </main>
+      
     </div>
   );
 }

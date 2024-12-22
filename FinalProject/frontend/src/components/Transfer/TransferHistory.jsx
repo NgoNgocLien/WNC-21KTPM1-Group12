@@ -4,26 +4,35 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ArrowsRightLeftIcon, BanknotesIcon, CreditCardIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { fetchAccountTransactions, fetchBankName } from '../../redux/transactionThunk';
 import { IDLE, LOADING, FAILED, SUCCEEDED } from '../../util/config';
+import DatePicker from 'react-datepicker';
 import { format } from 'date-fns';
-import { formatTime } from '../../util/time';
+import 'react-datepicker/dist/react-datepicker.css';
 
 export default function TransferHistory() {
   const dispatch = useDispatch();
   const { transactions, banks, status } = useSelector((state) => state.transaction);
   const { account_number } = useSelector((state) => state.user)
-  //const [account, setAccount] = useState('');
-  const [selectedTypes, setSelectedTypes] = useState([]);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+
+  const today = new Date();
+  const thirtyOneDaysAgo = new Date();
+  thirtyOneDaysAgo.setDate(today.getDate() - 30);
+
+  const [filter, setFilter] = useState('all');
+  const [startDate, setStartDate] = useState(thirtyOneDaysAgo);
+  const [endDate, setEndDate] = useState(today);
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((t) => {
-      const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(t.type);
+      const typeMatch = filter === 'all' || (filter === 'sender' && (t.type === 'Sender')) ||
+        (filter === 'debt' && (t.type === 'Sender (Debt)' || t.type === 'Recipient (Debt)')) ||
+        (filter === 'recipient' && (t.type === 'Recipient' || t.type === 'Deposit'));
+
       const startDateMatch = !startDate || new Date(t.transaction_time) >= new Date(startDate);
       const endDateMatch = !endDate || new Date(t.transaction_time) <= new Date(endDate);
+
       return typeMatch && startDateMatch && endDateMatch;
     });
-  }, [transactions, selectedTypes, startDate, endDate]);
+  }, [transactions, filter, startDate, endDate]);
 
   useEffect(() => {
     if (status === IDLE) {
@@ -46,17 +55,45 @@ export default function TransferHistory() {
 
   const renderTransactions = () => {
     if (status === SUCCEEDED) {
+      if (filteredTransactions.length === 0) {
+        return <p className="text-center text-gray-500">Không có giao dịch nào trong khoảng thời gian này</p>;
+      }
+
       return (
         <div className="max-h-96 overflow-y-auto space-y-4">
           {filteredTransactions.map((transaction) => {
             const uniqueKey = `${transaction.type}-${transaction.id}`;
-            const formattedTime = format(new Date(transaction.transaction_time), 'dd/MM/yyyy - HH:mm');
+            const formattedTime = format(new Date(transaction.transaction_time), 'dd/MM/yyyy - HH:mm:ss');
             const amountSign = transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? '-' : '+';
-            const bankName = transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? banks[transaction.id_recipient_bank]?.name : banks[transaction.id_sender_bank]?.name;
-            const bankId =
-              transaction.type === 'Sender' || transaction.type === 'Sender (Debt)'
-                ? transaction.id_recipient_bank
-                : transaction.id_sender_bank;
+            let bankId;
+            if (transaction.type === 'Deposit') {
+              bankId = 1; 
+            } else if (transaction.type === 'Recipient' || transaction.type === 'Recipient (Debt)') {
+              bankId = transaction.id_sender_bank; 
+            } else if (transaction.type === 'Sender' || transaction.type === 'Sender (Debt)') {
+              bankId = transaction.id_recipient_bank; 
+            }
+
+            const bankName = banks[bankId]?.name;
+            const bankLogo = banks[bankId]?.logo;
+
+            let transactionLabel = '';
+            let labelColor = '';
+    
+            if (transaction.type === 'Recipient' || transaction.type === 'Deposit') {
+              transactionLabel = 'Nhận tiền';
+              labelColor = 'bg-green-500'; 
+            } else if (transaction.type === 'Sender') {
+              transactionLabel = 'Chuyển tiền';
+              labelColor = 'bg-yellow-500'; 
+            } else if (transaction.type === 'Recipient (Debt)' || transaction.type === 'Sender (Debt)') {
+              transactionLabel = 'Thanh toán nợ';
+              labelColor = 'bg-blue-500'; 
+            }
+
+            const formattedAmount = new Intl.NumberFormat().format(transaction.transaction_amount);
+            const formattedBalance = new Intl.NumberFormat().format(transaction.current_balance);
+
             return (
               <div
                 key={uniqueKey}
@@ -64,29 +101,25 @@ export default function TransferHistory() {
               >
                 <div className="flex items-center space-x-4">
                   <img
-                    src={`https://logo.clearbit.com/${bankName}.com` || banks[bankId].logo}
+                    src={bankLogo ? bankLogo : `https://logo.clearbit.com/${bankName}.com`}
                     alt="Bank Logo"
                     className="w-10 h-10 rounded-full"
                   />
                   <div>
                     <p className="font-semibold">{transaction.transaction_message || transaction.deposit_message}</p>
-                    <p className="text-sm text-gray-600">{bankName}</p>
+                    {/* <p className="text-sm text-gray-600">{bankName}</p> */}
+                    <span className="text-sm text-gray-700 mr-5">{formattedTime}</span>
+                    <span className="text-sm">Số dư: {formattedBalance} VNĐ</span>
                   </div>
                 </div>
-                <div>
-                  {/* <p className="font-semibold text-gray-600">Mã giao dịch: {transaction.code}</p> */}
-                  <p className="text-sm">Số dư: {transaction.current_balance}</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-gray-800">{formattedTime}</p>
-                  <p
-                    className={`text-xl ${amountSign === '+' ? 'text-green-600' : 'text-red-600'}`}
-                  >
-                    {amountSign}{transaction.transaction_amount}
+                <div className='amount w-60 text-right'>
+                  <p className={`text-lg ${amountSign === '+' ? 'text-green-600' : 'text-red-600'}`}>
+                      {amountSign}{formattedAmount} VNĐ
                   </p>
-                </div>
-                <div className="ml-4 py-1 px-3 bg-gray-100 text-sm font-medium rounded">
-                  {transaction.type}
+                </div> 
+                  
+                <div className={`ml-4 py-1 px-2 text-xs font-base rounded text-white ${labelColor}`}>
+                  {transactionLabel}
                 </div>
               </div>
             );
@@ -96,77 +129,92 @@ export default function TransferHistory() {
     }
     return null;
   };
-
+  
+  const handleStartDateChange = (date) => setStartDate(date);
+  const handleEndDateChange = (date) => setEndDate(date);
+  
   return (
     <>
       <div className="p-6 bg-white rounded-lg space-y-4">
-        <p className="text-lg font-semibold">Lịch sử giao dịch</p>
-        <p className="text-sm text-red-600">
-          Quý khách lưu ý: Thời gian tìm kiếm giới hạn trong 31 ngày.
-        </p>
-        <hr className="my-4" />
-
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Tài khoản</label>
+            <label className="block text-base font-medium text-gray-500 mb-2">Tài khoản</label>
             <select
               value={account_number}
-              // onChange={(e) => setAccount(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="w-full p-3 border border-gray-300 rounded-md"
             >
               <option value="">{account_number}</option>
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Loại giao dịch</label>
-            <select
-              multiple
-              value={selectedTypes}
-              onChange={(e) =>
-                setSelectedTypes(Array.from(e.target.selectedOptions, (option) => option.value))
-              }
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            >
-              <option value="">Tất cả giao dịch</option>
-              <option value="Sender">Chuyển tiền</option>
-              <option value="Recipient">Nhận tiền</option>
-              <option value="Sender (Debt)">Thanh toán nợ</option>
-              <option value="Recipient (Debt)">Nhận thanh toán nợ</option>
-            </select>
-          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-base font-medium text-gray-500 mb-2">Từ ngày</label>
+              <DatePicker
+                selected={startDate}
+                onChange={handleStartDateChange}
+                dateFormat="dd/MM/yyyy"
+                className="w-full p-3 border border-gray-300 rounded-md"
+                wrapperClassName="react-datepicker-wrapper w-full"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Từ ngày</label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Đến ngày</label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
+            <div>
+              <label className="block text-base font-medium text-gray-500 mb-2">Đến ngày</label>
+              <DatePicker
+                selected={endDate}
+                onChange={handleEndDateChange}
+                dateFormat="dd/MM/yyyy"
+                className="w-full p-3 border border-gray-300 rounded-md"
+                wrapperClassName="react-datepicker-wrapper w-full"
+              />
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-end mt-4">
-          <button
-            className="inline-flex items-center gap-1 py-2 px-3 bg-red-800 text-white font-semibold rounded-lg focus:outline-none"
+        <div className="flex justify-end mt-4 gap-2">
+        <button
+            className={`flex items-center gap-2 p-2 rounded-lg ${
+              filter === 'recipient' ? 'bg-green-500' : 'bg-gray-200'
+            } text-white`}
+            onClick={() => setFilter('recipient')}
           >
-            <MagnifyingGlassIcon className="w-5 h-5" /> Tra cứu
+            <BanknotesIcon className="w-6 h-6" />
+            Nhận tiền
+          </button>
+          <button
+            className={`flex items-center gap-2 p-2 rounded-lg ${
+              filter === 'sender' ? 'bg-yellow-500' : 'bg-gray-200'
+            } text-white`}
+            onClick={() => setFilter('sender')}
+          >
+            <ArrowsRightLeftIcon className="w-6 h-6" />
+            Chuyển tiền
+          </button>
+          <button
+            className={`flex items-center gap-2 p-2 rounded-lg ${
+              filter === 'debt' ? 'bg-blue-500' : 'bg-gray-200'
+            } text-white`}
+            onClick={() => setFilter('debt')}
+          >
+            <CreditCardIcon className="w-6 h-6" />
+            Thanh toán nợ
+          </button>
+          <button
+            className={`flex items-center gap-2 p-2 rounded-lg ${
+              filter === 'all' ? 'bg-red-500' : 'bg-gray-200'
+            } text-white`}
+            onClick={() => setFilter('all')}
+          >
+            Tất cả
           </button>
         </div>
+        <p className="text-sm text-right">
+          <span className="text-red-600">Quý khách lưu ý:</span> Thời gian tìm kiếm giới hạn trong 31 ngày
+        </p>
       </div>
 
-      <div className="mt-6 p-6 bg-white rounded-lg">{renderTransactions()}</div>
+      <div className="mt-1 p-6 bg-white rounded-lg">{renderTransactions()}</div>
     </>
   );
 }

@@ -7,6 +7,7 @@ const EditContactModal = ({ isOpen, closeModal, contact }) => {
 
   const [nickname, setNickname] = useState('');
   const [currentNickname, setCurrentNickname] = useState('');
+  
   useEffect(() => {
     if (contact) {
       setNickname(contact.nickname);
