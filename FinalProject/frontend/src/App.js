@@ -25,7 +25,7 @@ const AuthenticatedRoute = ({ element, redirectTo }) => {
 
 function AuthenticatedLayout() {
   return (
-    <div className="layout">
+    <div>
       <Sidebar />
       <Outlet />
     </div>
@@ -36,12 +36,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path="home"
-          element={<GuestRoute element={<Home />} redirectTo="/transfer" />}
-        />
-
         <Route path="login/:role" element={<GuestRoute element={<Login />} redirectTo="/transfer" />} />
+        <Route path="home" element={<GuestRoute element={<Home />} redirectTo="/transfer" />} />
 
         <Route path="/" element={<AuthenticatedRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
           <Route index element={<Navigate to="/transfer" />} />
