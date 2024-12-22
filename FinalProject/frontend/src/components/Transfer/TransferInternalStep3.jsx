@@ -1,10 +1,10 @@
 import React, { useState} from 'react';
 import { useSelector } from 'react-redux';
 
-import OtpInputs from '../../../../components/OtpInputs';
+import OtpInputs from '../OtpInputs';
 
-import { BASE_URL, SENDER } from '../../../../util/config';
-import { getAccessToken } from '../../../../util/cookie';
+import { BASE_URL, SENDER } from '../../util/config';
+import { getAccessToken } from '../../util/cookie';
 
 
 

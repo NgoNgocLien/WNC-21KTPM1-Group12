@@ -1,7 +1,7 @@
 import React, { useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BASE_URL, SENDER } from '../../../../util/config';
-import { getAccessToken } from '../../../../util/cookie';
+import { BASE_URL, SENDER } from '../../util/config';
+import { getAccessToken } from '../../util/cookie';
 
 
 export default function TransferInternalStep2({ setCurrentStep, values }) {

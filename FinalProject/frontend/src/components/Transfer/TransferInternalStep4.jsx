@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { HiCheckBadge } from "react-icons/hi2";
 
-import { SENDER, INTERNAL_BAND_NAME } from '../../../../util/config';
-import { formatTime } from '../../../../util/time';
+import { SENDER, INTERNAL_BAND_NAME } from '../../util/config';
+import { formatTime } from '../../util/time';
 
 
-export default function TransferInternalStep4({ setCurrentStep, transaction }) {
+export default function TransferInternalStep4({ setIsAddModalOpen, transaction }) {
   const {fullname} = useSelector((state) => state.user)
   const navigate = useNavigate();
 
@@ -89,7 +89,7 @@ export default function TransferInternalStep4({ setCurrentStep, transaction }) {
             <div>
             <button
               type="button"
-              onClick={() => navigate("/transfer")}
+              onClick={() => setIsAddModalOpen(true) }
               className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg 
               disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none"
             >
