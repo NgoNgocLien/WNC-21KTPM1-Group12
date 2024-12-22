@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux"
 import { formatMoney, formatTime } from "../../../util/format"
 import { fetchIncomingDebts, fetchOutgoingDebts } from "../../../redux/debtThunk"
 import { IDLE } from "../../../util/config"
+import DebtItem from "../../../components/Debt/DebtItem"
 
 const INCOMING = 'INCOMING'
 const OUTGOING = 'OUTGOING'
@@ -48,19 +49,7 @@ export default function DebtList() {
                 <h4 className="text-md font-medium text-gray-500 mt-4">Đang chờ</h4>
                 <ul className="divide-y divide-gray-200">
                   {incomingDebts?.pending.map((debt) =>
-                    <li key={debt.id} className="flex justify-between items-center gap-x-6 py-4 px-2">
-                      <div className="flex gap-x-4 items-center">
-                        <img className="size-12 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                        <div className="flex flex-col justify-evenly">
-                          <p className="text-sm text-gray-500">{debt.creditor.fullname}</p>
-                          <p className="text-lg text-gray-900 font-semibold">{formatMoney(debt.debt_amount)} VNĐ</p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end justify-evenly">
-                        <p className="text-sm text-gray-500">{formatTime(debt.created_at)}</p>
-                        <p className="text-md text-orange-600 font-semibold">Đang chờ</p>
-                      </div>
-                    </li>
+                    <DebtItem key={debt.id} debt={debt} type={INCOMING} />
                   )}
                 </ul>
               </>
@@ -71,21 +60,7 @@ export default function DebtList() {
                 <h4 className="text-md font-medium text-gray-500 mt-4">Đã hoàn tất</h4>
                 <ul className="divide-y divide-gray-200">
                   {incomingDebts?.completed.map((debt) =>
-                    <li key={debt.id} className="flex justify-between items-center gap-x-6 py-4 px-2">
-                      <div className="flex gap-x-4 items-center">
-                        <img className="size-12 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                        <div className="flex flex-col justify-evenly">
-                          <p className="text-sm text-gray-500">{debt.creditor.fullname}</p>
-                          <p className="text-lg text-gray-900 font-semibold">{formatMoney(debt.debt_amount)} VNĐ</p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end justify-evenly">
-                        <p className="text-sm text-gray-500">{formatTime(debt.created_at)}</p>
-                        {debt.status === 'PAID' && <p className="text-md text-green-800 font-semibold">Đã thanh toán</p>}
-                        {debt.status === 'DECLINED' && <p className="text-md text-red-800 font-semibold">Đã từ chối</p>}
-                        {debt.status === 'CANCELED' && <p className="text-md text-gray-500 font-semibold">Đã hủy</p>}
-                      </div>
-                    </li>
+                    <DebtItem key={debt.id} debt={debt} type={INCOMING} />
                   )}
                 </ul>
               </>
@@ -101,19 +76,7 @@ export default function DebtList() {
                 <h4 className="text-md font-medium text-gray-500 mt-4">Đang chờ</h4>
                 <ul className="divide-y divide-gray-200">
                   {outgoingDebts?.pending.map((debt) =>
-                    <li key={debt.id} className="flex justify-between items-center gap-x-6 py-4 px-2 ">
-                      <div className="flex gap-x-4 items-center">
-                        <img className="size-12 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                        <div className="flex flex-col justify-evenly">
-                          <p className="text-sm text-gray-500">{debt.debtor.fullname}</p>
-                          <p className="text-lg text-gray-900 font-semibold">{formatMoney(debt.debt_amount)} VNĐ</p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end justify-evenly">
-                        <p className="text-sm text-gray-500">{formatTime(debt.created_at)}</p>
-                        <p className="text-md text-orange-600 font-semibold">Đang chờ</p>
-                      </div>
-                    </li>
+                    <DebtItem key={debt.id} debt={debt} type={OUTGOING} />
                   )}
                 </ul>
               </>
@@ -124,21 +87,7 @@ export default function DebtList() {
                 <h4 className="text-md font-medium text-gray-500 mt-4">Đã hoàn tất</h4>
                 <ul className="divide-y divide-gray-200">
                   {outgoingDebts?.completed.map((debt) =>
-                    <li key={debt.id} className="flex justify-between items-center gap-x-6 py-4 px-2 ">
-                      <div className="flex gap-x-4 items-center">
-                        <img className="size-12 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                        <div className="flex flex-col justify-evenly">
-                          <p className="text-sm text-gray-500">{debt.debtor.fullname}</p>
-                          <p className="text-lg text-gray-900 font-semibold">{formatMoney(debt.debt_amount)} VNĐ</p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end justify-evenly">
-                        <p className="text-sm text-gray-500">{formatTime(debt.created_at)}</p>
-                        {debt.status === 'PAID' && <p className="text-md text-green-800 font-semibold">Đã thanh toán</p>}
-                        {debt.status === 'DECLINED' && <p className="text-md text-red-800 font-semibold">Đã từ chối</p>}
-                        {debt.status === 'CANCELED' && <p className="text-md text-gray-500 font-semibold">Đã hủy</p>}
-                      </div>
-                    </li>
+                    <DebtItem key={debt.id} debt={debt} type={OUTGOING} />
                   )}
                 </ul>
               </>

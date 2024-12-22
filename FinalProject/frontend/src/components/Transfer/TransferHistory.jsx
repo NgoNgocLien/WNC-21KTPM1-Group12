@@ -67,11 +67,11 @@ export default function TransferHistory() {
             const amountSign = transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? '-' : '+';
             let bankId;
             if (transaction.type === 'Deposit') {
-              bankId = 1; 
+              bankId = 1;
             } else if (transaction.type === 'Recipient' || transaction.type === 'Recipient (Debt)') {
-              bankId = transaction.id_sender_bank; 
+              bankId = transaction.id_sender_bank;
             } else if (transaction.type === 'Sender' || transaction.type === 'Sender (Debt)') {
-              bankId = transaction.id_recipient_bank; 
+              bankId = transaction.id_recipient_bank;
             }
 
             const bankName = banks[bankId]?.name;
@@ -79,16 +79,16 @@ export default function TransferHistory() {
 
             let transactionLabel = '';
             let labelColor = '';
-    
+
             if (transaction.type === 'Recipient' || transaction.type === 'Deposit') {
               transactionLabel = 'Nhận tiền';
-              labelColor = 'bg-green-500'; 
+              labelColor = 'bg-green-500';
             } else if (transaction.type === 'Sender') {
               transactionLabel = 'Chuyển tiền';
-              labelColor = 'bg-yellow-500'; 
+              labelColor = 'bg-yellow-500';
             } else if (transaction.type === 'Recipient (Debt)' || transaction.type === 'Sender (Debt)') {
               transactionLabel = 'Thanh toán nợ';
-              labelColor = 'bg-blue-500'; 
+              labelColor = 'bg-blue-500';
             }
 
             const formattedAmount = new Intl.NumberFormat().format(transaction.transaction_amount);
@@ -114,10 +114,10 @@ export default function TransferHistory() {
                 </div>
                 <div className='amount w-60 text-right'>
                   <p className={`text-lg ${amountSign === '+' ? 'text-green-600' : 'text-red-600'}`}>
-                      {amountSign}{formattedAmount} VNĐ
+                    {amountSign}{formattedAmount} VNĐ
                   </p>
-                </div> 
-                  
+                </div>
+
                 <div className={`ml-4 py-1 px-2 text-xs font-base rounded text-white ${labelColor}`}>
                   {transactionLabel}
                 </div>
@@ -129,19 +129,19 @@ export default function TransferHistory() {
     }
     return null;
   };
-  
+
   const handleStartDateChange = (date) => setStartDate(date);
   const handleEndDateChange = (date) => setEndDate(date);
-  
+
   return (
     <>
-      <div className="p-6 bg-white rounded-lg space-y-4">
+      <div className="p-6 bg-white rounded-2xl space-y-4">
         <div className="grid grid-cols-1 gap-4">
           <div>
             <label className="block text-base font-medium text-gray-500 mb-2">Tài khoản</label>
             <select
               value={account_number}
-              className="w-full p-3 border border-gray-300 rounded-md"
+              className="w-full p-3 border border-gray-300 rounded-xl"
             >
               <option value="">{account_number}</option>
             </select>
@@ -154,7 +154,7 @@ export default function TransferHistory() {
                 selected={startDate}
                 onChange={handleStartDateChange}
                 dateFormat="dd/MM/yyyy"
-                className="w-full p-3 border border-gray-300 rounded-md"
+                className="w-full p-3 border border-gray-300 rounded-xl"
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div>
@@ -165,7 +165,7 @@ export default function TransferHistory() {
                 selected={endDate}
                 onChange={handleEndDateChange}
                 dateFormat="dd/MM/yyyy"
-                className="w-full p-3 border border-gray-300 rounded-md"
+                className="w-full p-3 border border-gray-300 rounded-xl"
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div>
@@ -173,37 +173,33 @@ export default function TransferHistory() {
         </div>
 
         <div className="flex justify-end mt-4 gap-2">
-        <button
-            className={`flex items-center gap-2 p-2 rounded-lg ${
-              filter === 'recipient' ? 'bg-green-500' : 'bg-gray-200'
-            } text-white`}
+          <button
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'recipient' ? 'bg-green-500' : 'bg-gray-200'
+              } text-white`}
             onClick={() => setFilter('recipient')}
           >
             <BanknotesIcon className="w-6 h-6" />
             Nhận tiền
           </button>
           <button
-            className={`flex items-center gap-2 p-2 rounded-lg ${
-              filter === 'sender' ? 'bg-yellow-500' : 'bg-gray-200'
-            } text-white`}
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'sender' ? 'bg-yellow-500' : 'bg-gray-200'
+              } text-white`}
             onClick={() => setFilter('sender')}
           >
             <ArrowsRightLeftIcon className="w-6 h-6" />
             Chuyển tiền
           </button>
           <button
-            className={`flex items-center gap-2 p-2 rounded-lg ${
-              filter === 'debt' ? 'bg-blue-500' : 'bg-gray-200'
-            } text-white`}
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'debt' ? 'bg-blue-500' : 'bg-gray-200'
+              } text-white`}
             onClick={() => setFilter('debt')}
           >
             <CreditCardIcon className="w-6 h-6" />
             Thanh toán nợ
           </button>
           <button
-            className={`flex items-center gap-2 p-2 rounded-lg ${
-              filter === 'all' ? 'bg-red-500' : 'bg-gray-200'
-            } text-white`}
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'all' ? 'bg-red-500' : 'bg-gray-200'
+              } text-white`}
             onClick={() => setFilter('all')}
           >
             Tất cả
@@ -214,7 +210,7 @@ export default function TransferHistory() {
         </p>
       </div>
 
-      <div className="mt-1 p-6 bg-white rounded-lg">{renderTransactions()}</div>
+      <div className="mt-1 p-6 bg-white rounded-2xl">{renderTransactions()}</div>
     </>
   );
 }
