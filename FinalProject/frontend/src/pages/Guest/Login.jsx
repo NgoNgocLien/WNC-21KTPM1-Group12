@@ -45,7 +45,7 @@ export default function Login() {
       setRefreshToken(data.refresh_token);
       
 
-      window.location.href = '/account';
+      window.location.href = '/transfer';
 
     } catch (error) {
       console.log(error)

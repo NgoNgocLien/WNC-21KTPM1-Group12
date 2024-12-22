@@ -1,41 +1,39 @@
-import { IsString, IsInt, IsDecimal, IsOptional, IsDateString, MaxLength, MinLength, Matches } from 'class-validator';
+import { IsString, IsInt, IsDecimal, IsOptional, IsDateString, MaxLength, MinLength, Matches, IsNotEmpty } from 'class-validator';
 import { FeePayment } from '../types/FeePayment.type';
 
 export class CreateTransactionDto {
+  @IsNotEmpty()
   @IsString()
   // @MinLength(20, { message: 'Sender account number must be 20 characters long.' })
   // @MaxLength(20, { message: 'Sender account number must not exceed 20 characters.' })
   sender_account_number: string;
 
+  @IsNotEmpty()
   @IsInt()
   id_sender_bank: number;
 
+  @IsNotEmpty()
   @IsString()
   // @MinLength(20, { message: 'Recipient account number must be 20 characters long.' })
   // @MaxLength(20, { message: 'Recipient account number must not exceed 20 characters.' })
   recipient_account_number: string;
 
+  @IsNotEmpty()
   @IsInt()
   id_recipient_bank: number;
 
-  @IsDecimal()
+
+  @IsNotEmpty()
   transaction_amount: string;
 
-  @IsOptional()
   @IsString()
   @MaxLength(255, { message: 'Transaction message is too long. Max 255 characters.' })
   transaction_message?: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @MaxLength(10, { message: 'Fee payment method must not exceed 10 characters.' })
   fee_payment_method?: FeePayment;
-
-  @Matches(
-    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))$/,
-    { message: 'transaction_time must be a valid ISO 8601 date string' },
-  ) // Converts the input string to a Date object
-  transaction_time: string;
 
   @IsOptional()
   @IsString()

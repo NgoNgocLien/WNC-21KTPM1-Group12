@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import { createOneContact } from './../../../redux/userThunk';
 import getFullname from '../../../util/getFullname'
 import banks from './banks'
+import { getAccessToken } from '../../../util/cookie';
 
 const bankOptions = banks.map(bank => ({
   value: bank.bank_id,
@@ -24,7 +25,7 @@ const bankOptions = banks.map(bank => ({
 
 const AddContactModal = ({ isOpen, closeModal }) => {
   const dispatch = useDispatch();
-  const {access_token} = useSelector((state) => state.auth)
+  const access_token = getAccessToken();
 
   const formik = useFormik({
     initialValues: {
@@ -138,7 +139,7 @@ const AddContactModal = ({ isOpen, closeModal }) => {
                 closeModal();
                 formik.resetForm();
               }}
-              className="px-4 py-2 bg-while-200 text-red-800 border-2 border-red-800 rounded-lg 
+              className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg 
               disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none"
             >
               Hủy

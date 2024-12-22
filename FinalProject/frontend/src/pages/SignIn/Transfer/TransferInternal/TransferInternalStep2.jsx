@@ -1,15 +1,30 @@
 import React, { useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { SENDER } from '../../../../util/config';
+import { BASE_URL, SENDER } from '../../../../util/config';
+import { getAccessToken } from '../../../../util/cookie';
 
 
 export default function TransferInternalStep2({ setCurrentStep, values }) {
-  const handleConfirm = () => {
-    // send otp
+  const {email} = useSelector((state) => state.user)
+  const access_token = getAccessToken();
 
-    setCurrentStep(3)
+  const handleConfirm = async () => {
+    const response = await fetch(`${BASE_URL}/otp/send`,{
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${access_token}`, 
+      },
+      body: JSON.stringify({
+          email
+      })
+    })
+
+    if (!response.ok){
+      throw new Error('Failed to fetch user account info');
+    } else{
+      setCurrentStep(3)
+    }
   }
 
   return (

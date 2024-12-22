@@ -1,5 +1,7 @@
 export const BASE_URL = 'http://localhost:4000';
 
+export const INTERNAL_BAND_ID = 1;
+
 export const IDLE = "IDLE";
 
 export const LOADING = "LOADING";
@@ -11,3 +13,5 @@ export const FAILED = "FAILED";
 export const SENDER = "SENDER";
 
 export const RECIPIENT = 'RECIPIENT';
+
+export const EXPIRED_OTP_TIME = 10;

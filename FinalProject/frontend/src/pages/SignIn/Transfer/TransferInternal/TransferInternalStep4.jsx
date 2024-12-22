@@ -1,21 +1,76 @@
 import React, { useState} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { HiCheckBadge } from "react-icons/hi2";
+
 import { SENDER } from '../../../../util/config';
 import { useNavigate } from 'react-router-dom';
 
 
-export default function TransferInternalStep4({ setCurrentStep, transacion }) {
+export default function TransferInternalStep4({ setCurrentStep, transaction }) {
   const navigate = useNavigate();
 
   const handleAddOneContact = () => {
 
   }
 
+  // console.log(transaction)
   return (
     <>
-      <div className="w-8/12 mx-auto p-6 flex flex-col bg-white rounded-lg space-y-6 pt-8 ">
+      <div className="relative w-8/12 h-screen h-fit mx-auto flex flex-col rounded-lg bg-white">
+      
+        <div className="absolute w-full h-full inset-0 p-6 pt-8 z-40">
+          <div className="self-center flex flex-col items-center text-green-400">
+            <HiCheckBadge size={80}/>
+            <p className="font-semibold text-black mt-3">Giao dịch thành công</p>
+            <p className="font-semibold text-2xl text-red-800 mt-1">{Number(transaction.transaction_amount).toLocaleString()} VNĐ</p>
+            <p className="text-gray-400">MGD: {transaction.id}</p>
+          </div>
+
+          <div className="flex justify-between space-x-4 pt-4">
+            <div>
+            <button
+              type="button"
+              onClick={() => navigate("/transfer")}
+              className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg 
+              disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none"
+            >
+              Lưu người nhận
+            </button>
+            </div>
+            <div className="flex justify-between space-x-4">
+            <button
+              type="button"
+              onClick={() => navigate("/transfer")}
+              className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg 
+              disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none"
+            >
+              Giao dịch khác
+            </button>
+            <button
+              onClick={() => navigate("/account")}
+              className="px-4 py-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400"
+            >
+              Về trang tài khoản
+            </button>
+          </div>
+          
+        </div>
+        </div>
+
+        <div className="absolute w-full h-full inset-0 z-10">
+          <img 
+            src="bg-bill.png" 
+            alt="background" 
+            className=" w-full h-full object-cover"
+            style={{
+              maskImage: 'linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)',
+              WebkitMaskImage: 'linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)',
+            }}
+          />
+        </div>
+        
+        
+        
+        
         {/* <div className="w-full flex justify-between">
           <div className="w-5/12 text-gray-500">
             Tài khoản nguồn
@@ -84,35 +139,7 @@ export default function TransferInternalStep4({ setCurrentStep, transacion }) {
           </div>
         </div> */}
 
-        <div className="flex justify-between space-x-4 pt-4">
-          <div>
-          <button
-            type="button"
-            onClick={() => navigate("/transfer")}
-            className="px-4 py-2 bg-while-200 text-red-800 border-2 border-red-800 rounded-lg 
-            disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none"
-          >
-            Lưu người nhận
-          </button>
-          </div>
-          <div className="flex justify-between space-x-4">
-          <button
-            type="button"
-            onClick={() => navigate("/transfer")}
-            className="px-4 py-2 bg-while-200 text-red-800 border-2 border-red-800 rounded-lg 
-            disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none"
-          >
-            Giao dịch khác
-          </button>
-          <button
-            onClick={() => navigate("/account")}
-            className="px-4 py-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400"
-          >
-            Về trang tài khoản
-          </button>
-          </div>
-          
-        </div>
+
       </div>
     </>
   );

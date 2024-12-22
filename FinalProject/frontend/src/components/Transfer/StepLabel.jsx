@@ -15,8 +15,7 @@ export default function StepLabel({label, currentStep}) {
     <>
         <p className="text-lg font-semibold">{label}</p>
 
-        <div className="w-full flex justify-around my-4">
-        <div className="flex-grow h-[2px] bg-red-800 mx-1 mt-4 "></div>
+        <div className="w-full flex justify-around my-4 px-8">
         {steps.map((step, index) => (
           <React.Fragment key={step.id}>
           <div className="flex flex-col items-center">
@@ -30,7 +29,11 @@ export default function StepLabel({label, currentStep}) {
             </div>
             <span className={`mt-2 ${step.id <= currentStep ? 'text-black font-semibold' : 'text-gray-400'}`}>{step.label}</span>
           </div>
-          <div className={`flex-grow h-[2px]  mx-1 mt-4 ${step.id < currentStep ? 'bg-red-800':'bg-gray-300'} `}></div>
+          {
+            index < (steps.length - 1) && (
+              <div className={`flex-grow h-[2px]  mx-1 mt-4 ${step.id < currentStep ? 'bg-red-800':'bg-gray-300'} `}></div>
+            )
+          }
           </React.Fragment>
         ))}
         </div>

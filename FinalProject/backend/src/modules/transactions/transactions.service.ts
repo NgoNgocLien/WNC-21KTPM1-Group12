@@ -4,6 +4,8 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateTransactionDto } from './dto/createTransaction.dto';
 import { Prisma } from '@prisma/client';
 
+import { INTERNAL_BAND_ID } from 'src/common/utils/config';
+
 @Injectable()
 export class TransactionsService {
   constructor(private readonly prisma: PrismaService) {}
@@ -35,16 +37,48 @@ export class TransactionsService {
 
   async createInternalTransaction(createTransactionDto: CreateTransactionDto) {
     try{
+      const senderExists = await this.prisma.accounts.findUnique({
+        where: { account_number: createTransactionDto.sender_account_number },
+      });
+      if (!senderExists) {
+        throw new NotFoundException(`Sender not found`);
+      }
+
+      const recipientExists = await this.prisma.accounts.findUnique({
+        where: { account_number: createTransactionDto.recipient_account_number },
+      });
+      if (!recipientExists) {
+        throw new NotFoundException(`Sender not found`);
+      }
+
+      const transaction_amount = new Prisma.Decimal(createTransactionDto.transaction_amount)
+      await this.prisma.accounts.update({
+        where: { account_number: senderExists.account_number },
+        data: {
+          account_balance: {
+            decrement: transaction_amount,
+          },
+        },
+      });
+
+      await this.prisma.accounts.update({
+        where: { account_number: recipientExists.account_number },
+        data: {
+          account_balance: {
+            increment: transaction_amount,
+          },
+        },
+      });
+
       const transaction = await this.prisma.transactions.create({
         data: {
-          sender_account_number: createTransactionDto.sender_account_number,
-          id_sender_bank: createTransactionDto.id_sender_bank,
-          recipient_account_number: createTransactionDto.recipient_account_number,
-          id_recipient_bank: createTransactionDto.id_recipient_bank,
-          transaction_amount: new Prisma.Decimal(createTransactionDto.transaction_amount),
+          sender_account_number: senderExists.account_number,
+          id_sender_bank: INTERNAL_BAND_ID,
+          recipient_account_number: recipientExists.account_number,
+          id_recipient_bank: INTERNAL_BAND_ID,
+          transaction_amount: transaction_amount,
           transaction_message: createTransactionDto.transaction_message,
           fee_payment_method: createTransactionDto.fee_payment_method,
-          transaction_time: new Date(createTransactionDto.transaction_time),
           recipient_name: createTransactionDto.recipient_name,
         },
       });
@@ -69,7 +103,6 @@ export class TransactionsService {
         transaction_amount: new Prisma.Decimal(createTransactionDto.transaction_amount),
         transaction_message: createTransactionDto.transaction_message,
         fee_payment_method: createTransactionDto.fee_payment_method,
-        transaction_time: new Date(createTransactionDto.transaction_time),
         digital_signature: createTransactionDto.digital_signature,
         recipient_name: createTransactionDto.recipient_name,
       },

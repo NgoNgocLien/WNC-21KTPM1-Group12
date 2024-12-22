@@ -7,7 +7,7 @@ export class OtpController {
 
   // Generate and send OTP
   @Post('send')
-  async sendOtp(@Body('email') email: string): Promise<void> {
+  async sendOtp(@Body('email') email: string) {
     await this.otpService.generateAndSendOtp(email);
   }
 
@@ -16,7 +16,7 @@ export class OtpController {
   async verifyOtp(
     @Body('email') email: string,
     @Body('otp') otp: string,
-  ): Promise<boolean> {
+  ) {
     return this.otpService.verifyOtp(email, otp);
   }
 }
