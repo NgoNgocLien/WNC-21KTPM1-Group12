@@ -5,7 +5,6 @@ import { ArrowsRightLeftIcon, BanknotesIcon, CreditCardIcon, MagnifyingGlassIcon
 import { fetchAccountTransactions, fetchBankName } from '../../redux/transactionThunk';
 import { IDLE, LOADING, FAILED, SUCCEEDED } from '../../util/config';
 import { format } from 'date-fns';
-import { formatTime } from '../../util/time';
 
 export default function TransferHistory() {
   const dispatch = useDispatch();

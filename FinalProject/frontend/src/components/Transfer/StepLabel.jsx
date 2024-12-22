@@ -20,7 +20,9 @@ export default function StepLabel({label, currentStep}) {
           <React.Fragment key={step.id}>
           <div className="flex flex-col items-center">
             <div className={`relative flex items-center justify-center w-8 h-8 rounded-full 
-              ${step.id <= currentStep ? 'bg-red-800 text-white' : 'bg-white border-2 border-gray-400 text-gray-400'}`}>
+              ${step.id <= currentStep ? 'bg-red-800 text-white' : 'bg-white border-2 border-gray-400 text-gray-400'}`}
+              style={step.id <= currentStep ? {outline: "5px solid rgba(153 , 27, 27, 0.2)"} : null}
+              >
             {
               step.id < currentStep 
               ? <span><FaCheck className="" /></span>
