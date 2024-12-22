@@ -1,3 +1,3 @@
 export class PayDebtDto {
-  id_transaction: number;
+  id_transaction: string;
 }
