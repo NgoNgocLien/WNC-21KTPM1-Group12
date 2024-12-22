@@ -9,18 +9,12 @@ import { formatTime } from '../../util/time';
 
 export default function TransferHistory() {
   const dispatch = useDispatch();
-<<<<<<< HEAD
-  const { transactions, banks, status, error } = useSelector((state) => state.transaction);
-
-  const [filter, setFilter] = useState('all');
-=======
   const { transactions, banks, status } = useSelector((state) => state.transaction);
   const { account_number } = useSelector((state) => state.user)
   //const [account, setAccount] = useState('');
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
->>>>>>> 886bb92f8a18440a9810a1f57f4613f91932ec12
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((t) => {
@@ -56,18 +50,13 @@ export default function TransferHistory() {
         <div className="max-h-96 overflow-y-auto space-y-4">
           {filteredTransactions.map((transaction) => {
             const uniqueKey = `${transaction.type}-${transaction.id}`;
-<<<<<<< HEAD
-            const formattedTime = formatTime(transaction.transaction_time);
-            const transactionAmount = transaction.transaction_amount;
-=======
             const formattedTime = format(new Date(transaction.transaction_time), 'dd/MM/yyyy - HH:mm');
->>>>>>> 886bb92f8a18440a9810a1f57f4613f91932ec12
             const amountSign = transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? '-' : '+';
             const bankName = transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? banks[transaction.id_recipient_bank]?.name : banks[transaction.id_sender_bank]?.name;
             const bankId =
-            transaction.type === 'Sender' || transaction.type === 'Sender (Debt)'
-              ? transaction.id_recipient_bank
-              : transaction.id_sender_bank;
+              transaction.type === 'Sender' || transaction.type === 'Sender (Debt)'
+                ? transaction.id_recipient_bank
+                : transaction.id_sender_bank;
             return (
               <div
                 key={uniqueKey}
@@ -107,7 +96,7 @@ export default function TransferHistory() {
     }
     return null;
   };
-  
+
   return (
     <>
       <div className="p-6 bg-white rounded-lg space-y-4">
@@ -117,34 +106,6 @@ export default function TransferHistory() {
         </p>
         <hr className="my-4" />
 
-<<<<<<< HEAD
-      <div className="p-4 bg-white rounded-lg">
-        <div className="flex justify-between items-center">
-          <p className="text-xl font-bold text-red-800">{filteredTransactions.length} giao dịch</p>
-          <div className="flex space-x-2">
-            <button
-              className={`flex items-center gap-2 p-2 h-fit rounded-lg ${filter === 'receive' ? 'bg-green-500' : 'bg-gray-200'} text-white`}
-              onClick={() => setFilter('receive')}>
-              <BanknotesIcon className='w-6 h-6 p-0 m-0' />
-              Nhận tiền
-            </button>
-            <button
-              className={`flex items-center gap-2 p-2 h-fit rounded-lg ${filter === 'transfer' ? 'bg-yellow-500' : 'bg-gray-200'} text-white`}
-              onClick={() => setFilter('transfer')}>
-              <ArrowsRightLeftIcon className='w-6 h-6 p-0 m-0' />
-              Chuyển tiền
-            </button>
-            <button
-              className={`flex items-center gap-2 p-2 h-fit rounded-lg ${filter === 'debt' ? 'bg-blue-500' : 'bg-gray-200'} text-white`}
-              onClick={() => setFilter('debt')}
-            >
-              <CreditCardIcon className="w-6 h-6 p-0 m-0" />
-              Thanh toán nợ
-            </button>
-            <button
-              className={`flex items-center gap-2 p-2 h-fit rounded-lg ${filter === 'all' ? 'bg-red-500' : 'bg-gray-200'} text-white`}
-              onClick={() => setFilter('all')}
-=======
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Tài khoản</label>
@@ -166,7 +127,6 @@ export default function TransferHistory() {
                 setSelectedTypes(Array.from(e.target.selectedOptions, (option) => option.value))
               }
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
->>>>>>> 886bb92f8a18440a9810a1f57f4613f91932ec12
             >
               <option value="">Tất cả giao dịch</option>
               <option value="Sender">Chuyển tiền</option>
