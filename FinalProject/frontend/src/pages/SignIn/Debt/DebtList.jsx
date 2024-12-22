@@ -9,28 +9,93 @@ import { IDLE } from "../../../util/config"
 const INCOMING = 'INCOMING'
 const OUTGOING = 'OUTGOING'
 
-const incomingDebts = []
-const outgoingDebts = []
+// const incomingDebts = {
+//   "pending": [
+//     {
+//       "id": 2,
+//       "id_creditor": 2,
+//       "id_debtor": 1,
+//       "debt_amount": "50",
+//       "debt_message": "Debt for services rendered",
+//       "status": "PENDING",
+//       "created_at": "2024-12-12T10:00:00.000Z",
+//       "creditor": {
+//         "id": 2,
+//         "username": "jane_smith",
+//         "fullname": "Jane Smith"
+//       }
+//     },
+//     {
+//       "id": 4,
+//       "id_creditor": 2,
+//       "id_debtor": 1,
+//       "debt_amount": "15000",
+//       "debt_message": "Test",
+//       "status": "PENDING",
+//       "created_at": "2024-12-14T19:00:00.000Z",
+//       "creditor": {
+//         "id": 2,
+//         "username": "jane_smith",
+//         "fullname": "Jane Smith"
+//       }
+//     }
+//   ],
+//   "completed": []
+// }
+// const outgoingDebts = {
+//   "pending": [
+//     {
+//       "id": 1,
+//       "id_creditor": 1,
+//       "id_debtor": 2,
+//       "debt_amount": "150",
+//       "debt_message": "Debt for personal loan",
+//       "status": "PENDING",
+//       "created_at": "2024-12-14T10:00:00.000Z",
+//       "debtor": {
+//         "id": 2,
+//         "username": "jane_smith",
+//         "fullname": "Jane Smith"
+//       }
+//     }
+//   ],
+//   "completed": [
+//     {
+//       "id": 3,
+//       "id_creditor": 1,
+//       "id_debtor": 2,
+//       "debt_amount": "30000",
+//       "debt_message": "Test",
+//       "status": "CANCELED",
+//       "created_at": "2024-12-14T22:00:00.000Z",
+//       "debtor": {
+//         "id": 2,
+//         "username": "jane_smith",
+//         "fullname": "Jane Smith"
+//       }
+//     }
+//   ]
+// }
 
 export default function DebtList() {
   const { id } = useSelector((state) => state.user)
   const [activeTab, setActiveTab] = useState(INCOMING)
 
-  // const { incomingDebts, outgoingDebts, status } = useSelector((state) => state.debt)
-  // const dispatch = useDispatch()
+  const { incomingDebts, outgoingDebts, status } = useSelector((state) => state.debt)
+  const dispatch = useDispatch()
 
-  // useEffect(() => {
-  //   if (status === IDLE) {
-  //     dispatch(fetchIncomingDebts());
-  //     dispatch(fetchOutgoingDebts());
-  //   }
-  // }, [dispatch, status]);
+  useEffect(() => {
+    if (status === IDLE) {
+      dispatch(fetchIncomingDebts());
+      dispatch(fetchOutgoingDebts());
+    }
+  }, [dispatch, status]);
 
   return (
     <main className="flex flex-col justify-center ms-80 h-full">
       <div className="mx-auto w-full max-w-4xl">
 
-        <h3 className="text-lg font-semibold">Danh sách khoản nợ</h3>
+        <h3 className="text-lg font-semibold">Quản lý nhắc nợ</h3>
         <div className="rounded-2xl bg-white p-4">
           <div className="rounded-xl bg-gray-100 p-1 flex items-center gap-1 text-md font-semibold">
             <button
@@ -47,37 +112,92 @@ export default function DebtList() {
             </button>
           </div>
 
-          <ul role="list" className="divide-y divide-gray-200">
-            {activeTab === INCOMING && incomingDebts.map((debt) => (
-              <li key={debt.id} className="flex justify-between items-center gap-x-6 py-4 px-1">
-                <div className="flex gap-x-4 items-center">
-                  <img className="size-12 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                  <div className="flex flex-col justify-evenly">
-                    <p className="text-md font-semibold text-gray-900">Nhắc nợ {id === debt.id_debtor ? `từ ${debt.creditor.fullname}` : `đến ${debt.debtor.fullname}`}</p>
-                    <p className="text-md text-gray-500">{formatTime(debt.created_at)}</p>
-                  </div>
-                </div>
-                <p className="text-lg text-gray-900 items-end">{debt.debt_amount} VND</p>
-              </li>
-            ))}
+          {activeTab === INCOMING && (
+            <>
+              <h4 className="text-lg font-semibold">Đang chờ</h4>
+              <ul role="list" className="divide-y divide-gray-200">
+                {incomingDebts?.pending.map((debt) =>
+                  <li key={debt.id} className="flex justify-between items-center gap-x-6 py-4 px-1">
+                    <div className="flex gap-x-4 items-center">
+                      <img className="size-12 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                      <div className="flex flex-col justify-evenly">
+                        <p className="text-md font-semibold text-gray-900">{debt.creditor.fullname}</p>
+                        <p className="text-md text-gray-500">{formatTime(debt.created_at)}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end justify-evenly">
+                      <p className="text-lg text-gray-900">{debt.debt_amount} VND</p>
+                      <p className="text-md text-orange-600 font-semibold">Đang chờ</p>
+                    </div>
+                  </li>
+                )}
+              </ul>
+              <h4 className="text-lg font-semibold">Đã hoàn tất</h4>
+              <ul role="list" className="divide-y divide-gray-200">
+                {incomingDebts?.completed.map((debt) =>
+                  <li key={debt.id} className="flex justify-between items-center gap-x-6 py-4 px-1">
+                    <div className="flex gap-x-4 items-center">
+                      <img className="size-12 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                      <div className="flex flex-col justify-evenly">
+                        <p className="text-md font-semibold text-gray-900">{debt.creditor.fullname}</p>
+                        <p className="text-md text-gray-500">{formatTime(debt.created_at)}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end justify-evenly">
+                      <p className="text-lg text-gray-900">{debt.debt_amount} VND</p>
+                      {debt.status === 'PAID' && <p className="text-md text-green-800 font-semibold">Đã thanh toán</p>}
+                      {debt.status === 'DECLINED' && <p className="text-md text-red-800 font-semibold">Đã từ chối</p>}
+                      {debt.status === 'CANCELED' && <p className="text-md text-gray-800 font-semibold">Đã hủy</p>}
+                    </div>
+                  </li>
+                )}
+              </ul>
+            </>
+          )}
 
-            {activeTab === OUTGOING && outgoingDebts.map((debt) => (
-              <li key={debt.id} className="flex justify-between items-center gap-x-6 py-4 px-2 ">
-                <div className="flex gap-x-4 items-center">
-                  <img className="size-12 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                  <div className="flex flex-col justify-evenly">
-                    <p className="text-md font-semibold text-gray-900">Nhắc nợ {id === debt.id_debtor ? `từ ${debt.creditor.fullname}` : `đến ${debt.debtor.fullname}`}</p>
-                    <p className="text-md text-gray-500">{formatTime(debt.created_at)}</p>
-                  </div>
-                </div>
-                <div className="flex flex-col items-end justify-evenly">
-                  <p className="text-lg text-gray-900">{debt.debt_amount} VND</p>
-                  {debt.status === 'DELETED' && <p className="text-md text-red-800 font-semibold">Đã xóa</p>}
-                  {debt.status === 'PAID' && <p className="text-md text-green-800 font-semibold">Đã thanh toán</p>}
-                </div>
-              </li>
-            ))}
-          </ul>
+
+          {activeTab === OUTGOING && (
+            <>
+              <h4 className="text-lg font-semibold">Đang chờ</h4>
+              <ul role="list" className="divide-y divide-gray-200">
+                {outgoingDebts?.pending.map((debt) =>
+                  <li key={debt.id} className="flex justify-between items-center gap-x-6 py-4 px-2 ">
+                    <div className="flex gap-x-4 items-center">
+                      <img className="size-12 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                      <div className="flex flex-col justify-evenly">
+                        <p className="text-md font-semibold text-gray-900">{debt.debtor.fullname}</p>
+                        <p className="text-md text-gray-500">{formatTime(debt.created_at)}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end justify-evenly">
+                      <p className="text-lg text-gray-900">{debt.debt_amount} VND</p>
+                      <p className="text-md text-orange-600 font-semibold">Đang chờ</p>
+                    </div>
+                  </li>
+                )}
+              </ul>
+              <h4 className="text-lg font-semibold">Đã hoàn tất</h4>
+              <ul role="list" className="divide-y divide-gray-200">
+                {outgoingDebts?.completed.map((debt) =>
+                  <li key={debt.id} className="flex justify-between items-center gap-x-6 py-4 px-2 ">
+                    <div className="flex gap-x-4 items-center">
+                      <img className="size-12 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                      <div className="flex flex-col justify-evenly">
+                        <p className="text-md font-semibold text-gray-900">{debt.debtor.fullname}</p>
+                        <p className="text-md text-gray-500">{formatTime(debt.created_at)}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end justify-evenly">
+                      <p className="text-lg text-gray-900">{debt.debt_amount} VND</p>
+                      {debt.status === 'PAID' && <p className="text-md text-green-800 font-semibold">Đã thanh toán</p>}
+                      {debt.status === 'DECLINED' && <p className="text-md text-red-800 font-semibold">Đã từ chối</p>}
+                      {debt.status === 'CANCELED' && <p className="text-md text-gray-800 font-semibold">Đã hủy</p>}
+                    </div>
+                  </li>
+                )}
+              </ul>
+            </>
+          )}
 
         </div>
       </div>
