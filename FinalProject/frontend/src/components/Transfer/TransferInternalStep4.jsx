@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { HiCheckBadge } from "react-icons/hi2";
 
 import { SENDER, INTERNAL_BAND_NAME } from '../../util/config';
-import { formatTime } from '../../util/time';
+import { formatTime } from '../../util/format';
 
 
 export default function TransferInternalStep4({ setIsAddModalOpen, transaction }) {
@@ -29,7 +29,7 @@ export default function TransferInternalStep4({ setIsAddModalOpen, transaction }
       
         <div className="relative w-full h-full top-0 p-6 pt-8 z-10">
           <div className="self-center flex flex-col items-center text-green-400">
-            <HiCheckBadge size={80}/>
+            <HiCheckBadge size={80} />
             <p className="font-semibold text-black mt-3">Giao dịch thành công</p>
             <p className="font-semibold text-2xl text-red-800 mt-1">{Number(transaction.transaction_amount).toLocaleString()} VNĐ</p>
             <p className="text-gray-400 mt-1">MGD: {transaction.id}</p>
@@ -38,15 +38,15 @@ export default function TransferInternalStep4({ setIsAddModalOpen, transaction }
           <div className="flex flex-col gap-4 my-8">
             <div className="w-full flex justify-between">
               <div className="w-5/12 text-gray-500">
-                Thông tin tài khoản chuyển 
+                Thông tin tài khoản chuyển
               </div>
               <div className="w-6/12 flex flex-col gap-0">
                 <p className="font-semibold">{fullname}</p>
                 <p>{INTERNAL_BAND_NAME}</p>
-                <p>{transaction.sender_account_number}</p>  
+                <p>{transaction.sender_account_number}</p>
               </div>
             </div>
-            
+
             <div className="w-full flex justify-between">
               <div className="w-5/12 text-gray-500">
                 Thông tin tài khoản thụ hưởng
@@ -54,7 +54,7 @@ export default function TransferInternalStep4({ setIsAddModalOpen, transaction }
               <div className="w-6/12 flex flex-col gap-0">
                 <p className="font-semibold">{transaction.recipient_name}</p>
                 <p>{INTERNAL_BAND_NAME}</p>
-                <p>{transaction.recipient_account_number}</p>  
+                <p>{transaction.recipient_account_number}</p>
               </div>
             </div>
 
@@ -115,18 +115,18 @@ export default function TransferInternalStep4({ setIsAddModalOpen, transaction }
               onClick={() => navigate("/transfer")}
               className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg 
               disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none"
-            >
-              Giao dịch khác
-            </button>
-            <button
-              onClick={() => navigate("/account")}
-              className="px-4 py-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400"
-            >
-              Về trang tài khoản
-            </button>
+              >
+                Giao dịch khác
+              </button>
+              <button
+                onClick={() => navigate("/account")}
+                className="px-4 py-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400"
+              >
+                Về trang tài khoản
+              </button>
+            </div>
+
           </div>
-          
-        </div>
         </div>
 
         <div className="absolute w-full h-full top-0 z-0">

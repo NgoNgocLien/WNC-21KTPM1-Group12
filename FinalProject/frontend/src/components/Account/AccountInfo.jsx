@@ -8,8 +8,8 @@ export default function AccountInfo() {
     <>
       <p className="text-lg font-semibold">Thông tin tài khoản</p>
 
-      <div className="p-4 bg-white rounded-lg ">
-        <div className="p-[2px] flex rounded-lg bg-gradient-to-r from-red-900 to-red-200 ">
+      <div className="p-4 bg-white rounded-2xl ">
+        <div className="p-[3px] flex rounded-xl bg-gradient-to-r from-red-900 to-red-200 ">
           <div className="w-1/2 p-4 bg-white rounded-l-lg">
             <h3 className="text-gray-500">
               Tài khoản thanh toán
@@ -65,7 +65,7 @@ export default function AccountInfo() {
         </div>
       </div>
 
-      <button className="w-fit px-4 py-2 bg-red-800 text-white rounded-lg">
+      <button className="w-fit px-4 py-2 bg-red-800 text-white rounded-xl">
         Đổi mật khẩu
       </button>
     </>

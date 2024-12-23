@@ -27,10 +27,10 @@ export class CreateDebtDto {
   debt_message: string;
 
   @IsEnum(debt_status)
-  @IsDefined()
+  @IsOptional()
   status: debt_status;
 
   @IsDateString()
-  @IsDefined()
+  @IsOptional()
   created_at: string;
 }
