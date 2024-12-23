@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { HiCheckBadge } from "react-icons/hi2";
@@ -8,19 +8,26 @@ import { formatTime } from '../../util/time';
 
 
 export default function TransferInternalStep4({ setIsAddModalOpen, transaction }) {
-  const {fullname} = useSelector((state) => state.user)
+  const {fullname, contacts} = useSelector((state) => state.user)
   const navigate = useNavigate();
+  const [isExistingInContact, setIsExistingInContact] = useState(false)
+  useEffect(()=>{
+    if (transaction){
+      const result = contacts?.some((contact) => {
+        // console.log(contact.account_number)
+        // console.log(transaction.recipient_account_number)
+        return contact.account_number == transaction.recipient_account_number
+      })
+      // console.log(result);
+      setIsExistingInContact(result);
+    }
+  }, [transaction, contacts])
 
-  const handleAddOneContact = () => {
-
-  }
-
-  // console.log(transaction)
   return (
     <>
       <div className="relative w-8/12 h-fit mx-auto flex flex-col rounded-lg bg-white">
       
-        <div className="relative w-full h-full top-0 p-6 pt-8 z-40">
+        <div className="relative w-full h-full top-0 p-6 pt-8 z-10">
           <div className="self-center flex flex-col items-center text-green-400">
             <HiCheckBadge size={80}/>
             <p className="font-semibold text-black mt-3">Giao dịch thành công</p>
@@ -85,18 +92,24 @@ export default function TransferInternalStep4({ setIsAddModalOpen, transaction }
             </div>
           </div>
 
-          <div className="flex justify-between space-x-4 pt-4">
-            <div>
-            <button
-              type="button"
-              onClick={() => setIsAddModalOpen(true) }
-              className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg 
-              disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none"
-            >
-              Lưu người nhận
-            </button>
-            </div>
-            <div className="flex justify-between space-x-4">
+          <div className={`flex ${isExistingInContact ? 'justify-center' : 'justify-between'} space-x-4 pt-4`}>
+            
+              {
+                !isExistingInContact && (
+                  <div>
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(true) }
+                  className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg 
+                  disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none"
+                >
+                  Lưu người nhận
+                </button>
+                </div>
+                )
+              }
+            
+            <div className="flex justify-center space-x-4">
             <button
               type="button"
               onClick={() => navigate("/transfer")}
@@ -116,7 +129,7 @@ export default function TransferInternalStep4({ setIsAddModalOpen, transaction }
         </div>
         </div>
 
-        <div className="absolute w-full h-full top-0 z-10">
+        <div className="absolute w-full h-full top-0 z-0">
           <img 
             src="bg-bill.png" 
             alt="background" 

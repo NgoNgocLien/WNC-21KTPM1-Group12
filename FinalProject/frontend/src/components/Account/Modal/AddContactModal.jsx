@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik';
 import Select from 'react-select';
@@ -26,13 +26,15 @@ const bankOptions = banks.map(bank => ({
 const AddContactModal = ({ isOpen, closeModal, recipient }) => {
   const dispatch = useDispatch();
   const access_token = getAccessToken();
+  // const [disabledInput, setDisabledInput]
 
+  console.log(recipient)
   const formik = useFormik({
     initialValues: {
-      bank_id: recipient?.bank_id || 1, 
-      account_number: recipient?.account_number || '',
-      contact_fullname: recipient?.fullname || '',
-      nickname: recipient?.fullname || '',
+      bank_id: 1, 
+      account_number: '',
+      contact_fullname:  '',
+      nickname: '',
     },
     validationSchema: Yup.object({
       account_number: Yup.string()
@@ -45,6 +47,17 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
       resetForm();
     },
   });
+
+  useEffect(() => {
+    if (recipient) {
+      formik.setValues({
+        bank_id: recipient.bank_id || 1,
+        account_number: recipient.account_number || '',
+        contact_fullname: recipient.fullname || '',
+        nickname: recipient.fullname || '',
+      });
+    }
+  }, [recipient]);
 
   const handleAccountNumberBlur = async (e) => {
     formik.handleBlur(e);
@@ -74,7 +87,7 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-20">
       <div className="bg-white p-6 rounded-lg w-96 flex flex-col items-center">
         <h3 className="text-xl font-semibold">Thêm Mới Người Nhận</h3>
 
@@ -87,7 +100,8 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
               onChange={(option) => handleChangeBankId(option)}
               options={bankOptions}
               styles={customStyles}
-              isSearchable={false || recipient}
+              isDisabled={true && recipient}
+              // className="outline-3 outline-black"
             />
           </div>
 

@@ -1,17 +1,23 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { FaAddressBook } from "react-icons/fa";
 
 import TransferAccount from './TransferAccount';
+import { fetchUserContacts } from '../../redux/userThunk';
 import { SENDER, RECIPIENT, INTERNAL_BAND_ID } from '../../util/config';
 import getFullname from '../../util/getFullname';
 import { getAccessToken } from '../../util/cookie';
+import ContactList from '../Account/ContactList';
 
 export default function TransferInternalStep1({ setCurrentStep, setValues }) {
-  const { account_number, balance } = useSelector((state) => state.user);
+  const { account_number, balance, contacts } = useSelector((state) => state.user);
+  const [ displayContacts, setDisplayContacts ] = useState(false);
+  const [selectedContact, setSelectedContact] = useState(null);
   const access_token = getAccessToken();
-  
+  const dispatch = useDispatch();
+
   const formik = useFormik({
     initialValues: {
       sender_account_number: account_number,
@@ -37,8 +43,14 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
       resetForm();
     },
   });
-
   
+  const handleClickContactBook = () => {
+    if (contacts === null) {
+        dispatch(fetchUserContacts());
+    }
+    setDisplayContacts(true);
+  }
+
   const handleAccountNumberBlur = async (e) => {
     formik.handleBlur(e);
     const account_number = e.target.value;
@@ -49,8 +61,23 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
     }
   };
 
+  useEffect(()=>{
+    console.log(selectedContact)
+    if (selectedContact){
+      formik.setFieldValue("recipient_account_number", selectedContact.account_number)
+      formik.setFieldValue("recipient_name", selectedContact.contact_fullname)
+    }
+  },[selectedContact])
+
   return (
     <>
+      {
+        displayContacts && (
+          <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-20">
+            <ContactList isMutable={false} setSelectedContact={setSelectedContact} setDisplayContacts={setDisplayContacts}/>
+          </div>
+        )
+      }
       <TransferAccount formik={formik} />
 
       <div className="w-8/12 mx-auto p-6 flex flex-col bg-white rounded-lg space-y-4 ">
@@ -59,14 +86,18 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
             Tài khoản thụ hưởng
           </div>
           <div className="w-7/12">
-            <input
-              type="text"
-              name="recipient_account_number"
-              value={formik.values.recipient_account_number}
-              onChange={formik.handleChange}
-              onBlur={handleAccountNumberBlur}
-              className="w-full border-2 p-2 rounded-lg"
-            />
+            <div className="flex items-center">
+              <input
+                type="text"
+                name="recipient_account_number"
+                value={formik.values.recipient_account_number}
+                onChange={formik.handleChange}
+                onBlur={handleAccountNumberBlur}
+                className="w-full border-2 p-2 rounded-lg"
+              />
+              <FaAddressBook className="ms-2 text-xl text-red-800 cursor-pointer" onClick={handleClickContactBook}/>
+            </div>
+          
             {formik.touched.recipient_account_number && formik.errors.recipient_account_number && (
               <div className="text-red-500 text-sm mt-1">{formik.errors.recipient_account_number}</div>
             )}

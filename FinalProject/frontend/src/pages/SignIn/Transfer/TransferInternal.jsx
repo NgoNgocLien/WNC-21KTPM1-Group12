@@ -61,15 +61,20 @@ export default function TransferInternal() {
         )
       }
 
-      <AddContactModal 
-        isOpen={isAddModalOpen} 
-        closeModal={() => setIsAddModalOpen(false)} 
-        recipient={{
-          bank_id: transaction?.id_recipient_bank,
-          account_number: transaction?.recipient_account_number,
-          fullname: transaction?.recipient_name,
-        }}
-      />
+      {
+        transaction && (
+          <AddContactModal 
+            isOpen={isAddModalOpen} 
+            closeModal={() => setIsAddModalOpen(false)} 
+            recipient={{
+              bank_id: transaction?.id_recipient_bank,
+              account_number: transaction?.recipient_account_number,
+              fullname: transaction?.recipient_name,
+            }}
+          />
+        )
+      }
+      
     </>
   )
 }

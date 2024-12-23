@@ -202,7 +202,7 @@ export default function TransferHistory() {
           </button>
           <button
             className={`flex items-center gap-2 p-2 rounded-lg ${
-              filter === 'all' ? 'bg-red-500' : 'bg-gray-200'
+              filter === 'all' ? 'bg-red-800' : 'bg-gray-200'
             } text-white`}
             onClick={() => setFilter('all')}
           >

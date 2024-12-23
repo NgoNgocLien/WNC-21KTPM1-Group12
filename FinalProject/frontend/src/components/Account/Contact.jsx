@@ -31,7 +31,7 @@ export default function ContactList({
     const [filterContacts, setFilterContacts] = useState([]);
   
     useEffect(() => {
-      const newContacts = contacts?.filter(
+      const newContacts = contacts.filter(
         contact => (activeTab === INTERNAL && contact?.bank_name === 'NoMeoBank') || (activeTab === EXTERNAL && contact?.bank_name !== 'NoMeoBank')
       );
       setFilterContacts(newContacts);
@@ -59,36 +59,29 @@ export default function ContactList({
     }
          
     <div className="flex flex-col p-4 bg-white rounded-lg ">
-        {
-            isMutable ? (
-            <div className="flex space-x-4 p-[2px] bg-gray-200 rounded-lg">
-                <button
-                    className={`w-1/2 py-2 px-4 rounded-lg font-semibold text-gray-500 ${activeTab === INTERNAL ? 'text-red-800 bg-white' : 'bg-gray-200'}`}
-                    onClick={() => setActiveTab(INTERNAL)}
-                >
-                    Nội bộ
-                </button>
-                <button
-                    className={`w-1/2 py-2 px-4 rounded-lg font-semibold text-gray-500 ${activeTab === EXTERNAL ? 'text-red-800 bg-white' : 'bg-gray-200'}`}
-                    onClick={() => setActiveTab(EXTERNAL)}
-                >
-                    Liên ngân hàng
-                </button>
-            </div>
-            ) : (
-                <p className="text-lg font-semibold">Danh sách người nhận</p>
-            )
-        }
-        
+        <div className="flex space-x-4 p-[2px] bg-gray-200 rounded-lg">
+            <button
+                className={`w-1/2 py-2 px-4 rounded-lg font-semibold text-gray-500 ${activeTab === INTERNAL ? 'text-red-800 bg-white' : 'bg-gray-200'}`}
+                onClick={() => setActiveTab(INTERNAL)}
+            >
+                Nội bộ
+            </button>
+            <button
+                className={`w-1/2 py-2 px-4 rounded-lg font-semibold text-gray-500 ${activeTab === EXTERNAL ? 'text-red-800 bg-white' : 'bg-gray-200'}`}
+                onClick={() => setActiveTab(EXTERNAL)}
+            >
+                Liên ngân hàng
+            </button>
+        </div>
         <div className="mt-4 px-8 max-h-[300px] min-h-[300px] overflow-y-auto">
         <div className="w-full flex flex-col justify-center gap-4 mt-2 items-start"> 
         {
-            filterContacts?.length === 0 
+            filterContacts.length === 0 
             ?
                 <p className="self-center">Chưa có người nhận</p>
             :
                 
-                filterContacts?.map((contact) => (
+                filterContacts.map((contact) => (
                     <div 
                         onClick={() => handleClickContact(contact)}
                         key={`${contact?.id}`} 

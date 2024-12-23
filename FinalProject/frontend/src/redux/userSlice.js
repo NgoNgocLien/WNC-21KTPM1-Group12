@@ -11,8 +11,8 @@ const  initialState = {
   email: '',
   phone: '',
   account_number: '',
-  balance: 0,
-  contacts: [],
+  balance: null,
+  contacts: null,
   status: IDLE,
   error: null,
 }
