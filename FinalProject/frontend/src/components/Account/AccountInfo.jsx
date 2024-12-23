@@ -64,10 +64,6 @@ export default function AccountInfo() {
           </div>
         </div>
       </div>
-
-      <button className="w-fit px-4 py-2 bg-red-800 text-white rounded-xl">
-        Đổi mật khẩu
-      </button>
     </>
   )
 }

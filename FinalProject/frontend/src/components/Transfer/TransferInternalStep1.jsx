@@ -95,7 +95,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
                 onBlur={handleAccountNumberBlur}
                 className="w-full border-2 p-2 rounded-lg"
               />
-              <FaAddressBook className="ms-2 text-xl text-red-800 cursor-pointer" onClick={handleClickContactBook}/>
+              <FaAddressBook className="ms-2 text-xl text-red-800 cursor-pointer hover:text-red-700" onClick={handleClickContactBook}/>
             </div>
           
             {formik.touched.recipient_account_number && formik.errors.recipient_account_number && (
@@ -191,7 +191,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
           type="submit"
           onClick={formik.handleSubmit}
           // disabled={!formik.isValid || formik.isSubmitting}
-          className="w-fit self-center px-4 py-2 mt-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400"
+          className="w-fit self-center px-4 py-2 mt-2 bg-red-800 text-white rounded-lg hover:bg-red-700"
         >
           Tiếp tục
         </button>

@@ -174,7 +174,7 @@ export default function TransferHistory() {
 
         <div className="flex justify-end mt-4 gap-2">
           <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'recipient' ? 'bg-green-500' : 'bg-gray-200'
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'recipient' ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-200'
               } text-white`}
             onClick={() => setFilter('recipient')}
           >
@@ -182,7 +182,7 @@ export default function TransferHistory() {
             Nhận tiền
           </button>
           <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'sender' ? 'bg-yellow-500' : 'bg-gray-200'
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'sender' ? 'bg-yellow-500 hover:bg-yellow-400' : 'bg-gray-200'
               } text-white`}
             onClick={() => setFilter('sender')}
           >
@@ -190,7 +190,7 @@ export default function TransferHistory() {
             Chuyển tiền
           </button>
           <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'debt' ? 'bg-blue-500' : 'bg-gray-200'
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'debt' ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-200'
               } text-white`}
             onClick={() => setFilter('debt')}
           >
@@ -199,7 +199,7 @@ export default function TransferHistory() {
           </button>
           <button
             className={`flex items-center gap-2 py-2 px-4 rounded-xl ${
-              filter === 'all' ? 'bg-red-800' : 'bg-gray-200'
+              filter === 'all' ? 'bg-red-800 hover:bg-red-700' : 'bg-gray-200'
             } text-white`}
             onClick={() => setFilter('all')}
           >

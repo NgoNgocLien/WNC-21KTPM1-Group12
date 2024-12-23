@@ -20,7 +20,7 @@ import BankTransferHistory from './pages/SignIn/Admin/BankTransferHistory';
 
 import NotFound from './pages/NotFound';
 
-import { getAccessToken } from './util/cookie';
+import { getAccessToken, getRoleFromToken } from './util/cookie';
 
 
 const GuestRoute = ({ element, redirectTo }) => {
@@ -31,6 +31,21 @@ const GuestRoute = ({ element, redirectTo }) => {
 const AuthenticatedRoute = ({ element, redirectTo }) => {
   const isAuthenticated = getAccessToken();
   return isAuthenticated ? element : <Navigate to={redirectTo} />;
+};
+
+const CustomerRoute = ({ element, redirectTo }) => {
+  const isCustomer = getRoleFromToken();
+  return (isCustomer === "customer") ? element : <Navigate to={redirectTo} />;
+};
+
+const EmployeeRoute = ({ element, redirectTo }) => {
+  const isEmployee = getRoleFromToken();
+  return (isEmployee === "employee") ? element : <Navigate to={redirectTo} />;
+};
+
+const AdminRoute = ({ element, redirectTo }) => {
+  const isAdmin = getRoleFromToken();
+  return (isAdmin === "admin") ? element : <Navigate to={redirectTo} />;
 };
 
 function AuthenticatedLayout() {
@@ -52,7 +67,7 @@ function App() {
         <Route path="login/:role" element={<GuestRoute element={<Login />} redirectTo="/transfer" />} />
         <Route path="home" element={<GuestRoute element={<Home />} redirectTo="/transfer" />} />
 
-        <Route path="/" element={<AuthenticatedRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
+        <Route path="/" element={<CustomerRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
           <Route index element={<Navigate to="/transfer" />} />
           <Route path="account" element={<Account />} />
           <Route path="transfer" element={<Transfer />} />
@@ -61,13 +76,13 @@ function App() {
           <Route path="debt" element={<DebtList />} />
         </Route>
 
-        <Route path="/" element={<AuthenticatedRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
+        <Route path="/" element={<EmployeeRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
           <Route index element={<Navigate to="/transfer" />} />
           <Route path="customer-mgmt" element={<CustomerMgmt />} />
           <Route path="transfer-history" element={<CustomerTransferHistory />} />
         </Route>
 
-        <Route path="/" element={<AuthenticatedRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
+        <Route path="/" element={<AdminRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
           <Route index element={<Navigate to="/transfer" />} />
           <Route path="employee-mgmt" element={<EmployeeMgmt />} />
           <Route path="transfer-history" element={<BankTransferHistory />} />

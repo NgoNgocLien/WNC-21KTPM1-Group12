@@ -23,7 +23,7 @@ export default function DebtItem({ debt, type }) {
       {type === 'INCOMING' && debt.status === 'PENDING' && (
         <div className="flex items-end w-full gap-x-2">
           <p className="truncate text-md text-gray-500 bg-gray-100 p-2 rounded-lg flex-1">{debt.debt_message}</p>
-          <button className="text-sm text-white bg-red-700 px-3 py-2 rounded-lg font-semibold">Từ chối</button>
+          <button className="text-sm text-white bg-red-700 px-3 py-2 rounded-lg font-semibold ">Từ chối</button>
           <button className="text-sm text-white bg-blue-700 px-3 py-2 rounded-lg font-semibold">Thanh toán</button>
         </div>
       )}

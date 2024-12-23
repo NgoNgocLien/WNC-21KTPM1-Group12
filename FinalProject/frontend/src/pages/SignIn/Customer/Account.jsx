@@ -33,6 +33,20 @@ export default function Account() {
   return (
     <>
       <AccountInfo />
+      
+      <button className="w-fit px-4 py-2 bg-red-800 text-white rounded-xl hover:bg-red-700">
+        Đổi mật khẩu
+      </button>
+
+      <div className="flex justify-between items-center">
+          <p className="text-lg font-semibold">Danh sách người nhận</p>
+          <button 
+              onClick={openAddModal}
+              className="w-fit py-2 px-4 bg-red-800 text-white font-semibold rounded-lg hover:bg-red-700">
+          + Thêm mới
+          </button>
+      </div>
+
       <ContactList 
         isMutable={true} 
         openAddModal={openAddModal}

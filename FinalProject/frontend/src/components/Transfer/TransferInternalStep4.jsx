@@ -100,8 +100,7 @@ export default function TransferInternalStep4({ setIsAddModalOpen, transaction }
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(true) }
-                  className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg 
-                  disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none"
+                  className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg hover:bg-red-100"
                 >
                   Lưu người nhận
                 </button>
@@ -113,14 +112,13 @@ export default function TransferInternalStep4({ setIsAddModalOpen, transaction }
             <button
               type="button"
               onClick={() => navigate("/transfer")}
-              className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg 
-              disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none"
+              className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg hover:bg-red-100"
               >
                 Giao dịch khác
               </button>
               <button
                 onClick={() => navigate("/account")}
-                className="px-4 py-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400"
+                className="px-4 py-2 bg-red-800 text-white rounded-lg hover:bg-red-700"
               >
                 Về trang tài khoản
               </button>

@@ -77,13 +77,12 @@ const EditContactModal = ({ isOpen, closeModal, contact }) => {
         <div className="flex justify-center mt-4 space-x-4">
           <button 
             onClick={closeModal} 
-            className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg 
-              disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none">Hủy
+            className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg hover:bg-red-100">Hủy
           </button>
           <button 
             onClick={handleEdit} 
             disabled={currentNickname === nickname}
-            className="px-4 py-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400">Lưu
+            className="px-4 py-2 bg-red-800 text-white rounded-lg disabled:bg-gray-200 disabled:text-gray-400 hover:bg-red-700">Lưu
           </button>
         </div>
       </div>

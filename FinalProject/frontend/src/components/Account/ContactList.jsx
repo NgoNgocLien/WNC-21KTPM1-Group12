@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FaTrash, FaPen  } from 'react-icons/fa';
 import { IoMdCloseCircle } from "react-icons/io";
 
-
 import { fetchUserContacts } from './../../redux/userThunk';
 import { IDLE, LOADING, FAILED } from './../../util/config';
 
@@ -45,19 +44,7 @@ export default function ContactList({
     }
     return (
     <>
-    {
-        isMutable && (
-        <div className="flex justify-between items-center">
-            <p className="text-lg font-semibold">Danh sách người nhận</p>
-            <button 
-                onClick={openAddModal}
-                className="w-fit py-2 px-4 bg-red-800 text-white font-semibold rounded-lg ">
-            + Thêm mới
-            </button>
-        </div>
-        )
-    }
-         
+       
     <div className="flex flex-col p-4 bg-white rounded-lg ">
         {
             isMutable ? (
@@ -76,7 +63,10 @@ export default function ContactList({
                 </button>
             </div>
             ) : (
+                <div className="flex justify-between items-center">
                 <p className="text-lg font-semibold">Danh sách người nhận</p>
+                <IoMdCloseCircle className="text-red-800 text-xl cursor-pointer hover:text-red-700" onClick={() => setDisplayContacts(false)}/>
+                </div>
             )
         }
         
@@ -137,7 +127,7 @@ export default function ContactList({
             !isMutable && (
                 <button 
                     onClick={() => setDisplayContacts(false)}
-                    className="w-fit mt-4 py-2 px-4 self-center bg-red-800 text-white font-semibold rounded-lg ">
+                    className="w-fit mt-4 py-2 px-4 self-center bg-red-800 text-white font-semibold rounded-lg hover:bg-red-700">
                     Đóng
                 </button>
             )
