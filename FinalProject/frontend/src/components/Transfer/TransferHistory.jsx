@@ -106,7 +106,7 @@ export default function TransferHistory() {
                     className="w-10 h-10 rounded-full"
                   />
                   <div>
-                    <p className="font-semibold">{transaction.transaction_message || transaction.deposit_message}</p>
+                    <p className="font-semibold">{transaction.transaction_message || transaction.deposit_message || "(Không có nội dung)"}</p>
                     {/* <p className="text-sm text-gray-600">{bankName}</p> */}
                     <span className="text-sm text-gray-700 mr-5">{formattedTime}</span>
                     <span className="text-sm">Số dư: {formattedBalance} VNĐ</span>
@@ -198,7 +198,7 @@ export default function TransferHistory() {
             Thanh toán nợ
           </button>
           <button
-            className={`flex items-center gap-2 p-2 rounded-lg ${
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${
               filter === 'all' ? 'bg-red-800' : 'bg-gray-200'
             } text-white`}
             onClick={() => setFilter('all')}

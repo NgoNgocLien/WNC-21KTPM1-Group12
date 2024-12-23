@@ -12,7 +12,7 @@ import { getAccessToken } from '../../util/cookie';
 import ContactList from '../Account/ContactList';
 
 export default function TransferInternalStep1({ setCurrentStep, setValues }) {
-  const { account_number, balance, contacts } = useSelector((state) => state.user);
+  const { account_number, balance, contacts, fullname } = useSelector((state) => state.user);
   const [ displayContacts, setDisplayContacts ] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const access_token = getAccessToken();
@@ -22,10 +22,10 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
     initialValues: {
       sender_account_number: account_number,
       id_sender_bank: INTERNAL_BAND_ID,
-      recipient_account_number: '',
+      recipient_account_number: ``,
       id_recipient_bank: INTERNAL_BAND_ID,
       transaction_amount: null,
-      transaction_message: '',
+      transaction_message: `${fullname.toUpperCase()} chuyen tien`,
       fee_payment_method: SENDER,
       recipient_name: '',
     },
