@@ -30,4 +30,9 @@ const getRefreshToken = () => {
   return document.cookie.split('; ').find(row => row.startsWith('refresh_token'))?.split('=')[1];
 };
 
-export { setAccessToken, setRefreshToken, getAccessToken, getRoleFromToken, getRefreshToken };
+const clearToken = () => {
+  document.cookie = 'access_token=; Max-Age=0; path=/';
+  document.cookie = 'refresh_token=; Max-Age=0; path=/';
+};
+
+export { setAccessToken, setRefreshToken, getAccessToken, getRoleFromToken, getRefreshToken, clearToken };

@@ -93,7 +93,7 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
 
         <form onSubmit={formik.handleSubmit} className="w-full my-4">
           <div className="mb-4">
-            <p className="text-gray-500 mb-2">Ngân hàng<span className="text-red-500">*</span></p>
+            <p className=" mb-2">Ngân hàng<span className="text-red-500">*</span></p>
             <Select
               name="bank_id"
               value={bankOptions.find(option => option.value === formik.values.bank_id)}
@@ -107,7 +107,7 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
 
           <div className="flex mb-4 space-x-4">
             <div className="w-1/2">
-              <p className="text-gray-500 mb-2">Tài khoản thanh toán<span className="text-red-500">*</span></p>
+              <p className="mb-2">Tài khoản thanh toán<span className="text-red-500">*</span></p>
               <input
                 type="text"
                 name="account_number"
@@ -122,7 +122,7 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
               ) : null}
             </div>
             <div className="w-1/2">
-              <p className="text-gray-500 mb-2">Tên đăng ký</p>
+              <p className="mb-2">Tên đăng ký</p>
               <input
                 type="text"
                 name="contact_fullname"
@@ -135,7 +135,7 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
             </div>
           </div>
 
-          <p className="text-gray-500">Tên gợi nhớ</p>
+          <p className="">Tên gợi nhớ</p>
           <p className="text-sm text-gray-500 mb-2 italic">Mặc định là tên đăng ký</p>
           <input
             type="text"

@@ -6,6 +6,7 @@ import { reset } from './../redux/userSlice'
 import { fetchUserAccountInfo } from './../redux/userThunk';
 import { IDLE, LOADING, FAILED } from './../util/config'
 import { ArrowRightStartOnRectangleIcon, ArrowsRightLeftIcon, ArrowUpTrayIcon, BanknotesIcon, BuildingLibraryIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { clearToken } from '../util/cookie';
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -14,18 +15,17 @@ const Sidebar = () => {
   const { account_number, fullname, status, error } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (status === IDLE) {
+    if (account_number === '')
       dispatch(fetchUserAccountInfo());
-    }
+
   }, [status, dispatch]);
 
   // if (status === LOADING) return <p>Loading...</p>;
   // if (status === FAILED) return <p className="text-red-500">Error: {error}</p>;
 
   const handleLogout = () => {
-    dispatch(logout());
-    dispatch(reset());
-    navigate("/home")
+    clearToken();
+    window.location.href="/home"
   };
   return (
     <div className="fixed h-screen w-80 p-3">

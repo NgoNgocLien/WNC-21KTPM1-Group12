@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaTrash, FaPen  } from 'react-icons/fa';
-import { IoMdCloseCircle } from "react-icons/io";
+import { IoIosClose } from "react-icons/io";
 
 import { fetchUserContacts } from './../../redux/userThunk';
 import { IDLE, LOADING, FAILED } from './../../util/config';
@@ -65,7 +65,7 @@ export default function ContactList({
             ) : (
                 <div className="flex justify-between items-center">
                 <p className="text-lg font-semibold">Danh sách người nhận</p>
-                <IoMdCloseCircle className="text-red-800 text-xl cursor-pointer hover:text-red-700" onClick={() => setDisplayContacts(false)}/>
+                <IoIosClose className="text-gray-500 text-3xl cursor-pointer hover:text-gray-700" onClick={() => setDisplayContacts(false)}/>
                 </div>
             )
         }

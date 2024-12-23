@@ -6,6 +6,7 @@ import ContactList from '../../../components/Account/ContactList';
 import AddContactModal from '../../../components/Account/Modal/AddContactModal'
 import EditContactModal from '../../../components/Account/Modal/EditContactModal'
 import DeleteContactModal from '../../../components/Account/Modal/DeleteContactModal'
+import Dialog from '../../../components/Dialog';
 
 export default function Account() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -42,7 +43,7 @@ export default function Account() {
           <p className="text-lg font-semibold">Danh sách người nhận</p>
           <button 
               onClick={openAddModal}
-              className="w-fit py-2 px-4 bg-red-800 text-white font-semibold rounded-lg hover:bg-red-700">
+              className="w-fit py-2 px-4 bg-red-800 text-white font-semibold rounded-xl hover:bg-red-700">
           + Thêm mới
           </button>
       </div>

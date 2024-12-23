@@ -31,7 +31,7 @@ const EditContactModal = ({ isOpen, closeModal, contact }) => {
         <h3 className="text-xl font-semibold">Chỉnh Sửa Người Nhận</h3>
 
         <div className="w-full my-4">
-          <p className="text-gray-500 mb-2">
+          <p className=" mb-2">
               Ngân hàng
           </p>
           <div className="flex items-center space-x-4 mb-4">
@@ -40,31 +40,32 @@ const EditContactModal = ({ isOpen, closeModal, contact }) => {
               alt="Bank Logo" 
               className="w-12 h-12 rounded-full "
             />
-            <p>{contact.bank_name.toUpperCase()}</p>
+            <p className="font-semibold">{contact.bank_name.toUpperCase()}</p>
           </div>
 
           <div className="flex mb-4">
             <div className="w-1/2">
-              <p className="text-gray-500">
+              <p className="">
                 Tài khoản thanh toán
               </p>          
-              <p>
+              <p className="font-semibold">
                 {contact.account_number}
               </p>
             </div>
             <div className="w-1/2">
-              <p className="text-gray-500">
+              <p className="">
                 Họ và tên
               </p>          
-              <p>
+              <p className="font-semibold">
                 {contact.contact_fullname}
               </p>
             </div>
           </div>
         
-          <p className="text-gray-500 mb-2">
+          <p className="">
               Tên gợi nhớ
           </p>          
+          <p className="text-sm text-gray-500 mb-2 italic">Mặc định là tên đăng ký</p>
           <input
             type="text"
             value={nickname}
