@@ -2,10 +2,10 @@ import { useState } from "react"
 import { useSelector } from "react-redux"
 import { useEffect } from "react"
 import { useDispatch } from "react-redux"
-import { formatMoney, formatTime } from "../../../util/format"
-import { fetchIncomingDebts, fetchOutgoingDebts } from "../../../redux/debtThunk"
-import { IDLE } from "../../../util/config"
-import DebtItem from "../../../components/Debt/DebtItem"
+import { formatMoney, formatTime } from "../../../../util/format"
+import { fetchIncomingDebts, fetchOutgoingDebts } from "../../../../redux/debtThunk"
+import { IDLE } from "../../../../util/config"
+import DebtItem from "../../../../components/Debt/DebtItem"
 
 const INCOMING = 'INCOMING'
 const OUTGOING = 'OUTGOING'

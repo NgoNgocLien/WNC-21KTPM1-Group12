@@ -1,5 +1,5 @@
-import TransferTab from "../../../components/Transfer/TransferTab";
-import TransferHistory from "../../../components/Transfer/TransferHistory";
+import TransferTab from "../../../../components/Transfer/TransferTab";
+import TransferHistory from "../../../../components/Transfer/TransferHistory";
 
 export default function Transfer() {
   return (

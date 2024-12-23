@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-import StepLabel from '../../../components/Transfer/StepLabel'
-import TransferInternalStep1 from './../../../components/Transfer/TransferInternalStep1';
-import TransferInternalStep2 from './../../../components/Transfer/TransferInternalStep2';
-import TransferInternalStep3 from './../../../components/Transfer/TransferInternalStep3';
-import TransferInternalStep4 from './../../../components/Transfer/TransferInternalStep4';
-import AddContactModal from './../../../components/Account/Modal/AddContactModal';
+import StepLabel from '../../../../components/Transfer/StepLabel'
+import TransferInternalStep1 from '../../../../components/Transfer/TransferInternalStep1';
+import TransferInternalStep2 from '../../../../components/Transfer/TransferInternalStep2';
+import TransferInternalStep3 from '../../../../components/Transfer/TransferInternalStep3';
+import TransferInternalStep4 from '../../../../components/Transfer/TransferInternalStep4';
+import AddContactModal from '../../../../components/Account/Modal/AddContactModal';
 
 export default function TransferInternal() {
   const [currentStep, setCurrentStep] = useState(1)

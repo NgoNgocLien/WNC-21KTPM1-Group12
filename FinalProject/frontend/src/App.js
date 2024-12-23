@@ -3,15 +3,25 @@ import { BrowserRouter as Router, Route, Routes, Outlet, Navigate, useParams } f
 
 import Home from './pages/Guest/Home';
 import Login from './pages/Guest/Login';
+
 import Sidebar from './components/Sidebar';
-import Account from './pages/SignIn/Account';
-import Transfer from './pages/SignIn/Transfer/Transfer';
-import TransferInternal from './pages/SignIn/Transfer/TransferInternal';
-import TransferExternal from './pages/SignIn/Transfer/TransferExternal';
-import DebtList from './pages/SignIn/Debt/DebtList';
+
+import Account from './pages/SignIn/Customer/Account';
+import Transfer from './pages/SignIn/Customer/Transfer/Transfer';
+import TransferInternal from './pages/SignIn/Customer/Transfer/TransferInternal';
+import TransferExternal from './pages/SignIn/Customer/Transfer/TransferExternal';
+import DebtList from './pages/SignIn/Customer/Debt/DebtList';
+
+import CustomerMgmt from './pages/SignIn/Employee/CustomerMgmt';
+import CustomerTransferHistory from './pages/SignIn/Employee/CustomerTransferHistory';
+
+import EmployeeMgmt from './pages/SignIn/Admin/EmployeeMgmt';
+import BankTransferHistory from './pages/SignIn/Admin/BankTransferHistory';
 
 import NotFound from './pages/NotFound';
+
 import { getAccessToken } from './util/cookie';
+
 
 const GuestRoute = ({ element, redirectTo }) => {
   const isAuthenticated = getAccessToken();
@@ -49,6 +59,18 @@ function App() {
           <Route path="transfer-internal" element={<TransferInternal />} />
           <Route path="transfer-external" element={<TransferExternal />} />
           <Route path="debt" element={<DebtList />} />
+        </Route>
+
+        <Route path="/" element={<AuthenticatedRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
+          <Route index element={<Navigate to="/transfer" />} />
+          <Route path="customer-mgmt" element={<CustomerMgmt />} />
+          <Route path="transfer-history" element={<CustomerTransferHistory />} />
+        </Route>
+
+        <Route path="/" element={<AuthenticatedRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
+          <Route index element={<Navigate to="/transfer" />} />
+          <Route path="employee-mgmt" element={<EmployeeMgmt />} />
+          <Route path="transfer-history" element={<BankTransferHistory />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />
