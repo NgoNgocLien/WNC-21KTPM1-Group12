@@ -1,8 +1,5 @@
-import { useState } from "react"
-import { useSelector } from "react-redux"
-import { useEffect } from "react"
-import { useDispatch } from "react-redux"
-import { formatMoney, formatTime } from "../../../../util/format"
+import { useState, useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
 import { fetchIncomingDebts, fetchOutgoingDebts } from "../../../../redux/debtThunk"
 import { IDLE } from "../../../../util/config"
 import DebtItem from "../../../../components/Debt/DebtItem"
@@ -25,7 +22,7 @@ export default function DebtList() {
 
   return (
     <main className="mx-auto w-full max-w-4xl">
-      <h3 className="text-xl font-semibold mb-6">Quản lý nhắc nợ</h3>
+      <h3 className="text-xl font-semibold mb-6">Danh sách nhắc nợ</h3>
       <div className="rounded-2xl bg-white p-6">
         <div className="rounded-xl bg-gray-100 p-1 flex items-center gap-1 text-md font-semibold">
           <button

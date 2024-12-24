@@ -24,6 +24,7 @@ const debtSlice = createSlice({
     reset: (state) => {
       return { ...initialState }
     },
+
   },
   extraReducers: (builder) => {
     builder

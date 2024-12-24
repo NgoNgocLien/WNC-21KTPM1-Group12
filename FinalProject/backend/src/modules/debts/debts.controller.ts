@@ -55,12 +55,20 @@ export class DebtsController {
     return this.debtsService.findOne(id);
   }
 
-  @Post('/delete/:id')
-  deleteDebt(
+  @Post('/cancel/:id')
+  cancelDebt(
     @Param('id', ParseIntPipe) id: number,
     @Body() deleteDebtDto: DeleteDebtDto,
   ) {
-    return this.debtsService.deleteDebt(id, deleteDebtDto);
+    return this.debtsService.cancelDebt(id, deleteDebtDto);
+  }
+
+  @Post('/decline/:id')
+  declineDebt(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() deleteDebtDto: DeleteDebtDto,
+  ) {
+    return this.debtsService.declineDebt(id, deleteDebtDto);
   }
 
   // CALL AFTER AN TRANSACTION IS CREATED FOR DEBT

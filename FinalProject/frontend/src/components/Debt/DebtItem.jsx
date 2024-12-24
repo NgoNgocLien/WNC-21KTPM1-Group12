@@ -1,6 +1,35 @@
+import { useSelector, useDispatch } from 'react-redux'
 import { formatMoney, formatTime } from '../../util/format'
+import { declineDebt, cancelDebt } from '../../services/DebtService'
+import { fetchIncomingDebts, fetchOutgoingDebts } from '../../redux/debtThunk'
+import { getAccessToken } from '../../util/cookie'
+import { BASE_URL } from '../../util/config'
 
 export default function DebtItem({ debt, type }) {
+  const { id } = useSelector((state) => state.user)
+  const dispatch = useDispatch()
+
+  const handleDeclineDebt = async (id_debt) => {
+    try {
+      declineDebt(id_debt, { id_deleter: id, deletion_message: 'Từ chối nhắc nợ' }).then(() => {
+        dispatch(fetchIncomingDebts())
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleCancelDebt = async (id_debt) => {
+    try {
+      console.log('cancel debt')
+      cancelDebt(id_debt, { id_deleter: id, deletion_message: 'Hủy nhắc nợ' }).then(() => {
+        dispatch(fetchOutgoingDebts())
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <li className="py-4 flex flex-col gap-y-2">
       <div className="flex justify-between items-center gap-x-6 ">
@@ -23,14 +52,24 @@ export default function DebtItem({ debt, type }) {
       {type === 'INCOMING' && debt.status === 'PENDING' && (
         <div className="flex items-end w-full gap-x-2">
           <p className="truncate text-md text-gray-500 bg-gray-100 p-2 rounded-lg flex-1">{debt.debt_message}</p>
-          <button className="text-sm text-white bg-red-700 px-3 py-2 rounded-lg font-semibold ">Từ chối</button>
+          <button
+            onClick={() => handleDeclineDebt(debt.id)}
+            className="text-sm text-white bg-red-700 px-3 py-2 rounded-lg font-semibold "
+          >
+            Từ chối
+          </button>
           <button className="text-sm text-white bg-blue-700 px-3 py-2 rounded-lg font-semibold">Thanh toán</button>
         </div>
       )}
       {type === 'OUTGOING' && debt.status === 'PENDING' && (
         <div className="flex items-end w-full gap-x-2">
           <p className="truncate text-md text-gray-500 bg-gray-100 p-2 rounded-lg flex-1">{debt.debt_message}</p>
-          <button className="text-sm text-white bg-red-700 px-3 py-2 rounded-lg font-semibold">Hủy nhắc nợ</button>
+          <button
+            onClick={() => handleCancelDebt(debt.id)}
+            className="text-sm text-white bg-red-700 px-3 py-2 rounded-lg font-semibold"
+          >
+            Hủy nhắc nợ
+          </button>
         </div>
       )}
       {debt.status !== 'PENDING' && (

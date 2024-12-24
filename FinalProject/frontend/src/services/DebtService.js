@@ -1,25 +1,35 @@
-export class DebtService extends BaseService {
-  async getIncomingDebts() {
-    return await this.get('debts/incoming');
-  }
+import BaseService from './BaseService';
 
-  async getOutgoingDebts() {
-    return await this.get('debts/outgoing');
-  }
 
-  async createDebt(data) {
-    return await this.post('debts', data);
-  }
+const getIncomingDebts = async () => {
+  return BaseService.get('debts/incoming');
+}
 
-  async payDebt(id, data) {
-    return await this.post(`debts/pay/${id}`, data);
-  }
+const getOutgoingDebts = async () => {
+  return BaseService.get('debts/outgoing');
+}
 
-  async cancelDebt(id) {
-    return await this.post(`debts/cancel/${id}`);
-  }
+const createDebt = async (data) => {
+  return BaseService.post('debts', data);
+}
 
-  async declineDebt(id) {
-    return await this.post(`debts/decline/${id}`);
-  }
+const payDebt = async (id, data) => {
+  return BaseService.post(`debts/pay/${id}`, data);
+}
+
+const cancelDebt = async (id, data) => {
+  return BaseService.post(`debts/cancel/${id}`, data);
+}
+
+const declineDebt = async (id, data) => {
+  return BaseService.post(`debts/decline/${id}`, data);
+}
+
+export {
+  getIncomingDebts,
+  getOutgoingDebts,
+  createDebt,
+  payDebt,
+  cancelDebt,
+  declineDebt
 }

@@ -5,7 +5,7 @@ import { logout } from './../redux/authSlice'
 import { reset } from './../redux/userSlice'
 import { fetchUserAccountInfo } from './../redux/userThunk';
 import { IDLE, LOADING, FAILED } from './../util/config'
-import { ArrowRightStartOnRectangleIcon, ArrowsRightLeftIcon, ArrowUpTrayIcon, BanknotesIcon, BuildingLibraryIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { ArrowRightStartOnRectangleIcon, ArrowsRightLeftIcon, ArrowUpTrayIcon, BanknotesIcon, BuildingLibraryIcon, CreditCardIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { clearToken } from '../util/cookie';
 
 const Sidebar = () => {
@@ -25,7 +25,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     clearToken();
-    window.location.href="/home"
+    window.location.href = "/home"
   };
   return (
     <div className="fixed h-screen w-80 p-3">
@@ -63,7 +63,7 @@ const Sidebar = () => {
               className="bg-white py-3 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3 hover:text-red-800"
             >
               <div className="flex size-8 flex-none items-center justify-center rounded-3xl bg-red-800 group-hover:bg-white">
-                <BanknotesIcon className="size-5 text-white group-hover:text-red-800" />
+                <CreditCardIcon className="size-5 text-white group-hover:text-red-800" />
               </div>
               Nhắc nợ
             </NavLink>

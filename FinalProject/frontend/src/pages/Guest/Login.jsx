@@ -43,7 +43,7 @@ export default function Login() {
 
       setAccessToken(data.access_token);
       setRefreshToken(data.refresh_token);
-      
+
 
       window.location.href = '/transfer';
 
@@ -91,8 +91,8 @@ export default function Login() {
 
   return (
     <div className="h-screen bg-red-50">
-      <div className="fixed w-96 h-full px-2 py-2">
-        <img src="../login-banner.jpg" alt="Banner" className="w-full h-full rounded-xl border-2 border-white object-cover object-left" />
+      <div className="fixed w-96 h-full p-3">
+        <img src="../login-banner.jpg" alt="Banner" className="w-full h-full rounded-2xl border-2 border-white object-cover object-left" />
       </div>
 
       <div className="flex flex-col justify-center ms-96 h-full">

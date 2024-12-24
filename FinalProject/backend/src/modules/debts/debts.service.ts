@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateDebtDto } from './dto/createDebt.dto';
 import { UpdateDebtDto } from './dto/updateDebt.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { DeleteDebtDto } from './dto/deleteDebt.dto';
 import { PayDebtDto } from './dto/payDebt.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { debt_status } from '@prisma/client';
 
 @Injectable()
 export class DebtsService {
@@ -79,15 +80,15 @@ export class DebtsService {
             OR: [
               {
                 id_creditor: id_customer,
-                status: 'PAID',
+                status: debt_status.PAID,
               },
               {
                 id_creditor: id_customer,
-                status: 'CANCELED',
+                status: debt_status.CANCELED,
               },
               {
                 id_creditor: id_customer,
-                status: 'DECLINED',
+                status: debt_status.DECLINED,
               },
             ],
           },
@@ -140,15 +141,15 @@ export class DebtsService {
             OR: [
               {
                 id_debtor: id_customer,
-                status: 'PAID',
+                status: debt_status.PAID,
               },
               {
                 id_debtor: id_customer,
-                status: 'CANCELED',
+                status: debt_status.CANCELED,
               },
               {
                 id_debtor: id_customer,
-                status: 'DECLINED',
+                status: debt_status.DECLINED,
               },
             ],
           },
@@ -184,11 +185,11 @@ export class DebtsService {
           OR: [
             {
               id_creditor: id_customer,
-              status: 'PENDING',
+              status: debt_status.PENDING,
             },
             {
               id_debtor: id_customer,
-              status: 'PENDING',
+              status: debt_status.PENDING,
             },
           ],
         },
@@ -228,27 +229,27 @@ export class DebtsService {
           OR: [
             {
               id_creditor: id_customer,
-              status: 'PAID',
+              status: debt_status.PAID,
             },
             {
               id_debtor: id_customer,
-              status: 'PAID',
+              status: debt_status.PAID,
             },
             {
               id_creditor: id_customer,
-              status: 'CANCELED',
+              status: debt_status.CANCELED,
             },
             {
               id_debtor: id_customer,
-              status: 'CANCELED',
+              status: debt_status.CANCELED,
             },
             {
               id_creditor: id_customer,
-              status: 'DECLINED',
+              status: debt_status.DECLINED,
             },
             {
               id_debtor: id_customer,
-              status: 'DECLINED',
+              status: debt_status.DECLINED,
             },
           ],
         },
@@ -281,14 +282,14 @@ export class DebtsService {
     }
   }
 
-  async deleteDebt(id: number, deleteDebtDto: DeleteDebtDto) {
+  async cancelDebt(id: number, deleteDebtDto: DeleteDebtDto) {
     try {
       const [debt, debtDeletion] = await this.prisma.$transaction([
         this.prisma.debts.update({
           where: {
             id,
           },
-          data: { status: 'DECLINED' },
+          data: { status: debt_status.CANCELED },
         }),
         this.prisma.debt_deletions.create({
           data: {
@@ -300,7 +301,7 @@ export class DebtsService {
 
       // SEND NOTIFICATION TO DEBTOR AND CREDITOR
       return {
-        message: 'Debt deleted successfully',
+        message: 'Debt canceled successfully',
         data: {
           debt,
           debtDeletion,
@@ -309,11 +310,76 @@ export class DebtsService {
     } catch (error) {
       switch (error.code) {
         case 'P2025':
-          throw new Error('Debt not found');
+          throw new PrismaClientKnownRequestError('Debt not found', {
+            code: 'P2025',
+            clientVersion: '2.20.0',
+          });
         case 'P2002':
-          throw new Error('Debt already deleted');
+          throw new PrismaClientKnownRequestError('Debt already deleted', {
+            code: 'P2002',
+            clientVersion: '2.20.0',
+          });
         case undefined:
-          throw new Error('Deleter must be the creditor or debtor');
+          throw new PrismaClientKnownRequestError(
+            'Deleter must be the creditor or debtor',
+            {
+              code: 'P0001',
+              clientVersion: '2.20.0',
+            },
+          );
+        default:
+          throw new Error(
+            'Error deleting debt: ' + error.code + ' - ' + error.message,
+          );
+      }
+    }
+  }
+
+  async declineDebt(id: number, deleteDebtDto: DeleteDebtDto) {
+    try {
+      const [debt, debtDeletion] = await this.prisma.$transaction([
+        this.prisma.debts.update({
+          where: {
+            id,
+          },
+          data: { status: debt_status.DECLINED },
+        }),
+        this.prisma.debt_deletions.create({
+          data: {
+            id_debt: id,
+            ...deleteDebtDto,
+          },
+        }),
+      ]);
+
+      // SEND NOTIFICATION TO DEBTOR AND CREDITOR
+      return {
+        message: 'Debt canceled successfully',
+        data: {
+          debt,
+          debtDeletion,
+        },
+      };
+    } catch (error) {
+      switch (error.code) {
+        case 'P2025':
+          throw new PrismaClientKnownRequestError('Debt not found', {
+            code: 'P2025',
+            clientVersion: '2.20.0',
+          });
+        case 'P2002':
+          throw new PrismaClientKnownRequestError('Debt already deleted', {
+            code: 'P2002',
+            clientVersion: '2.20.0',
+          });
+        case undefined:
+          throw new PrismaClientKnownRequestError(
+            'Deleter must be the creditor or debtor',
+            {
+              code: 'P0001',
+              clientVersion: '2.20.0',
+            },
+          );
         default:
           throw new Error(
             'Error deleting debt: ' + error.code + ' - ' + error.message,
