@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
-import { fetchIncomingDebts, fetchOutgoingDebts } from './debtThunk';
+import { fetchIncomingDebts, fetchOutgoingDebts, createDebt, cancelDebt, declineDebt } from './debtThunk';
+import DebtService from '../services/DebtService';
 
 const initialState = {
   incomingDebts: {
@@ -51,7 +52,43 @@ const debtSlice = createSlice({
       .addCase(fetchOutgoingDebts.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
-      });
+      })
+      .addCase(createDebt.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(createDebt.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+        state.outgoingDebts.pending.push(action.payload.data);
+      })
+      .addCase(createDebt.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
+      })
+      .addCase(cancelDebt.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(cancelDebt.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+        state.outgoingDebts = action.payload.data;
+      })
+      .addCase(cancelDebt.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
+      })
+      .addCase(declineDebt.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(declineDebt.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+        state.incomingDebts = action.payload.data;
+      })
+      .addCase(declineDebt.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
+      })
   }
 })
 

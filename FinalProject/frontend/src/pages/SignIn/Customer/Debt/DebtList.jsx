@@ -52,31 +52,32 @@ export default function DebtList() {
               <label htmlFor="account-number" className="w-3/12 font-medium text-gray-900">
                 Đến số tài khoản
               </label>
-              <div className="w-7/12 flex items-center">
+              <div className="w-7/12 flex items-center rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
                 <input
                   id="account-number"
                   name="account-number"
                   type="text"
                   required
                   placeholder="Nhập số tài khoản"
-                  className="w-full rounded-xl bg-white px-3 py-3 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-red-800 text-md"
+                  className="w-full flex-1 bg-white px-3 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
                 />
-                <FaAddressBook className="ms-2 size-6 text-red-800 cursor-pointer hover:text-red-700" onClick={handleClickContactBook} />
+                <FaAddressBook className="focus-within:relative pr-3 size-8 text-gray-400 cursor-pointer hover:text-red-800" onClick={handleClickContactBook} />
               </div>
             </div>
             <div className="w-full flex justify-between items-center">
               <label htmlFor="amount" className="w-3/12 font-medium text-gray-900">
                 Số tiền
               </label>
-              <div className="w-7/12">
+              <div className="w-7/12 flex items-center rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
                 <input
                   id="amount"
                   name="amount"
                   type="number"
                   required
                   placeholder="Nhập số tiền"
-                  className="w-full rounded-xl bg-white px-3 py-3 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-red-800 text-md"
+                  className="w-full flex-1 bg-white px-3 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
                 />
+                <label for="amount" class="focus-within:relative pr-3 text-md text-gray-400">VNĐ</label>
               </div>
             </div>
             <div className="w-full flex justify-between items-center">

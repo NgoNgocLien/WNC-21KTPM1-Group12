@@ -1,37 +1,24 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { formatMoney, formatTime } from '../../util/format'
-import { declineDebt, cancelDebt } from '../../services/DebtService'
-import { fetchIncomingDebts, fetchOutgoingDebts } from '../../redux/debtThunk'
+import { fetchIncomingDebts, fetchOutgoingDebts, cancelDebt, declineDebt } from '../../redux/debtThunk'
 import { getAccessToken } from '../../util/cookie'
 import { BASE_URL } from '../../util/config'
+import DebtService from '../../services/DebtService'
 
 export default function DebtItem({ debt, type }) {
   const { id } = useSelector((state) => state.user)
   const dispatch = useDispatch()
 
   const handleDeclineDebt = async (id_debt) => {
-    try {
-      declineDebt(id_debt, { id_deleter: id, deletion_message: 'Từ chối nhắc nợ' }).then(() => {
-        dispatch(fetchIncomingDebts())
-      })
-    } catch (error) {
-      console.error(error)
-    }
+    dispatch(declineDebt({ id_debt, data: { id_deleter: id, deletion_message: 'Từ chối nhắc nợ' } }))
   }
 
   const handleCancelDebt = async (id_debt) => {
-    try {
-      console.log('cancel debt')
-      cancelDebt(id_debt, { id_deleter: id, deletion_message: 'Hủy nhắc nợ' }).then(() => {
-        dispatch(fetchOutgoingDebts())
-      })
-    } catch (error) {
-      console.error(error)
-    }
+    dispatch(cancelDebt({ id_debt, data: { id_deleter: id, deletion_message: 'Hủy nhắc nợ' } }))
   }
 
   return (
-    <li className="py-4 flex flex-col gap-y-2">
+    <li className="py-4 flex flex-col gap-y-2"> {debt.id}
       <div className="flex justify-between items-center gap-x-6 ">
         <div className="flex gap-x-4 items-center cursor-pointer" onClick={() => alert('clicked')}>
           <img className="size-12 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
@@ -50,11 +37,11 @@ export default function DebtItem({ debt, type }) {
         </div>
       </div>
       {type === 'INCOMING' && debt.status === 'PENDING' && (
-        <div className="flex items-end w-full gap-x-2">
+        <div className="flex items-center w-full gap-x-2">
           <p className="truncate text-md text-gray-500 bg-gray-100 p-2 rounded-lg flex-1">{debt.debt_message}</p>
           <button
             onClick={() => handleDeclineDebt(debt.id)}
-            className="text-sm text-white bg-red-700 px-3 py-2 rounded-lg font-semibold "
+            className="text-sm text-white bg-red-700 px-3 py-2 rounded-lg font-semibold"
           >
             Từ chối
           </button>
@@ -62,7 +49,7 @@ export default function DebtItem({ debt, type }) {
         </div>
       )}
       {type === 'OUTGOING' && debt.status === 'PENDING' && (
-        <div className="flex items-end w-full gap-x-2">
+        <div className="flex items-center w-full gap-x-2">
           <p className="truncate text-md text-gray-500 bg-gray-100 p-2 rounded-lg flex-1">{debt.debt_message}</p>
           <button
             onClick={() => handleCancelDebt(debt.id)}

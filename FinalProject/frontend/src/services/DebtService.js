@@ -1,35 +1,64 @@
 import BaseService from './BaseService';
 
+const DebtService = {
+  async getIncomingDebts() {
+    try {
+      const jsonObject = await BaseService.get('debts/incoming');
+      return jsonObject;
+    } catch (error) {
+      console.error('Error fetching incoming debts:', error);
+      throw error; // Re-throw error để xử lý tại nơi gọi
+    }
+  },
 
-const getIncomingDebts = async () => {
-  return BaseService.get('debts/incoming');
-}
+  async getOutgoingDebts() {
+    try {
+      const jsonObject = await BaseService.get('debts/outgoing');
+      return jsonObject;
+    } catch (error) {
+      console.error('Error fetching outgoing debts:', error);
+      throw error;
+    }
+  },
 
-const getOutgoingDebts = async () => {
-  return BaseService.get('debts/outgoing');
-}
+  async createDebt(data) {
+    try {
+      const jsonObject = await BaseService.post('debts', data);
+      return jsonObject;
+    } catch (error) {
+      console.error('Error creating debt:', error);
+      throw error;
+    }
+  },
 
-const createDebt = async (data) => {
-  return BaseService.post('debts', data);
-}
+  // async payDebt(id, data) {
+  //   try {
+  //     return await BaseService.post(`debts/pay/${id}`, data);
+  //   } catch (error) {
+  //     console.error(`Error paying debt with ID ${id}:`, error);
+  //     throw error;
+  //   }
+  // },
 
-const payDebt = async (id, data) => {
-  return BaseService.post(`debts/pay/${id}`, data);
-}
+  async cancelDebt(id, data) {
+    try {
+      const jsonObject = await BaseService.post(`debts/cancel/${id}`, data);
+      return jsonObject;
+    } catch (error) {
+      console.error(`Error canceling debt with ID ${id}:`, error);
+      throw error;
+    }
+  },
 
-const cancelDebt = async (id, data) => {
-  return BaseService.post(`debts/cancel/${id}`, data);
-}
+  async declineDebt(id, data) {
+    try {
+      const jsonObject = await BaseService.post(`debts/decline/${id}`, data);
+      return jsonObject;
+    } catch (error) {
+      console.error(`Error declining debt with ID ${id}:`, error);
+      throw error;
+    }
+  },
+};
 
-const declineDebt = async (id, data) => {
-  return BaseService.post(`debts/decline/${id}`, data);
-}
-
-export {
-  getIncomingDebts,
-  getOutgoingDebts,
-  createDebt,
-  payDebt,
-  cancelDebt,
-  declineDebt
-}
+export default DebtService;

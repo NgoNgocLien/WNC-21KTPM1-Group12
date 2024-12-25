@@ -12,7 +12,11 @@ export default class BaseService {
         'Authorization': `Bearer ${accessToken}`
       }
     });
-    return await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
+    } else {
+      return await response.json();
+    }
   }
 
   static async post(url, data) {
@@ -25,7 +29,11 @@ export default class BaseService {
       },
       body: JSON.stringify(data)
     });
-    return await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to post data');
+    } else {
+      return await response.json();
+    }
   }
 
   static async put(url, data) {
@@ -38,7 +46,11 @@ export default class BaseService {
       },
       body: JSON.stringify(data)
     });
-    return await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to put data');
+    } else {
+      return await response.json();
+    }
   }
 
   static async patch(url, data) {
@@ -51,7 +63,11 @@ export default class BaseService {
       },
       body: JSON.stringify(data)
     });
-    return await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to patch data');
+    } else {
+      return await response.json();
+    }
   }
 
   static async delete(url) {
@@ -63,6 +79,10 @@ export default class BaseService {
         'Authorization': `Bearer ${accessToken}`
       }
     });
-    return await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to delete data');
+    } else {
+      return await response.json();
+    }
   }
 }
