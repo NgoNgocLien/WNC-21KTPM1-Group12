@@ -14,4 +14,8 @@ export class LoginDto {
   @IsDefined()
   @IsEnum(Role)
   role: Role;
+
+  @IsString()
+  @IsDefined()
+  fcm_token: string;
 }

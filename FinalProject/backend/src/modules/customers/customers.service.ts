@@ -12,6 +12,7 @@ import { CreateCustomerDto } from './dto/createCustomer.dto';
 const bcrypt = require('bcrypt');
 import { generateAccountNumber } from '../../common/utils/checksum.util';
 import { sendMail } from '../../common/utils/sendMail';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class CustomersService {
@@ -51,7 +52,7 @@ export class CustomersService {
     try {
       const customer = await this.prisma.customers.findUnique({
         where: {
-          id
+          id,
         },
       });
 
@@ -68,21 +69,22 @@ export class CustomersService {
     try {
       const customer = await this.prisma.customers.findUnique({
         where: {
-          id
+          id,
         },
         select: {
           id: true,
-          fullname: true,  // Only select the fullname field
+          fullname: true, // Only select the fullname field
           email: true,
           username: true,
           phone: true,
+          fcm_token: true,
           accounts: {
             select: {
               account_number: true,
-              account_balance: true
-            }
-          }
-        }
+              account_balance: true,
+            },
+          },
+        },
       });
 
       return {
@@ -103,7 +105,7 @@ export class CustomersService {
         throw new NotFoundException(`Customer with id ${id} not found`);
       }
 
-      const customer = this.prisma.customers.update({
+      const customer = await this.prisma.customers.update({
         where: {
           id: id,
         },
@@ -114,7 +116,6 @@ export class CustomersService {
         message: 'Customer updated successfully',
         data: customer,
       };
-
     } catch (error) {
       throw new Error('Error updating customer: ' + error.message);
     }
@@ -138,7 +139,7 @@ export class CustomersService {
         data: {
           id_customer: customer.id,
           account_number: accountNumber,
-          account_balance: 0, 
+          account_balance: 0,
         },
       });
 
@@ -149,14 +150,13 @@ export class CustomersService {
           account,
         },
       };
-
     } catch (error) {
       throw new Error('Error creating customer and account: ' + error.message);
     }
   }
 
   async getAllAccounts(id: number) {
-    try{
+    try {
       const customerExists = await this.prisma.customers.findUnique({
         where: { id },
       });
@@ -174,14 +174,13 @@ export class CustomersService {
         message: 'Accounts found successfully',
         data: accounts,
       };
-
     } catch (error) {
       throw new Error('Error fetching accounts: ' + error.message);
     }
   }
 
   async getAllContacts(id: number) {
-    try{
+    try {
       const customerExists = await this.prisma.customers.findUnique({
         where: { id },
       });
@@ -193,21 +192,21 @@ export class CustomersService {
         where: {
           id_customer: id,
         },
-        select:{
+        select: {
           id: true,
           nickname: true,
           contact_account_number: true,
           contact_fullname: true,
-          banks:{
-            select:{
+          banks: {
+            select: {
               name: true,
-              logo: true
-            }
+              logo: true,
+            },
           },
-        }
+        },
       });
 
-      const transformedContacts = contacts.map(contact => ({
+      const transformedContacts = contacts.map((contact) => ({
         id: contact.id,
         nickname: contact.nickname,
         account_number: contact.contact_account_number,
@@ -215,19 +214,18 @@ export class CustomersService {
         bank_name: contact.banks.name,
         bank_logo: contact.banks.logo,
       }));
-  
+
       return {
-        message: "Contacts found successfully",
+        message: 'Contacts found successfully',
         data: transformedContacts,
       };
-
     } catch (error) {
       throw new Error('Error fetching contacts: ' + error.message);
     }
   }
 
   async createOneContact(data: CreateContactDto) {
-    try{
+    try {
       const customerExists = await this.prisma.customers.findUnique({
         where: { id: data.id_customer },
       });
@@ -253,10 +251,10 @@ export class CustomersService {
           banks: {
             select: {
               name: true,
-              logo: true
-            }
-          }
-        }
+              logo: true,
+            },
+          },
+        },
       });
 
       const transformedContact = {
@@ -272,14 +270,13 @@ export class CustomersService {
         message: 'Contact created successfully',
         data: transformedContact,
       };
-
     } catch (error) {
       throw new Error('Error creating contact: ' + error.message);
     }
   }
 
   async updateOneContact(id_customer: number, data: UpdateContactDto) {
-    try{
+    try {
       const contactExists = await this.prisma.contacts.findFirst({
         where: {
           id: data.id,
@@ -303,7 +300,6 @@ export class CustomersService {
       return {
         message: 'Contact updated successfully',
       };
-
     } catch (error) {
       throw new Error('Error updating contact: ' + error.message);
     }

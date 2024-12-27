@@ -26,19 +26,21 @@ import { login } from './redux/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import EmployeeSidebar from './components/Sidebar/EmployeeSidebar';
 
+import { onMessageListener } from './util/fcm';
+import { setNotification, clearNotification } from './redux/notificationSlice';
 
 const GuestRoute = ({ element }) => {
   const isAuthenticated = getAccessToken();
-  if (isAuthenticated){
+  if (isAuthenticated) {
     const role = getRoleFromToken();
-    switch(role){
+    switch (role) {
       case 'customer':
-        return <Navigate to={'/customer'} /> ;
+        return <Navigate to={'/customer'} />;
       case 'employee':
-        return <Navigate to={'/employee'} /> ;
+        return <Navigate to={'/employee'} />;
       case 'admin':
       default:
-        return <Navigate to={'/admin'} /> ;
+        return <Navigate to={'/admin'} />;
     }
   } else
     return element;
@@ -65,20 +67,30 @@ const AdminRoute = ({ element, redirectTo }) => {
 };
 
 function AuthenticatedLayout() {
-  const {role} = useSelector((state) => state.auth)
+  const { role } = useSelector((state) => state.auth)
   let sidebar = null;
-  
-  switch(role){
+
+  switch (role) {
     case 'customer':
-      sidebar = <CustomerSidebar/>;
+      sidebar = <CustomerSidebar />;
       break;
     case 'employee':
-      sidebar = <EmployeeSidebar/>;
+      sidebar = <EmployeeSidebar />;
       break;
     case 'admin':
     default:
       break;
   }
+  const dispatch = useDispatch();
+  const { notification } = useSelector((state) => state.notification);
+
+  onMessageListener().then((payload) => {
+    console.log('Message received. ', payload);
+    dispatch(setNotification(payload.notification));
+    setTimeout(() => {
+      dispatch(clearNotification());
+    }, 10000);
+  });
 
   return (
     <div>
@@ -86,7 +98,13 @@ function AuthenticatedLayout() {
       <main className="ms-80 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
         <Outlet />
       </main>
-      
+
+      {notification && (
+        <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg">
+          <p className="text-lg font-semibold">{notification.title}</p>
+          <p className="text-md">{notification.body}</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -97,13 +115,13 @@ function App() {
   useEffect(() => {
     const role = getRoleFromToken();
     dispatch(login(role));
-  },[])
+  }, [])
 
   return (
     <Router>
       <Routes>
         <Route path="login/:role" element={<GuestRoute element={<Login />} />} />
-        <Route path="" element={<GuestRoute element={<Home />}  />} />
+        <Route path="" element={<GuestRoute element={<Home />} />} />
 
         <Route path="/customer" element={<CustomerRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
           <Route index element={<Navigate to="/customer/transfer" />} />

@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from 'src/common/filters/all-exceptions.filter';
+import * as admin from 'firebase-admin';
+import { ServiceAccount } from 'firebase-admin';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,6 +28,17 @@ async function bootstrap() {
       stopAtFirstError: true,
     }),
   );
+
+  // Set the config options
+  const adminConfig: ServiceAccount = {
+    projectId: process.env.FCM_PROJECT_ID,
+    privateKey: process.env.FCM_PRIVATE_KEY,
+    clientEmail: process.env.FCM_CLIENT_EMAIL,
+  };
+  // Initialize the firebase admin app
+  admin.initializeApp({
+    credential: admin.credential.cert(adminConfig),
+  });
 
   await app.listen(4000);
 }

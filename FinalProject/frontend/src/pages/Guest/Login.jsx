@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 import { Formik } from "formik";
 import { Form, Field, ErrorMessage } from "formik";
@@ -9,6 +9,7 @@ import { GoogleReCaptchaProvider, GoogleReCaptcha } from "react-google-recaptcha
 
 import { BASE_URL } from "../../util/config";
 import { setAccessToken, setRefreshToken } from "../../util/cookie";
+import { requestFCMToken } from "../../util/fcm";
 
 const loginSchema = Yup.object().shape({
   username: Yup.string().required("Vui lòng nhập tên đăng nhập"),
@@ -22,39 +23,102 @@ export default function Login() {
   const [refreshReCaptcha, setRefreshReCaptcha] = useState(false);
 
   const login = async (values) => {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          role: role,
-          username: values.username,
-          password: values.password,
-        }),
-      })
+    switch (role) {
+      case 'customer':
+        requestFCMToken().then(async (token) => {
+          try {
+            const response = await fetch(`${BASE_URL}/auth/login`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                role: role,
+                username: values.username,
+                password: values.password,
+                fcm_token: token,
+              }),
+            })
+            if (!response.ok) {
+              throw new Error('Failed to login');
+            }
 
-      if (!response.ok) {
-        throw new Error('Failed to login');
-      }
+            const data = await response.json();
 
-      const data = await response.json();
+            setAccessToken(data.access_token);
+            setRefreshToken(data.refresh_token);
 
-      setAccessToken(data.access_token);
-      setRefreshToken(data.refresh_token);
-      
-      if (role === 'customer')
-        window.location.href = '/customer';
-      else if (role === 'employee')
-        window.location.href = '/employee';
-      else
-        window.location.href = '/admin';
-    } catch (error) {
-      console.log(error)
+            window.location.href = '/customer';
+          } catch (error) {
+            console.log(error)
+          }
+        }).catch((error) => {
+          console.log(error);
+          alert('Failed to get FCM token');
+        })
+        break;
+      case 'employee':
+        try {
+          const response = await fetch(`${BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              role: role,
+              username: values.username,
+              password: values.password,
+              fcm_token: token,
+            }),
+          })
+
+          if (!response.ok) {
+            throw new Error('Failed to login');
+          }
+
+          const data = await response.json();
+
+          setAccessToken(data.access_token);
+          setRefreshToken(data.refresh_token);
+
+          window.location.href = '/employee';
+        } catch (error) {
+          console.log(error)
+        }
+        break;
+      case 'admin':
+        try {
+          const response = await fetch(`${BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              role: role,
+              username: values.username,
+              password: values.password,
+              fcm_token: token,
+            }),
+          })
+
+          if (!response.ok) {
+            throw new Error('Failed to login');
+          }
+
+          const data = await response.json();
+
+          setAccessToken(data.access_token);
+          setRefreshToken(data.refresh_token);
+
+          window.location.href = '/admin';
+        } catch (error) {
+          console.log(error)
+        }
+        break;
+      default:
+        break;
     }
   }
-
   const verifyToken = async (token, values) => {
     try {
       const response = await fetch(`${BASE_URL}/auth/verify-recaptcha`, {

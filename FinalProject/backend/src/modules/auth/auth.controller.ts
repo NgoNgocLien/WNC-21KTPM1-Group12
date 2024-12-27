@@ -27,6 +27,7 @@ export class AuthController {
       loginDto.username,
       loginDto.password,
       loginDto.role,
+      loginDto.fcm_token,
     );
   }
 

@@ -6,10 +6,14 @@ import { DeleteDebtDto } from './dto/deleteDebt.dto';
 import { PayDebtDto } from './dto/payDebt.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { debt_status } from '@prisma/client';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class DebtsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationService: NotificationsService,
+  ) {}
 
   async create(createDebtDto: CreateDebtDto) {
     try {
@@ -282,7 +286,11 @@ export class DebtsService {
     }
   }
 
-  async cancelDebt(id: number, deleteDebtDto: DeleteDebtDto) {
+  async cancelDebt(
+    id: number,
+    fcm_token: string,
+    deleteDebtDto: DeleteDebtDto,
+  ) {
     try {
       const [debt, debtDeletion] = await this.prisma.$transaction([
         this.prisma.debts.update({
@@ -300,6 +308,12 @@ export class DebtsService {
       ]);
 
       // SEND NOTIFICATION TO DEBTOR AND CREDITOR
+      this.notificationService.sendNotification(
+        'Debt Canceled',
+        'Your debt has been canceled',
+        fcm_token,
+      );
+
       return {
         message: 'Debt canceled successfully',
         data: {

@@ -21,6 +21,7 @@ export class AuthService {
     username: string,
     password: string,
     role: Role,
+    fcm_token: string,
   ): Promise<{ access_token: string; refresh_token: string }> {
     let user = null;
 
@@ -58,12 +59,14 @@ export class AuthService {
       sub: user.data.id,
       username: user.data.username,
       role: role,
+      fcm_token: fcm_token,
     };
 
     const access_token = await this.getAccessToken(payload);
     const refresh_token = await this.getRefreshToken(payload);
 
     await this.updateRefreshToken(user.data.id, refresh_token, role);
+    await this.updateFcmToken(user.data.id, fcm_token);
 
     return { access_token, refresh_token };
   }
@@ -71,7 +74,10 @@ export class AuthService {
   async logout(id: number, role: Role) {
     switch (role) {
       case Role.CUSTOMER:
-        return this.customersService.update(id, { refresh_token: null });
+        return this.customersService.update(id, {
+          refresh_token: null,
+          fcm_token: null,
+        });
       case Role.EMPLOYEE:
         return this.employeesService.update(id, { refresh_token: null });
       case Role.ADMIN:
@@ -163,6 +169,10 @@ export class AuthService {
       default:
         throw new UnauthorizedException('Invalid role');
     }
+  }
+
+  async updateFcmToken(id: number, fcm_token: string) {
+    this.customersService.update(id, { fcm_token: fcm_token });
   }
 
   async verifyRecaptcha(token: string) {
