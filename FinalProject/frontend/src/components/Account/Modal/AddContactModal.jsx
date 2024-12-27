@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 
 import { createOneContact } from './../../../redux/userThunk';
 import getFullname from '../../../util/getFullname'
-import banks from './banks'
+import banks from '../../../util/banks'
 import { getAccessToken } from '../../../util/cookie';
 
 const bankOptions = banks.map(bank => ({

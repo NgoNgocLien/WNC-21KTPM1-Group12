@@ -1,10 +1,10 @@
-import React, { useState} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { BASE_URL, SENDER } from '../../util/config';
 import { getAccessToken } from '../../util/cookie';
 
 
-export default function TransferInternalStep2({ setCurrentStep, values }) {
+export default function TransferStep2({ setCurrentStep, values }) {
   const {email} = useSelector((state) => state.user)
   const access_token = getAccessToken();
 

@@ -1,5 +1,9 @@
 export const BASE_URL = 'http://localhost:4000';
 
+export const INTERNAL = 'internal';
+
+export const EXTERNAL = 'external';
+
 export const INTERNAL_BAND_ID = 1;
 
 export const INTERNAL_BAND_NAME = "NoMeoBank";

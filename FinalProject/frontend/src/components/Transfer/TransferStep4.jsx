@@ -7,7 +7,7 @@ import { SENDER, INTERNAL_BAND_NAME } from '../../util/config';
 import { formatTime } from '../../util/format';
 
 
-export default function TransferInternalStep4({ setIsAddModalOpen, transaction }) {
+export default function TransferStep4({ setIsAddModalOpen, transaction }) {
   const {fullname, contacts} = useSelector((state) => state.user)
   const navigate = useNavigate();
   const [isExistingInContact, setIsExistingInContact] = useState(false)
@@ -16,7 +16,7 @@ export default function TransferInternalStep4({ setIsAddModalOpen, transaction }
       const result = contacts?.some((contact) => {
         // console.log(contact.account_number)
         // console.log(transaction.recipient_account_number)
-        return contact.account_number == transaction.recipient_account_number
+        return contact.account_number === transaction.recipient_account_number
       })
       // console.log(result);
       setIsExistingInContact(result);

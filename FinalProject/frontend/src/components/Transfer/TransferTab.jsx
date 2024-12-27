@@ -9,11 +9,11 @@ export default function TransferTab() {
       <p className="text-lg font-semibold">Chuyển tiền</p>
 
       <div className="flex space-x-4 font-semibold">
-        <NavLink to="/transfer-internal" className="w-1/5 py-8 bg-white rounded-2xl flex flex-col items-center text-center gap-2 hover:text-red-800">
+        <NavLink to="/customer/transfer-internal" className="w-1/5 py-8 bg-white rounded-2xl flex flex-col items-center text-center gap-2 hover:text-red-800">
           <FaUniversity size={40} className="text-red-800" />
           Chuyển trong NoMeoBank
         </NavLink>
-        <NavLink to="/transfer-external" className="w-1/5 py-8 bg-white rounded-2xl flex flex-col items-center text-center gap-2 hover:text-red-800">
+        <NavLink to="/customer/transfer-external" className="w-1/5 py-8 bg-white rounded-2xl flex flex-col items-center text-center gap-2 hover:text-red-800">
           <FaExternalLinkAlt size={37} className="text-red-800 mb-1" />
           Chuyển ngoài NoMeoBank
         </NavLink>

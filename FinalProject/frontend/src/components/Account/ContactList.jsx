@@ -4,14 +4,11 @@ import { FaTrash, FaPen  } from 'react-icons/fa';
 import { IoIosClose } from "react-icons/io";
 
 import { fetchUserContacts } from './../../redux/userThunk';
-import { IDLE, LOADING, FAILED } from './../../util/config';
-
-const INTERNAL = 'internal'
-const EXTERNAL = 'external'
+import { IDLE, LOADING, FAILED, INTERNAL, EXTERNAL } from './../../util/config';
 
 export default function ContactList({
     isMutable,
-    openAddModal,
+    isInternal = true,
     openEditModal,
     openDeleteModal,
     setSelectedContact,
@@ -26,7 +23,7 @@ export default function ContactList({
         }
     }, [status, dispatch]);
 
-    const [activeTab, setActiveTab] = useState(INTERNAL);
+    const [activeTab, setActiveTab] = useState(isInternal ? INTERNAL : EXTERNAL);
     const [filterContacts, setFilterContacts] = useState([]);
   
     useEffect(() => {

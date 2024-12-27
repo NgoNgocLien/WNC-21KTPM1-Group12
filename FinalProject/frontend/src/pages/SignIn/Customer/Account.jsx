@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-// import { useSelector, useDispatch } from 'react-redux';
-// import { NavLink, useNavigate } from 'react-router-dom';
+
 import AccountInfo from '../../../components/Account/AccountInfo';
 import ContactList from '../../../components/Account/ContactList';
 import AddContactModal from '../../../components/Account/Modal/AddContactModal'
 import EditContactModal from '../../../components/Account/Modal/EditContactModal'
 import DeleteContactModal from '../../../components/Account/Modal/DeleteContactModal'
-import Dialog from '../../../components/Dialog';
 
 export default function Account() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -50,7 +48,6 @@ export default function Account() {
 
       <ContactList 
         isMutable={true} 
-        openAddModal={openAddModal}
         openEditModal={openEditModal}
         openDeleteModal={openDeleteModal}
       />

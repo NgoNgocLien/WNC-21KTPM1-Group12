@@ -27,8 +27,6 @@ const Dialog = () => {
     }
   };
 
-  
-
   const { title } = getDialogStyles();
 
   const handleCloseBtn = () => {

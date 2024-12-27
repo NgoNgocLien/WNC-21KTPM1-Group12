@@ -5,11 +5,13 @@ import * as Yup from 'yup';
 import { FaAddressBook } from "react-icons/fa";
 
 import TransferAccount from './TransferAccount';
+import ContactList from '../Account/ContactList';
+import ExternalBankSelect from './ExternalBankSelect';
+
 import { fetchUserContacts } from '../../redux/userThunk';
-import { SENDER, RECIPIENT, INTERNAL_BAND_ID } from '../../util/config';
+import { SENDER, RECIPIENT } from '../../util/config';
 import getFullname from '../../util/getFullname';
 import { getAccessToken } from '../../util/cookie';
-import ContactList from '../Account/ContactList';
 
 
 export default function TransferInternalStep1({ setCurrentStep, setValues }) {
@@ -19,16 +21,12 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
   const access_token = getAccessToken();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    formik.setFieldValue('transaction_message', `${fullname.toUpperCase()} chuyen tien`);
-  },[fullname])
-
   const formik = useFormik({
     initialValues: {
       sender_account_number: account_number,
-      id_sender_bank: INTERNAL_BAND_ID,
+      id_sender_bank: null,
       recipient_account_number: ``,
-      id_recipient_bank: INTERNAL_BAND_ID,
+      id_recipient_bank: null,
       transaction_amount: null,
       transaction_message: `${fullname.toUpperCase()} chuyen tien`,
       fee_payment_method: SENDER,
@@ -81,6 +79,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
           <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-20">
             <ContactList 
               isMutable={false} 
+              isInternal={false}
               setSelectedContact={setSelectedContact} 
               setDisplayContacts={setDisplayContacts}
             />
@@ -89,8 +88,13 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
       }
       <TransferAccount formik={formik} />
 
+      
+
       <div className="w-8/12 mx-auto p-6 flex flex-col bg-white rounded-lg ">
-        <div className="w-full flex justify-between items-center">
+
+        <ExternalBankSelect formik={formik} />
+       
+        <div className="w-full mt-4 flex justify-between items-center">
           <div className="w-3/12 font-semibold">
             Tài khoản thụ hưởng
           </div>

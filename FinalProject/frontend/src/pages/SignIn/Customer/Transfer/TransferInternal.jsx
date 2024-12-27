@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 
 import StepLabel from '../../../../components/Transfer/StepLabel'
 import TransferInternalStep1 from '../../../../components/Transfer/TransferInternalStep1';
-import TransferInternalStep2 from '../../../../components/Transfer/TransferInternalStep2';
-import TransferInternalStep3 from '../../../../components/Transfer/TransferInternalStep3';
-import TransferInternalStep4 from '../../../../components/Transfer/TransferInternalStep4';
+import TransferStep2 from '../../../../components/Transfer/TransferStep2';
+import TransferStep3 from '../../../../components/Transfer/TransferStep3';
+import TransferStep4 from '../../../../components/Transfer/TransferStep4';
 import AddContactModal from '../../../../components/Account/Modal/AddContactModal';
+import { INTERNAL } from '../../../../util/config';
 
 export default function TransferInternal() {
   const [currentStep, setCurrentStep] = useState(1)
@@ -34,7 +32,8 @@ export default function TransferInternal() {
 
       {
         currentStep === 2 && (
-          <TransferInternalStep2
+          <TransferStep2
+            type={INTERNAL}
             setCurrentStep={setCurrentStep}
             values={values}
             setTransaction={setTransaction}
@@ -44,7 +43,8 @@ export default function TransferInternal() {
 
       {
         currentStep === 3 && (
-          <TransferInternalStep3
+          <TransferStep3
+            type={INTERNAL}   
             setCurrentStep={setCurrentStep}
             values={values}
             setTransaction={setTransaction}
@@ -54,7 +54,8 @@ export default function TransferInternal() {
 
       {
         currentStep === 4 && (
-          <TransferInternalStep4
+          <TransferStep4
+            type={INTERNAL}
             transaction={transaction}
             setIsAddModalOpen={setIsAddModalOpen}
           />
