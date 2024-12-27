@@ -23,9 +23,21 @@ import NotFound from './pages/NotFound';
 import { getAccessToken, getRoleFromToken } from './util/cookie';
 
 
-const GuestRoute = ({ element, redirectTo }) => {
+const GuestRoute = ({ element }) => {
   const isAuthenticated = getAccessToken();
-  return isAuthenticated ? <Navigate to={redirectTo} /> : element;
+  if (isAuthenticated){
+    const role = getRoleFromToken();
+    switch(role){
+      case 'customer':
+        return <Navigate to={'/customer'} /> ;
+      case 'employee':
+        return <Navigate to={'/employee'} /> ;
+      case 'admin':
+      default:
+        return <Navigate to={'/admin'} /> ;
+    }
+  } else
+    return element;
 };
 
 const AuthenticatedRoute = ({ element, redirectTo }) => {
@@ -64,11 +76,11 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="login/:role" element={<GuestRoute element={<Login />} redirectTo="/transfer" />} />
-        <Route path="home" element={<GuestRoute element={<Home />} redirectTo="/transfer" />} />
+        <Route path="login/:role" element={<GuestRoute element={<Login />}/>} />
+        <Route path="home" element={<GuestRoute element={<Home />}  />} />
 
-        <Route path="/" element={<CustomerRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
-          <Route index element={<Navigate to="/transfer" />} />
+        <Route path="/customer" element={<CustomerRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
+          <Route index element={<Navigate to="/customer/transfer" />} />
           <Route path="account" element={<Account />} />
           <Route path="transfer" element={<Transfer />} />
           <Route path="transfer-internal" element={<TransferInternal />} />
@@ -76,14 +88,14 @@ function App() {
           <Route path="debt" element={<DebtList />} />
         </Route>
 
-        <Route path="/" element={<EmployeeRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
-          <Route index element={<Navigate to="/transfer" />} />
+        <Route path="/employee" element={<EmployeeRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
+          <Route index element={<Navigate to="/employee/customer-mgmt" />} />
           <Route path="customer-mgmt" element={<CustomerMgmt />} />
           <Route path="transfer-history" element={<CustomerTransferHistory />} />
         </Route>
 
-        <Route path="/" element={<AdminRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
-          <Route index element={<Navigate to="/transfer" />} />
+        <Route path="/admin" element={<AdminRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
+          <Route index element={<Navigate to="/admin/employee-mgmt" />} />
           <Route path="employee-mgmt" element={<EmployeeMgmt />} />
           <Route path="transfer-history" element={<BankTransferHistory />} />
         </Route>

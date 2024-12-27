@@ -44,9 +44,13 @@ export default function Login() {
       setAccessToken(data.access_token);
       setRefreshToken(data.refresh_token);
       
-
-      window.location.href = '/transfer';
-
+      if (role === 'customer')
+        window.location.href = '/customer';
+      else if (role === 'employee')
+        window.location.href = '/employee';
+      else
+        window.location.href = '/admin';
+      
     } catch (error) {
       console.log(error)
     }
