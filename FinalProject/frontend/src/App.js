@@ -27,7 +27,6 @@ import NotFound from './pages/NotFound';
 
 import { login } from './redux/authSlice';
 import { setNotification, clearNotification } from './redux/notificationSlice';
-import Dialog from './components/Dialog';
 import { getAccessToken, getRoleFromToken } from './util/cookie';
 import { onMessageListener } from './util/fcm';
 import { FAILED, SUCCEEDED } from './util/config'
