@@ -1,5 +1,6 @@
 // authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
+import { IDLE } from '../util/config';
 
 const authSlice = createSlice({
   name: 'auth',
@@ -18,8 +19,16 @@ const authSlice = createSlice({
     logout: (state) => {
       state.role = null;
     },
+    resetAuthStatus: (state) => {
+      return {
+        ...state,
+        status: IDLE,
+        error: null
+      }
+
+    }
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, resetAuthStatus } = authSlice.actions;
 export default authSlice.reducer;

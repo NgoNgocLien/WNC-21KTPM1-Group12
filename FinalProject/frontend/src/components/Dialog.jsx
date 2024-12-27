@@ -2,6 +2,8 @@ import React from 'react';
 import { IoIosClose } from "react-icons/io";
 import { useDispatch, useSelector, } from 'react-redux';
 import { closeDialog } from '../redux/dialogSlice';
+import { resetUserStatus } from '../redux/userSlice'
+import { resetAuthStatus } from '../redux/authSlice';
 
 const Dialog = () => {
   const dispatch = useDispatch();
@@ -31,10 +33,12 @@ const Dialog = () => {
 
   const handleCloseBtn = () => {
     dispatch(closeDialog());
+    dispatch(resetUserStatus());
+    dispatch(resetAuthStatus());
   }
 
   if (!isOpen) return null;
-  
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
       <div className={`bg-white rounded-lg shadow-xl w-96`}>
