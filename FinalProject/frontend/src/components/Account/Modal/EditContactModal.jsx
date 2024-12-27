@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { useDispatch } from 'react-redux'
 import { updateOneContact } from './../../../redux/userThunk';
+import notify from './../../../util/notification';
 
 const EditContactModal = ({ isOpen, closeModal, contact }) => {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const EditContactModal = ({ isOpen, closeModal, contact }) => {
       nickname: nickname
     }))
     closeModal();
+    notify("Chỉnh sửa nickname thành công");
   }
 
   if (!isOpen || !contact) return null;

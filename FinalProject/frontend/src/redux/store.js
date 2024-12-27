@@ -4,7 +4,7 @@ import userReducer from './userSlice'
 import transactionReducer from './transactionSlice';
 import debtReducer from './debtSlice';
 import notificationReducer from './notificationSlice';
-
+import dialogReducer from './dialogSlice'
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -12,6 +12,7 @@ const store = configureStore({
     transaction: transactionReducer,
     debt: debtReducer,
     notification: notificationReducer,
+    dialog: dialogReducer
   },
 });
 

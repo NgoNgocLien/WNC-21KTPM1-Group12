@@ -11,7 +11,7 @@ import {
   Patch,
   Delete
 } from '@nestjs/common';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston'
 import { CustomersService } from './customers.service';
 import { Request } from 'express';
 import { CreateContactDto } from './dto/createContact.dto';

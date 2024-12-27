@@ -1,11 +1,15 @@
 import './App.css';
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Outlet, Navigate, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Outlet, Navigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 
 import Home from './pages/Guest/Home';
 import Login from './pages/Guest/Login';
 
 import CustomerSidebar from './components/Sidebar/CustomerSidebar';
+import EmployeeSidebar from './components/Sidebar/EmployeeSidebar';
+import Dialog from './components/Dialog';
 
 import Account from './pages/SignIn/Customer/Account';
 import Transfer from './pages/SignIn/Customer/Transfer/Transfer';
@@ -21,14 +25,14 @@ import BankTransferHistory from './pages/SignIn/Admin/BankTransferHistory';
 
 import NotFound from './pages/NotFound';
 
-import { getAccessToken, getRoleFromToken } from './util/cookie';
 import { login } from './redux/authSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import EmployeeSidebar from './components/Sidebar/EmployeeSidebar';
-
-import { onMessageListener } from './util/fcm';
 import { setNotification, clearNotification } from './redux/notificationSlice';
 import Dialog from './components/Dialog';
+import { getAccessToken, getRoleFromToken } from './util/cookie';
+import { onMessageListener } from './util/fcm';
+import { FAILED, SUCCEEDED } from './util/config'
+import { openDialog } from './redux/dialogSlice';
+
 
 const GuestRoute = ({ element }) => {
   const isAuthenticated = getAccessToken();
@@ -45,11 +49,6 @@ const GuestRoute = ({ element }) => {
     }
   } else
     return element;
-};
-
-const AuthenticatedRoute = ({ element, redirectTo }) => {
-  const isAuthenticated = getAccessToken();
-  return isAuthenticated ? element : <Navigate to={redirectTo} />;
 };
 
 const CustomerRoute = ({ element, redirectTo }) => {
@@ -95,6 +94,7 @@ function AuthenticatedLayout() {
 
   return (
     <div>
+      <ToastContainer />
       {sidebar}
       <main className="ms-80 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
         <Outlet />
@@ -114,42 +114,64 @@ function AuthenticatedLayout() {
 
 function App() {
   const dispatch = useDispatch();
+  const { status: userStatus, error: userError } = useSelector((state) => state.user)
+  const { status: authStatus, error: authError } = useSelector((state) => state.auth)
 
   useEffect(() => {
     const role = getRoleFromToken();
-    dispatch(login(role));
+    if (role) {
+      dispatch(login({
+        role: role,
+        status: SUCCEEDED,
+        error: null
+      }));
+    }
   }, [])
 
+  useEffect(() => {
+    if (userStatus === FAILED || authStatus === FAILED) {
+      dispatch(openDialog({
+        type: "error",
+        message: userError || authError,
+        actionBtn: false,
+      }));
+    }
+  }, [userStatus, authStatus])
+
   return (
-    <Router>
-      <Routes>
-        <Route path="login/:role" element={<GuestRoute element={<Login />} />} />
-        <Route path="" element={<GuestRoute element={<Home />} />} />
+    <>
+      <Dialog />
 
-        <Route path="/customer" element={<CustomerRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
-          <Route index element={<Navigate to="/customer/transfer" />} />
-          <Route path="account" element={<Account />} />
-          <Route path="transfer" element={<Transfer />} />
-          <Route path="transfer-internal" element={<TransferInternal />} />
-          <Route path="transfer-external" element={<TransferExternal />} />
-          <Route path="debt" element={<DebtList />} />
-        </Route>
+      <Router>
+        <Routes>
+          <Route path="login/:role" element={<GuestRoute element={<Login />} />} />
+          <Route path="" element={<GuestRoute element={<Home />} />} />
 
-        <Route path="/employee" element={<EmployeeRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
-          <Route index element={<Navigate to="/employee/customer-mgmt" />} />
-          <Route path="customer-mgmt" element={<CustomerMgmt />} />
-          <Route path="transfer-history" element={<CustomerTransferHistory />} />
-        </Route>
+          <Route path="/customer" element={<CustomerRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
+            <Route index element={<Navigate to="/customer/transfer" />} />
+            <Route path="account" element={<Account />} />
+            <Route path="transfer" element={<Transfer />} />
+            <Route path="transfer-internal" element={<TransferInternal />} />
+            <Route path="transfer-external" element={<TransferExternal />} />
+            <Route path="debt" element={<DebtList />} />
+          </Route>
 
-        <Route path="/admin" element={<AdminRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
-          <Route index element={<Navigate to="/admin/employee-mgmt" />} />
-          <Route path="employee-mgmt" element={<EmployeeMgmt />} />
-          <Route path="transfer-history" element={<BankTransferHistory />} />
-        </Route>
+          <Route path="/employee" element={<EmployeeRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
+            <Route index element={<Navigate to="/employee/customer-mgmt" />} />
+            <Route path="customer-mgmt" element={<CustomerMgmt />} />
+            <Route path="transfer-history" element={<CustomerTransferHistory />} />
+          </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+          <Route path="/admin" element={<AdminRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
+            <Route index element={<Navigate to="/admin/employee-mgmt" />} />
+            <Route path="employee-mgmt" element={<EmployeeMgmt />} />
+            <Route path="transfer-history" element={<BankTransferHistory />} />
+          </Route>
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </>
   );
 }
 
