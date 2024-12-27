@@ -1,9 +1,9 @@
 import { BASE_URL } from "../util/config";
 import { getAccessToken } from "../util/cookie";
 
-export class BaseService {
+export default class BaseService {
 
-  async get(url) {
+  static async get(url) {
     const accessToken = getAccessToken();
     const response = await fetch(`${BASE_URL}/${url}`, {
       method: 'GET',
@@ -12,10 +12,14 @@ export class BaseService {
         'Authorization': `Bearer ${accessToken}`
       }
     });
-    return await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
+    } else {
+      return await response.json();
+    }
   }
 
-  async post(url, data) {
+  static async post(url, data) {
     const accessToken = getAccessToken();
     const response = await fetch(`${BASE_URL}/${url}`, {
       method: 'POST',
@@ -25,10 +29,14 @@ export class BaseService {
       },
       body: JSON.stringify(data)
     });
-    return await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to post data');
+    } else {
+      return await response.json();
+    }
   }
 
-  async put(url, data) {
+  static async put(url, data) {
     const accessToken = getAccessToken();
     const response = await fetch(`${BASE_URL}/${url}`, {
       method: 'PUT',
@@ -38,10 +46,14 @@ export class BaseService {
       },
       body: JSON.stringify(data)
     });
-    return await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to put data');
+    } else {
+      return await response.json();
+    }
   }
 
-  async patch(url, data) {
+  static async patch(url, data) {
     const accessToken = getAccessToken();
     const response = await fetch(`${BASE_URL}/${url}`, {
       method: 'PATCH',
@@ -51,10 +63,14 @@ export class BaseService {
       },
       body: JSON.stringify(data)
     });
-    return await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to patch data');
+    } else {
+      return await response.json();
+    }
   }
 
-  async delete(url) {
+  static async delete(url) {
     const accessToken = getAccessToken();
     const response = await fetch(`${BASE_URL}/${url}`, {
       method: 'DELETE',
@@ -63,6 +79,10 @@ export class BaseService {
         'Authorization': `Bearer ${accessToken}`
       }
     });
-    return await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to delete data');
+    } else {
+      return await response.json();
+    }
   }
 }

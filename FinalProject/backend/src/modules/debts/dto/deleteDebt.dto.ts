@@ -1,4 +1,10 @@
-import { IsDateString, IsDefined, IsNumber, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsDefined,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class DeleteDebtDto {
   @IsNumber()
@@ -10,6 +16,6 @@ export class DeleteDebtDto {
   deletion_message: string;
 
   @IsDateString() // ISO 8601 string: 2021-08-24T00:00:00.000Z
-  @IsDefined()
+  @IsOptional()
   deletion_time: Date;
 }

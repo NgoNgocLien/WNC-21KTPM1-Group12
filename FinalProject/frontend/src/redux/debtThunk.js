@@ -1,28 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { BASE_URL } from './../util/config'
 import { getAccessToken } from './../util/cookie'
+import DebtService from '../services/DebtService';
 
 export const fetchIncomingDebts = createAsyncThunk(
   'debt/fetchIncomingDebts',
   async (_, { rejectWithValue, getState }) => {
-    const access_token = getAccessToken();
-
     try {
-      const response = await fetch(`${BASE_URL}/debts/incoming`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${access_token}`,
-        },
-      });
-
-      if (!response.ok) {
-        console.log(response)
-        throw new Error('Failed to fetch pending debts');
-      }
-
-      const data = await response.json();
-      return data;
+      const response = await DebtService.getIncomingDebts();
+      return response;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -32,24 +18,59 @@ export const fetchIncomingDebts = createAsyncThunk(
 export const fetchOutgoingDebts = createAsyncThunk(
   'debt/fetchOutgoingDebts',
   async (_, { rejectWithValue, getState }) => {
-    const access_token = getAccessToken();
-
     try {
-      const response = await fetch(`${BASE_URL}/debts/outgoing`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${access_token}`,
-        },
-      });
+      const response = await DebtService.getOutgoingDebts();
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
-      if (!response.ok) {
-        console.log(response)
-        throw new Error('Failed to fetch completed debts');
-      }
+export const createDebt = createAsyncThunk(
+  'debt/createDebt',
+  async (data, { rejectWithValue, getState }) => {
+    try {
+      const response = await DebtService.createDebt(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
-      const data = await response.json();
-      return data;
+// export const payDebt = createAsyncThunk(
+//   'debt/payDebt',
+//   async (data, { rejectWithValue, getState }) => {
+//     try {
+//       const response = await payDebt(data);
+//       return response;
+//     } catch (error) {
+//       return rejectWithValue(error.message);
+//     }
+//   }
+// );
+
+export const cancelDebt = createAsyncThunk(
+  'debt/cancelDebt',
+  async ({ id_debt, data }, { rejectWithValue, getState }) => {
+    try {
+      await DebtService.cancelDebt(id_debt, data);
+      const response = await DebtService.getOutgoingDebts();
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const declineDebt = createAsyncThunk(
+  'debt/declineDebt',
+  async ({ id_debt, data }, { rejectWithValue, getState }) => {
+    try {
+      await DebtService.declineDebt(id_debt, data);
+      const response = await DebtService.getIncomingDebts(); // Lấy danh sách mới
+      return response; // Trả về danh sách mới
     } catch (error) {
       return rejectWithValue(error.message);
     }

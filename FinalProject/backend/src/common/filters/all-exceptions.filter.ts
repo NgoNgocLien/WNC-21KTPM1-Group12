@@ -30,15 +30,39 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     let responseObject = {};
 
-    if (exception instanceof HttpException) {
+    if (exception instanceof PrismaClientKnownRequestError) {
+      switch (exception.code) {
+        case 'P2002':
+          statusCode = HttpStatus.BAD_REQUEST;
+          responseObject = {
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: exception?.message || 'Unique constraint failed',
+          };
+          break;
+        case 'P2025':
+          statusCode = HttpStatus.NOT_FOUND;
+          responseObject = {
+            statusCode: HttpStatus.NOT_FOUND,
+            message: exception?.message || 'Record not found',
+          };
+          break;
+        case 'P0001':
+          statusCode = HttpStatus.FORBIDDEN; //
+          responseObject = {
+            statusCode: HttpStatus.FORBIDDEN,
+            message: exception?.message || 'Unauthorized',
+          };
+        default:
+          statusCode = HttpStatus.BAD_REQUEST;
+          responseObject = {
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: exception?.message || 'Bad Request',
+          };
+          break;
+      }
+    } else if (exception instanceof HttpException) {
       statusCode = exception.getStatus();
       responseObject = exception.getResponse();
-    } else if (exception instanceof PrismaClientKnownRequestError) {
-      statusCode = HttpStatus.BAD_REQUEST;
-      responseObject = {
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: exception.message,
-      };
     } else {
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       responseObject = {
@@ -47,7 +71,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       };
     }
 
-    // response.status(statusCode).json(responseObject);
+    response.status(statusCode).json(responseObject);
 
     // Log the error with stack trace if available
     const errorMessage = `Response: ${request.method} ${request.originalUrl} - Status: ${statusCode} - Body: ${JSON.stringify(responseObject)} - ${request.ip}`;

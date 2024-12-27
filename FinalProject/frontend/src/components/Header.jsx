@@ -32,7 +32,7 @@ export default function Header() {
               transition
               className="absolute -right-8 top-full z-10 mt-3 w-screen max-w-60 overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
             >
-              <div className="group gap-x-2 relative flex items-center rounded-md p-2 text-sm/6 hover:bg-gray-100 cursor-pointer">
+              <div className="group gap-x-2 relative flex items-center p-2 text-sm/6 hover:bg-gray-100 cursor-pointer">
                 <div className="flex size-11 flex-none items-center justify-center rounded-2xl bg-gray-100 group-hover:bg-white">
                   <UserGroupIcon className="size-6 text-gray-900 group-hover:text-red-800" />
                 </div>
@@ -41,7 +41,7 @@ export default function Header() {
                 </Link>
               </div>
 
-              <div className="group gap-x-2 relative flex items-center rounded-md p-2 text-sm/6 hover:bg-gray-100 cursor-pointer">
+              <div className="group gap-x-2 relative flex items-center p-2 text-sm/6 hover:bg-gray-100 cursor-pointer">
                 <div className="flex size-11 flex-none items-center justify-center rounded-2xl bg-gray-100 group-hover:bg-white">
                   <BriefcaseIcon className="size-6 text-gray-900 group-hover:text-red-800" />
                 </div>
@@ -50,7 +50,7 @@ export default function Header() {
                 </Link>
               </div>
 
-              <div className="group gap-x-2 relative flex items-center rounded-md p-2 text-sm/6 hover:bg-gray-100 cursor-pointer">
+              <div className="group gap-x-2 relative flex items-center p-2 text-sm/6 hover:bg-gray-100 cursor-pointer">
                 <div className="flex size-11 flex-none items-center justify-center rounded-2xl bg-gray-100 group-hover:bg-white">
                   <BuildingLibraryIcon className="size-6 text-gray-900 group-hover:text-red-800" />
                 </div>

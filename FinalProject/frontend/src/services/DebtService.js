@@ -1,25 +1,64 @@
-export class DebtService extends BaseService {
+import BaseService from './BaseService';
+
+const DebtService = {
   async getIncomingDebts() {
-    return await this.get('debts/incoming');
-  }
+    try {
+      const jsonObject = await BaseService.get('debts/incoming');
+      return jsonObject;
+    } catch (error) {
+      console.error('Error fetching incoming debts:', error);
+      throw error; // Re-throw error để xử lý tại nơi gọi
+    }
+  },
 
   async getOutgoingDebts() {
-    return await this.get('debts/outgoing');
-  }
+    try {
+      const jsonObject = await BaseService.get('debts/outgoing');
+      return jsonObject;
+    } catch (error) {
+      console.error('Error fetching outgoing debts:', error);
+      throw error;
+    }
+  },
 
   async createDebt(data) {
-    return await this.post('debts', data);
-  }
+    try {
+      const jsonObject = await BaseService.post('debts', data);
+      return jsonObject;
+    } catch (error) {
+      console.error('Error creating debt:', error);
+      throw error;
+    }
+  },
 
-  async payDebt(id, data) {
-    return await this.post(`debts/pay/${id}`, data);
-  }
+  // async payDebt(id, data) {
+  //   try {
+  //     return await BaseService.post(`debts/pay/${id}`, data);
+  //   } catch (error) {
+  //     console.error(`Error paying debt with ID ${id}:`, error);
+  //     throw error;
+  //   }
+  // },
 
-  async cancelDebt(id) {
-    return await this.post(`debts/cancel/${id}`);
-  }
+  async cancelDebt(id, data) {
+    try {
+      const jsonObject = await BaseService.post(`debts/cancel/${id}`, data);
+      return jsonObject;
+    } catch (error) {
+      console.error(`Error canceling debt with ID ${id}:`, error);
+      throw error;
+    }
+  },
 
-  async declineDebt(id) {
-    return await this.post(`debts/decline/${id}`);
-  }
-}
+  async declineDebt(id, data) {
+    try {
+      const jsonObject = await BaseService.post(`debts/decline/${id}`, data);
+      return jsonObject;
+    } catch (error) {
+      console.error(`Error declining debt with ID ${id}:`, error);
+      throw error;
+    }
+  },
+};
+
+export default DebtService;
