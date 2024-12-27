@@ -1,10 +1,11 @@
 import './App.css';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Outlet, Navigate, useParams } from 'react-router-dom';
 
 import Home from './pages/Guest/Home';
 import Login from './pages/Guest/Login';
 
-import Sidebar from './components/Sidebar';
+import CustomerSidebar from './components/Sidebar/CustomerSidebar';
 
 import Account from './pages/SignIn/Customer/Account';
 import Transfer from './pages/SignIn/Customer/Transfer/Transfer';
@@ -21,6 +22,9 @@ import BankTransferHistory from './pages/SignIn/Admin/BankTransferHistory';
 import NotFound from './pages/NotFound';
 
 import { getAccessToken, getRoleFromToken } from './util/cookie';
+import { login } from './redux/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import EmployeeSidebar from './components/Sidebar/EmployeeSidebar';
 
 
 const GuestRoute = ({ element }) => {
@@ -61,9 +65,24 @@ const AdminRoute = ({ element, redirectTo }) => {
 };
 
 function AuthenticatedLayout() {
+  const {role} = useSelector((state) => state.auth)
+  let sidebar = null;
+  
+  switch(role){
+    case 'customer':
+      sidebar = <CustomerSidebar/>;
+      break;
+    case 'employee':
+      sidebar = <EmployeeSidebar/>;
+      break;
+    case 'admin':
+    default:
+      break;
+  }
+
   return (
     <div>
-      <Sidebar />
+      {sidebar}
       <main className="ms-80 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
         <Outlet />
       </main>
@@ -73,10 +92,17 @@ function AuthenticatedLayout() {
 }
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const role = getRoleFromToken();
+    dispatch(login(role));
+  },[])
+
   return (
     <Router>
       <Routes>
-        <Route path="login/:role" element={<GuestRoute element={<Login />}/>} />
+        <Route path="login/:role" element={<GuestRoute element={<Login />} />} />
         <Route path="" element={<GuestRoute element={<Home />}  />} />
 
         <Route path="/customer" element={<CustomerRoute element={<AuthenticatedLayout />} redirectTo="/" />}>

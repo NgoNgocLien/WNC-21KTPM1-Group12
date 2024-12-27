@@ -8,11 +8,13 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Req,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/createEmployee.dto';
 import { UpdateEmployeeDto } from './dto/updateEmployee.dto';
 import { ParseIntPipe } from '@nestjs/common';
+import { Request } from 'express';
 
 @Controller('employees')
 export class EmployeesController {
@@ -31,9 +33,9 @@ export class EmployeesController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.employeesService.findById(id);
+  @Get('profile')
+  findOne(@Req() req: Request) {
+    return this.employeesService.findById(req.user['sub']);
   }
 
   @HttpCode(HttpStatus.OK)
