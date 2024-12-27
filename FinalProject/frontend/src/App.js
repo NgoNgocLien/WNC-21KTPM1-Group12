@@ -27,6 +27,7 @@ import NotFound from './pages/NotFound';
 
 import { login } from './redux/authSlice';
 import { setNotification, clearNotification } from './redux/notificationSlice';
+import Dialog from './components/Dialog';
 import { getAccessToken, getRoleFromToken } from './util/cookie';
 import { onMessageListener } from './util/fcm';
 import { FAILED, SUCCEEDED } from './util/config'
@@ -100,10 +101,12 @@ function AuthenticatedLayout() {
       </main>
 
       {notification && (
-        <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg">
-          <p className="text-lg font-semibold">{notification.title}</p>
-          <p className="text-md">{notification.body}</p>
-        </div>
+        // <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg">
+        //   <p className="text-lg font-semibold">{notification.title}</p>
+        //   <p className="text-md">{notification.body}</p>
+        // </div>
+
+        <Dialog type="info" isOpen={true} message="This is a message" />
       )}
     </div>
   );
@@ -111,12 +114,12 @@ function AuthenticatedLayout() {
 
 function App() {
   const dispatch = useDispatch();
-  const {status: userStatus, error: userError} = useSelector((state) => state.user)
-  const {status: authStatus, error: authError} = useSelector((state) => state.auth)
+  const { status: userStatus, error: userError } = useSelector((state) => state.user)
+  const { status: authStatus, error: authError } = useSelector((state) => state.auth)
 
   useEffect(() => {
     const role = getRoleFromToken();
-    if (role){
+    if (role) {
       dispatch(login({
         role: role,
         status: SUCCEEDED,
@@ -126,7 +129,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (userStatus === FAILED || authStatus === FAILED){
+    if (userStatus === FAILED || authStatus === FAILED) {
       dispatch(openDialog({
         type: "error",
         message: userError || authError,
@@ -137,37 +140,37 @@ function App() {
 
   return (
     <>
-    <Dialog/>
+      <Dialog />
 
-    <Router>
-      <Routes>
-        <Route path="login/:role" element={<GuestRoute element={<Login />} />} />
-        <Route path="" element={<GuestRoute element={<Home />} />} />
+      <Router>
+        <Routes>
+          <Route path="login/:role" element={<GuestRoute element={<Login />} />} />
+          <Route path="" element={<GuestRoute element={<Home />} />} />
 
-        <Route path="/customer" element={<CustomerRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
-          <Route index element={<Navigate to="/customer/transfer" />} />
-          <Route path="account" element={<Account />} />
-          <Route path="transfer" element={<Transfer />} />
-          <Route path="transfer-internal" element={<TransferInternal />} />
-          <Route path="transfer-external" element={<TransferExternal />} />
-          <Route path="debt" element={<DebtList />} />
-        </Route>
+          <Route path="/customer" element={<CustomerRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
+            <Route index element={<Navigate to="/customer/transfer" />} />
+            <Route path="account" element={<Account />} />
+            <Route path="transfer" element={<Transfer />} />
+            <Route path="transfer-internal" element={<TransferInternal />} />
+            <Route path="transfer-external" element={<TransferExternal />} />
+            <Route path="debt" element={<DebtList />} />
+          </Route>
 
-        <Route path="/employee" element={<EmployeeRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
-          <Route index element={<Navigate to="/employee/customer-mgmt" />} />
-          <Route path="customer-mgmt" element={<CustomerMgmt />} />
-          <Route path="transfer-history" element={<CustomerTransferHistory />} />
-        </Route>
+          <Route path="/employee" element={<EmployeeRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
+            <Route index element={<Navigate to="/employee/customer-mgmt" />} />
+            <Route path="customer-mgmt" element={<CustomerMgmt />} />
+            <Route path="transfer-history" element={<CustomerTransferHistory />} />
+          </Route>
 
-        <Route path="/admin" element={<AdminRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
-          <Route index element={<Navigate to="/admin/employee-mgmt" />} />
-          <Route path="employee-mgmt" element={<EmployeeMgmt />} />
-          <Route path="transfer-history" element={<BankTransferHistory />} />
-        </Route>
+          <Route path="/admin" element={<AdminRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
+            <Route index element={<Navigate to="/admin/employee-mgmt" />} />
+            <Route path="employee-mgmt" element={<EmployeeMgmt />} />
+            <Route path="transfer-history" element={<BankTransferHistory />} />
+          </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
     </>
   );
 }
