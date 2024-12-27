@@ -28,6 +28,7 @@ import EmployeeSidebar from './components/Sidebar/EmployeeSidebar';
 
 import { onMessageListener } from './util/fcm';
 import { setNotification, clearNotification } from './redux/notificationSlice';
+import Dialog from './components/Dialog';
 
 const GuestRoute = ({ element }) => {
   const isAuthenticated = getAccessToken();
@@ -100,10 +101,12 @@ function AuthenticatedLayout() {
       </main>
 
       {notification && (
-        <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg">
-          <p className="text-lg font-semibold">{notification.title}</p>
-          <p className="text-md">{notification.body}</p>
-        </div>
+        // <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg">
+        //   <p className="text-lg font-semibold">{notification.title}</p>
+        //   <p className="text-md">{notification.body}</p>
+        // </div>
+
+        <Dialog type="info" isOpen={true} message="This is a message" />
       )}
     </div>
   );
