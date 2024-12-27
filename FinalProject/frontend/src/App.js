@@ -77,9 +77,9 @@ function App() {
     <Router>
       <Routes>
         <Route path="login/:role" element={<GuestRoute element={<Login />}/>} />
-        <Route path="home" element={<GuestRoute element={<Home />}  />} />
+        <Route path="" element={<GuestRoute element={<Home />}  />} />
 
-        <Route path="/customer" element={<CustomerRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
+        <Route path="/customer" element={<CustomerRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
           <Route index element={<Navigate to="/customer/transfer" />} />
           <Route path="account" element={<Account />} />
           <Route path="transfer" element={<Transfer />} />
@@ -88,13 +88,13 @@ function App() {
           <Route path="debt" element={<DebtList />} />
         </Route>
 
-        <Route path="/employee" element={<EmployeeRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
+        <Route path="/employee" element={<EmployeeRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
           <Route index element={<Navigate to="/employee/customer-mgmt" />} />
           <Route path="customer-mgmt" element={<CustomerMgmt />} />
           <Route path="transfer-history" element={<CustomerTransferHistory />} />
         </Route>
 
-        <Route path="/admin" element={<AdminRoute element={<AuthenticatedLayout />} redirectTo="/home" />}>
+        <Route path="/admin" element={<AdminRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
           <Route index element={<Navigate to="/admin/employee-mgmt" />} />
           <Route path="employee-mgmt" element={<EmployeeMgmt />} />
           <Route path="transfer-history" element={<BankTransferHistory />} />

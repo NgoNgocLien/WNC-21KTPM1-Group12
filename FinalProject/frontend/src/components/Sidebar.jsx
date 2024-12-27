@@ -25,7 +25,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     clearToken();
-    window.location.href = "/home"
+    window.location.href = "/"
   };
   return (
     <div className="fixed h-screen w-80 p-3">
