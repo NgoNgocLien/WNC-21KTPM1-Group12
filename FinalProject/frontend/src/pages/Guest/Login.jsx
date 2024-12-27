@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 
 import { Formik } from "formik";
 import { Form, Field, ErrorMessage } from "formik";
@@ -7,9 +7,12 @@ import * as Yup from "yup";
 
 import { GoogleReCaptchaProvider, GoogleReCaptcha } from "react-google-recaptcha-v3";
 
-import { BASE_URL } from "../../util/config";
+import { login } from "../../redux/authSlice";
+
+import { BASE_URL, FAILED } from "../../util/config";
 import { setAccessToken, setRefreshToken } from "../../util/cookie";
 import { requestFCMToken } from "../../util/fcm";
+import { useDispatch } from "react-redux";
 
 const loginSchema = Yup.object().shape({
   username: Yup.string().required("Vui lòng nhập tên đăng nhập"),
@@ -17,12 +20,13 @@ const loginSchema = Yup.object().shape({
 })
 
 export default function Login() {
-  const { role } = useParams()
+  const { role } = useParams();
+  const dispatch = useDispatch();
 
   const [token, setToken] = useState();
   const [refreshReCaptcha, setRefreshReCaptcha] = useState(false);
 
-  const login = async (values) => {
+  const handleLogin = async (values) => {
     switch (role) {
       case 'customer':
         requestFCMToken().then(async (token) => {
@@ -40,7 +44,12 @@ export default function Login() {
               }),
             })
             if (!response.ok) {
-              throw new Error('Failed to login');
+              dispatch(login({
+                role: null,
+                status: FAILED,
+                error: "Tên đăng nhập hoặc mật khẩu sai"
+              }))
+              return;
             }
 
             const data = await response.json();
@@ -50,11 +59,20 @@ export default function Login() {
 
             window.location.href = '/customer';
           } catch (error) {
-            console.log(error)
+            dispatch(login({
+              role: null,
+              status: FAILED,
+              error: "Lỗi hệ thống"
+            }))
+            return;
           }
         }).catch((error) => {
-          console.log(error);
-          alert('Failed to get FCM token');
+          dispatch(login({
+            role: null,
+            status: FAILED,
+            error: "Lỗi FCMT"
+          }))
+          return;
         })
         break;
       case 'employee':
@@ -73,7 +91,12 @@ export default function Login() {
           })
 
           if (!response.ok) {
-            throw new Error('Failed to login');
+            dispatch(login({
+              role: null,
+              status: FAILED,
+              error: "Tên đăng nhập hoặc mật khẩu sai"
+            }))
+            return;
           }
 
           const data = await response.json();
@@ -83,7 +106,12 @@ export default function Login() {
 
           window.location.href = '/employee';
         } catch (error) {
-          console.log(error)
+          dispatch(login({
+            role: null,
+            status: FAILED,
+            error: "Lỗi hệ thống"
+          }))
+          return;
         }
         break;
       case 'admin':
@@ -102,7 +130,12 @@ export default function Login() {
           })
 
           if (!response.ok) {
-            throw new Error('Failed to login');
+            dispatch(login({
+              role: null,
+              status: FAILED,
+              error: "Tên đăng nhập hoặc mật khẩu sai"
+            }))
+            return;
           }
 
           const data = await response.json();
@@ -112,13 +145,19 @@ export default function Login() {
 
           window.location.href = '/admin';
         } catch (error) {
-          console.log(error)
+          dispatch(login({
+            role: null,
+            status: FAILED,
+            error: "Lỗi hệ thống"
+          }))
+          return;
         }
         break;
       default:
         break;
     }
   }
+
   const verifyToken = async (token, values) => {
     try {
       const response = await fetch(`${BASE_URL}/auth/verify-recaptcha`, {
@@ -134,7 +173,7 @@ export default function Login() {
       if (!response.ok) {
         throw new Error('Failed to verify token');
       } else {
-        login(values);
+        handleLogin(values);
       }
 
     } catch (error) {

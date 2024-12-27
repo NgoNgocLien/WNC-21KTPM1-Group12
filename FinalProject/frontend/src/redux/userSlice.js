@@ -4,7 +4,7 @@ import {
   fetchUserContacts, createOneContact, deleteOneContact, updateOneContact } from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 
-const  initialState = { 
+const initialState = { 
   id: 0,
   fullname: '',
   username: '',
