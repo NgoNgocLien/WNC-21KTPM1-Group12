@@ -10,6 +10,7 @@ import Login from './pages/Guest/Login';
 import CustomerSidebar from './components/Sidebar/CustomerSidebar';
 import EmployeeSidebar from './components/Sidebar/EmployeeSidebar';
 import Dialog from './components/Dialog';
+import LoadingIndicator from './components/LoadingIndicator';
 
 import Account from './pages/SignIn/Customer/Account';
 import Transfer from './pages/SignIn/Customer/Transfer/Transfer';
@@ -139,6 +140,7 @@ function App() {
 
   return (
     <>
+      <LoadingIndicator/>
       <Dialog />
 
       <Router>

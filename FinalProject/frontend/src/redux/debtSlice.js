@@ -25,7 +25,13 @@ const debtSlice = createSlice({
     reset: (state) => {
       return { ...initialState }
     },
-
+    setDebtStatus: (state,action) => {
+      return {
+        ...state,
+        status: action.payload.status,
+        error: action.payload.eror
+      }
+    }
   },
   extraReducers: (builder) => {
     builder

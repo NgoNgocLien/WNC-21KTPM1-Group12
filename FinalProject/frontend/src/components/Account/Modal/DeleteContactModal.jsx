@@ -1,5 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux'
+import { IoIosClose } from "react-icons/io";
+
 import { deleteOneContact } from './../../../redux/userThunk';
 
 const DeleteContactModal = ({ isOpen, closeModal, contact }) => {
@@ -13,26 +15,37 @@ const DeleteContactModal = ({ isOpen, closeModal, contact }) => {
 };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg w-96">
-        <h3 className="text-xl text-center font-semibold">Xác Nhận Xóa Người Nhận</h3>
-        <p className="text-cente mb-4">Bạn có chắc chắn muốn xóa <span className="font-semibold">{contact.nickname}</span>?</p>
-        <div className="flex justify-center space-x-4 mt-4">
-          <button 
-            onClick={closeModal} 
-            className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg hover:bg-red-100">Hủy</button>
-          <button
-            onClick={() => {
-              handleDelete(contact); // handle delete logic
-              closeModal();
-            }}
-            className="px-4 py-2 bg-red-800 text-white rounded-lg hover:bg-red-700"
-          >
-            Xóa
-          </button>
+
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+          <div className={`bg-white rounded-lg shadow-xl w-96`}>
+    
+            <div className="p-4">
+              <div className="flex justify-between items-center">
+                <h3 className={`text-xl font-semibold`}>Xác nhận</h3>
+                <IoIosClose className="text-gray-500 text-3xl cursor-pointer hover:text-gray-700" onClick={closeModal} />
+              </div>
+              <p className={`mt-2`}>Bạn có chắc chắn muốn xóa <span className="font-semibold">{contact.nickname}</span>?</p>
+            </div>
+    
+            <div className="flex justify-center p-4 space-x-4">
+              <button
+                onClick={closeModal}
+                className={`px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-xl hover:bg-red-100`}
+              >
+                Đóng
+              </button>
+              <button
+                onClick={() => {
+                  handleDelete(contact); // handle delete logic
+                  closeModal();
+                }}
+                className={`px-4 py-2 bg-red-800 text-white rounded-xl hover:bg-red-700`}
+              >
+                Xóa
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
   );
 };
 

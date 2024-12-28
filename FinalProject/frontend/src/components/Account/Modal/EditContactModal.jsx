@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { updateOneContact } from './../../../redux/userThunk';
 import notify from './../../../util/notification';
+import { SUCCEEDED } from '../../../util/config';
 
 const EditContactModal = ({ isOpen, closeModal, contact }) => {
   const dispatch = useDispatch();
+  const {status} = useSelector((state) => state.user)
 
   const [nickname, setNickname] = useState('');
   const [currentNickname, setCurrentNickname] = useState('');
@@ -16,13 +18,17 @@ const EditContactModal = ({ isOpen, closeModal, contact }) => {
     }
   }, [contact]);
 
+  // useEffect(() => {
+  //   if (status === SUCCEEDED && !isOpen)
+  //     notify("Chỉnh sửa nickname thành công");
+  // }, [status])
+
   const handleEdit = () => {
     dispatch(updateOneContact({
       id: contact.id,
       nickname: nickname
     }))
     closeModal();
-    notify("Chỉnh sửa nickname thành công");
   }
 
   if (!isOpen || !contact) return null;

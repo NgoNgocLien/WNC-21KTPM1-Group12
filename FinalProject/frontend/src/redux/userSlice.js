@@ -3,6 +3,7 @@ import {
   fetchUserAccountInfo, 
   fetchUserContacts, createOneContact, deleteOneContact, updateOneContact } from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
+import notify from '../util/notification';
 
 const initialState = { 
   id: 0,
@@ -85,6 +86,7 @@ const userSlice = createSlice({
           ...state.contacts,
           action.payload.data
         ]
+        notify("Thêm mới người nhận thành công");
       })
       .addCase(createOneContact.rejected, (state, action) => {
         state.status = FAILED;
@@ -104,6 +106,7 @@ const userSlice = createSlice({
             ...state.contacts[updatedContactIndex],
             nickname: action.payload.data.nickname
           };
+          notify("Chỉnh sửa nickname thành công");
         }
       })
       .addCase(updateOneContact.rejected, (state, action) => {
@@ -117,7 +120,8 @@ const userSlice = createSlice({
       .addCase(deleteOneContact.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
         const filteredContacts = state.contacts.filter(contact => contact.id !== action.payload.id);
-        state.contacts = [...filteredContacts]
+        state.contacts = [...filteredContacts];
+        notify("Xóa người nhận thành công");
       })
       .addCase(deleteOneContact.rejected, (state, action) => {
         state.status = FAILED;

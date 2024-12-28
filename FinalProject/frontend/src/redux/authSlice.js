@@ -6,7 +6,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     role: null,
-    status: null,
+    status: IDLE,
     error: null,
   },
   reducers: {
