@@ -7,14 +7,16 @@ const LoadingIndicator = () => {
     const [loading, setLoading] = useState(false);
     const { status: userStatus } = useSelector((state) => state.user)
     const { status: authStatus } = useSelector((state) => state.auth)
+    const { status: transactionStatus } = useSelector((state) => state.transaction)
+    const { status: debtStatus } = useSelector((state) => state.debt)
 
     useEffect(() => {
-        if (userStatus === LOADING || authStatus === LOADING) {
+        if (userStatus === LOADING || authStatus === LOADING || transactionStatus === LOADING || debtStatus === LOADING) {
             setLoading(true);
         } else{
             setLoading(false);
         }
-    }, [userStatus, authStatus])
+    }, [userStatus, authStatus, transactionStatus, debtStatus])
 
     if (!loading) return null;
 
