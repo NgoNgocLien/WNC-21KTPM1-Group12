@@ -38,29 +38,29 @@ export default function DebtItem({ debt, type }) {
       </div>
       {type === 'INCOMING' && debt.status === 'PENDING' && (
         <div className="flex items-center w-full gap-x-2">
-          <p className="truncate text-md text-gray-500 bg-gray-100 p-2 rounded-lg flex-1">{debt.debt_message}</p>
+          <p className="truncate text-md text-gray-500 bg-gray-100 p-2 rounded-xl flex-1">{debt.debt_message}</p>
           <button
             onClick={() => handleDeclineDebt(debt.id)}
-            className="text-sm text-white bg-red-700 px-3 py-2 rounded-lg font-semibold"
+            className="text-sm text-white bg-red-700 px-3 py-2 rounded-xl font-semibold"
           >
             Từ chối
           </button>
-          <button className="text-sm text-white bg-blue-700 px-3 py-2 rounded-lg font-semibold">Thanh toán</button>
+          <button className="text-sm text-white bg-blue-700 px-3 py-2 rounded-xl font-semibold">Thanh toán</button>
         </div>
       )}
       {type === 'OUTGOING' && debt.status === 'PENDING' && (
         <div className="flex items-center w-full gap-x-2">
-          <p className="truncate text-md text-gray-500 bg-gray-100 p-2 rounded-lg flex-1">{debt.debt_message}</p>
+          <p className="truncate text-md text-gray-500 bg-gray-100 p-2 rounded-xl flex-1">{debt.debt_message}</p>
           <button
             onClick={() => handleCancelDebt(debt.id)}
-            className="text-sm text-white bg-red-700 px-3 py-2 rounded-lg font-semibold"
+            className="text-sm text-white bg-red-700 px-3 py-2 rounded-xl font-semibold"
           >
             Hủy nhắc nợ
           </button>
         </div>
       )}
       {debt.status !== 'PENDING' && (
-        <p className="w-full truncate text-md text-gray-600 bg-gray-100 p-2 rounded-lg flex-1">{debt.debt_message}</p>
+        <p className="w-full truncate text-md text-gray-600 bg-gray-100 p-2 rounded-xl flex-1">{debt.debt_message}</p>
       )}
     </li>
   )

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 import AccountInfo from '../../../components/Account/AccountInfo';
 import ContactList from '../../../components/Account/ContactList';
-import AddContactModal from '../../../components/Account/Modal/AddContactModal'
-import EditContactModal from '../../../components/Account/Modal/EditContactModal'
-import DeleteContactModal from '../../../components/Account/Modal/DeleteContactModal'
+import AddContactModal from '../../../components/Account/AddContactModal'
+import EditContactModal from '../../../components/Account/EditContactModal'
+import DeleteContactModal from '../../../components/Account/DeleteContactModal'
 
 export default function Account() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);

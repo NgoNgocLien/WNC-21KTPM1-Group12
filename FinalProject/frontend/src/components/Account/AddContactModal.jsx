@@ -4,10 +4,10 @@ import { useFormik } from 'formik';
 import Select from 'react-select';
 import * as Yup from 'yup';
 
-import { createOneContact } from './../../../redux/userThunk';
-import getFullname from '../../../util/getFullname'
-import banks from '../../../util/banks'
-import { getAccessToken } from '../../../util/cookie';
+import { createOneContact } from '../../redux/userThunk';
+import getFullname from '../../util/getFullname'
+import banks from '../../util/banks'
+import { getAccessToken } from '../../util/cookie';
 
 const bankOptions = banks.map(bank => ({
   value: bank.bank_id,
@@ -88,7 +88,7 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-20">
-      <div className="bg-white p-6 rounded-lg w-96 flex flex-col items-center">
+      <div className="bg-white p-6 rounded-xl w-96 flex flex-col items-center">
         <h3 className="text-xl font-semibold">Thêm Mới Người Nhận</h3>
 
         <form onSubmit={formik.handleSubmit} className="w-full my-4">
@@ -107,7 +107,8 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
 
           <div className="flex mb-4 space-x-4">
             <div className="w-1/2">
-              <p className="mb-2">Tài khoản thanh toán<span className="text-red-500">*</span></p>
+            <p className="mb-2">Tài khoản thanh toán<span className="text-red-500">*</span></p>
+            <div className="flex items-center rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
               <input
                 type="text"
                 name="account_number"
@@ -115,35 +116,43 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
                 onChange={formik.handleChange}
                 onBlur={handleAccountNumberBlur}
                 disabled={true && recipient}
-                className="w-full border-2 p-2 rounded-lg"
+                className="w-full flex-1 bg-white px-3 py-3 rounded-xl text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
               />
+            </div>
+              
               {formik.touched.account_number && formik.errors.account_number ? (
                 <div className="text-red-500 text-sm mt-1">{formik.errors.account_number}</div>
               ) : null}
             </div>
             <div className="w-1/2">
               <p className="mb-2">Tên đăng ký</p>
+              <div className="flex items-center bg-gray-100 rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
+
               <input
                 type="text"
                 name="contact_fullname"
                 value={formik.values.contact_fullname}
                 onChange={formik.handleChange}
-                className="w-full border-2 p-2 rounded-lg"
+                className="w-full flex-1 px-3 py-3 rounded-xl text-base text-gray-500 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
                 readOnly
                 disabled
               />
+              </div>
             </div>
           </div>
 
           <p className="">Tên gợi nhớ</p>
           <p className="text-sm text-gray-500 mb-2 italic">Mặc định là tên đăng ký</p>
+          <div className="flex items-center rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
+
           <input
             type="text"
             name="nickname"
             value={formik.values.nickname}
             onChange={formik.handleChange}
-            className="w-full border-2 p-2 mb-2 rounded-lg"
+            className="w-full flex-1 bg-white px-3 py-3 rounded-xl text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
           />
+          </div>
           <div className="flex justify-center space-x-4 mt-6">
             <button
               type="button"
@@ -151,13 +160,13 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
                 closeModal();
                 formik.resetForm();
               }}
-              className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-lg hover:bg-red-100"
+              className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-xl hover:bg-red-100"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-red-800 text-white rounded-lg hover:bg-red-700"
+              className="px-4 py-2 bg-red-800 text-white rounded-xl hover:bg-red-700"
             >
               Thêm người nhận
             </button>

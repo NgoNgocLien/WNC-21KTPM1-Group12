@@ -6,7 +6,7 @@ import banks from "../../util/banks";
 
 export default function ExternalBankSelect({formik}) {
     return (
-        <div className="w-full flex bg-white rounded-lg justify-between">
+        <div className="w-full flex bg-white rounded-xl justify-between">
             <div className="w-3/12 font-semibold">
                 Đến ngân hàng
             </div>

@@ -25,7 +25,7 @@ export default function TransferAccount({formik}) {
     }, [account_number]);
 
     return (
-        <div className="w-8/12 mx-auto p-6 flex bg-white rounded-lg justify-between">
+        <div className="w-8/12 mx-auto p-6 flex bg-white rounded-xl justify-between">
             <div className="w-3/12 font-semibold">
                 Từ tài khoản nguồn
             </div>
@@ -53,8 +53,14 @@ const customStyles = {
         display: 'flex',
         alignItems: 'center',
         padding: 10,
+        marginBottom: 1,
         backgroundColor: state.isFocused ? '#f5f5f5' : 'white',
         color: 'black',
+    }),
+    menu: (provided) => ({
+        ...provided,
+        borderBottomLeftRadius: '0.5rem', 
+        borderBottomRightRadius: '0.5rem', 
     }),
     singleValue: (provided, state) => ({
         ...provided,

@@ -83,7 +83,7 @@ export default function DebtList() {
                     type="text"
                     required
                     placeholder="Nhập số tài khoản"
-                    className="w-full flex-1 bg-white px-3 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
+                    className="w-full flex-1 bg-white px-3 py-3 rounded-xl text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
                   />
                   <FaAddressBook className="focus-within:relative pr-3 size-8 text-gray-400 cursor-pointer hover:text-red-800" onClick={handleClickContactBook} />
                 </div>
@@ -100,7 +100,7 @@ export default function DebtList() {
                     type="number"
                     required
                     placeholder="Nhập số tiền"
-                    className="w-full flex-1 bg-white px-3 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
+                    className="w-full flex-1 bg-white px-3 py-3 rounded-xl text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
                   />
                   <label for="amount" class="focus-within:relative pr-3 text-md text-gray-400">VNĐ</label>
                 </div>
@@ -116,7 +116,7 @@ export default function DebtList() {
                     name="message"
                     type="text"
                     placeholder="Nhập nội dung nhắc nợ"
-                    className="w-full rounded-xl bg-white px-3 py-3 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-red-800 text-md"
+                    className="w-full rounded-xl bg-white px-3 py-3 rounded-xl text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-red-800 text-md"
                   />
                 </div>
               </div>
@@ -132,13 +132,13 @@ export default function DebtList() {
         <div className="rounded-2xl bg-white p-6">
           <div className="rounded-xl bg-gray-100 p-1 flex items-center gap-1 text-md font-semibold">
             <button
-              className={`flex-1 flex items-center justify-center gap-2 rounded-lg px-3 py-2  ${activeTab === INCOMING ? `text-red-800 bg-white` : `text-gray-500 hover:text-gray-700`}`}
+              className={`flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2  ${activeTab === INCOMING ? `text-red-800 bg-white` : `text-gray-500 hover:text-gray-700`}`}
               onClick={() => setActiveTab(INCOMING)}
             >
               Nhắc nợ phải trả
             </button>
             <button
-              className={`flex-1 flex items-center justify-center gap-2 rounded-lg px-3 py-2 ${activeTab === OUTGOING ? `text-red-800 bg-white` : `text-gray-500 hover:text-gray-700`}`}
+              className={`flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2 ${activeTab === OUTGOING ? `text-red-800 bg-white` : `text-gray-500 hover:text-gray-700`}`}
               onClick={() => setActiveTab(OUTGOING)}
             >
               Nhắc nợ phải thu

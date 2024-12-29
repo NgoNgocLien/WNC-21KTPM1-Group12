@@ -29,7 +29,7 @@ export default function TransferStep2({ setCurrentStep, values }) {
 
   return (
     <>
-      <div className="w-8/12 mx-auto p-6 flex flex-col bg-white rounded-lg space-y-6 pt-8 ">
+      <div className="w-8/12 mx-auto p-6 flex flex-col bg-white rounded-xl space-y-6 pt-8 ">
         <div className="w-full flex justify-between">
           <div className="w-5/12 text-gray-500">
             Tài khoản nguồn
@@ -102,13 +102,13 @@ export default function TransferStep2({ setCurrentStep, values }) {
             <button
               type="button"
               onClick={() => setCurrentStep(1)}
-              className="px-4 py-2 bg-while-200 text-red-800 border-2 border-red-800 rounded-lg hover:bg-red-100"
+              className="px-4 py-2 bg-while-200 text-red-800 border-2 border-red-800 rounded-xl hover:bg-red-100"
             >
               Quay lại
             </button>
             <button
               onClick={handleConfirm}
-              className="px-4 py-2 bg-red-800 text-white rounded-lg hover:bg-red-700"
+              className="px-4 py-2 bg-red-800 text-white rounded-xl hover:bg-red-700"
             >
               Xác nhận
             </button>

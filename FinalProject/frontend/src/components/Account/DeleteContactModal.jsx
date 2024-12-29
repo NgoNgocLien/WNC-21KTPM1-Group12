@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux'
 import { IoIosClose } from "react-icons/io";
 
-import { deleteOneContact } from './../../../redux/userThunk';
+import { deleteOneContact } from '../../redux/userThunk';
 
 const DeleteContactModal = ({ isOpen, closeModal, contact }) => {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const DeleteContactModal = ({ isOpen, closeModal, contact }) => {
   return (
 
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
-          <div className={`bg-white rounded-lg shadow-xl w-96`}>
+          <div className={`bg-white rounded-xl shadow-xl w-96`}>
     
             <div className="p-4">
               <div className="flex justify-between items-center">

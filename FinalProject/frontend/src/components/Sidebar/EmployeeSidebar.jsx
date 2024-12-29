@@ -32,7 +32,7 @@ const EmployeeSidebar = () => {
 
   return (
     <div className="fixed h-screen w-80 p-3">
-      <div className="h-full w-full bg-red-800 text-white font-semibold flex flex-col justify-between rounded-2xl">
+      <div className="h-full w-full bg-red-800 text-white font-semibold flex flex-col justify-between rounded-xl">
         <div className='px-4 flex flex-col gap-5'>
           <h1 className="text-3xl text-center mt-5">NoMeoBank</h1>
           <div className="text-center">

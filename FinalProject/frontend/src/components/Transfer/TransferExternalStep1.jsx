@@ -90,7 +90,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
 
       
 
-      <div className="w-8/12 mx-auto p-6 flex flex-col bg-white rounded-lg ">
+      <div className="w-8/12 mx-auto p-6 flex flex-col bg-white rounded-xl ">
 
         <ExternalBankSelect formik={formik} />
        
@@ -99,7 +99,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
             Tài khoản thụ hưởng
           </div>
           <div className="w-7/12">
-            <div className="flex items-center rounded-lg outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
+            <div className="flex items-center rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
               <input
                 type="text"
                 name="recipient_account_number"
@@ -135,7 +135,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
         <div className="w-full mt-4 flex justify-between items-center">
           <div className="w-3/12 font-semibold">Số tiền</div>
           <div className="w-7/12 ">
-            <div className="flex items-center rounded-lg outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
+            <div className="flex items-center rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
               <input
                   type="number"
                   id="transaction_amount"
@@ -158,7 +158,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
 
         <div className="w-full mt-4 flex justify-between items-center">
           <div className="w-3/12 font-semibold">Nội dung chuyển tiền</div>
-          <div className="w-7/12 rounded-lg outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
+          <div className="w-7/12 rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
             <input
               type="text"
               name="transaction_message"
@@ -212,7 +212,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
           type="submit"
           onClick={formik.handleSubmit}
           // disabled={!formik.isValid || formik.isSubmitting}
-          className="w-fit self-center px-4 py-2 mt-2 bg-red-800 text-white rounded-lg hover:bg-red-700"
+          className="w-fit self-center px-4 py-2 mt-2 bg-red-800 text-white rounded-xl hover:bg-red-700"
         >
           Tiếp tục
         </button>

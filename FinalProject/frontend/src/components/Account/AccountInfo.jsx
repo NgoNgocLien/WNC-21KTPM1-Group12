@@ -8,9 +8,9 @@ export default function AccountInfo() {
     <>
       <p className="text-lg font-semibold">Thông tin tài khoản</p>
 
-      <div className="p-4 bg-white rounded-2xl ">
-        <div className="p-[3px] flex rounded-xl bg-gradient-to-r from-red-900 to-red-200 ">
-          <div className="w-1/2 p-4 bg-white rounded-l-lg">
+      <div className="p-4 bg-white rounded-xl ">
+        <div className="py-[3px] px-[3.5px] flex rounded-xl bg-gradient-to-r from-red-900 to-red-200 ">
+          <div className="w-1/2 p-4 bg-white rounded-l-xl">
             <h3 className="text-gray-500">
               Tài khoản thanh toán
             </h3>
@@ -18,7 +18,7 @@ export default function AccountInfo() {
               {account_number}
             </p>
           </div>
-          <div className="w-1/2 p-4 bg-white rounded-r-lg">
+          <div className="w-1/2 p-4 bg-white rounded-r-xl">
             <h3 className="text-gray-500">
               Số dư khả dụng
             </h3>
@@ -26,8 +26,8 @@ export default function AccountInfo() {
           </div>
         </div>
 
-        <div className="p-[2px] flex rounded-lg  ">
-          <div className="w-1/2 p-4 bg-white rounded-l-lg">
+        <div className="p-[2px] flex rounded-xl  ">
+          <div className="w-1/2 p-4 bg-white rounded-l-xl">
             <h3 className="text-gray-500">
               Họ và tên
             </h3>
@@ -35,7 +35,7 @@ export default function AccountInfo() {
               {fullname}
             </p>
           </div>
-          <div className="w-1/2 p-4 bg-white rounded-r-lg">
+          <div className="w-1/2 p-4 bg-white rounded-r-xl">
             <h3 className="text-gray-500">
               Số điện thoại
             </h3>
@@ -45,8 +45,8 @@ export default function AccountInfo() {
           </div>
         </div>
 
-        <div className="p-[2px] flex rounded-lg  ">
-          <div className="w-1/2 p-4 bg-white rounded-l-lg">
+        <div className="p-[2px] flex rounded-xl  ">
+          <div className="w-1/2 p-4 bg-white rounded-l-xl">
             <h3 className="text-gray-500">
               Tên đăng nhập
             </h3>
@@ -54,7 +54,7 @@ export default function AccountInfo() {
               {username}
             </p>
           </div>
-          <div className="w-1/2 p-4 bg-white rounded-r-lg">
+          <div className="w-1/2 p-4 bg-white rounded-r-xl">
             <h3 className="text-gray-500">
               Email
             </h3>
