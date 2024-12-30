@@ -71,7 +71,7 @@ const debtSlice = createSlice({
       })
       .addCase(createDebt.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
-        state.outgoingDebts.pending.push(action.payload.data);
+        state.outgoingDebts = action.payload.data;
       })
       .addCase(createDebt.rejected, (state, action) => {
         state.status = FAILED;

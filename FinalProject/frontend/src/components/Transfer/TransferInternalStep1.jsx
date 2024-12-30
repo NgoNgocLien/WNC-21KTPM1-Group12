@@ -15,14 +15,14 @@ import CustomerService from '../../services/CustomerService';
 
 export default function TransferInternalStep1({ setCurrentStep, setValues }) {
   const { account_number, balance, contacts, fullname } = useSelector((state) => state.user);
-  const [ displayContacts, setDisplayContacts ] = useState(false);
+  const [displayContacts, setDisplayContacts] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const access_token = getAccessToken();
   const dispatch = useDispatch();
 
   useEffect(() => {
     formik.setFieldValue('transaction_message', `${fullname.toUpperCase()} chuyen tien`);
-  },[fullname])
+  }, [fullname])
 
   const formik = useFormik({
     initialValues: {
@@ -49,7 +49,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
       resetForm();
     },
   });
-  
+
   const handleClickContactBook = () => {
     if (contacts === null) {
         dispatch(getCustomerContacts());
@@ -61,28 +61,27 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
     formik.handleBlur(e);
     const account_number = e.target.value;
     if (account_number) {
-      const bank_id = 1;
       const recipient_name = await CustomerService.getInternalRecipientInfo(account_number);
       formik.setFieldValue('recipient_name', recipient_name);
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(selectedContact)
-    if (selectedContact){
+    if (selectedContact) {
       formik.setFieldValue("recipient_account_number", selectedContact.account_number)
       formik.setFieldValue("recipient_name", selectedContact.contact_fullname)
     }
-  },[selectedContact])
+  }, [selectedContact])
 
   return (
     <>
       {
         displayContacts && (
           <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-20">
-            <ContactList 
-              isMutable={false} 
-              setSelectedContact={setSelectedContact} 
+            <ContactList
+              isMutable={false}
+              setSelectedContact={setSelectedContact}
               setDisplayContacts={setDisplayContacts}
             />
           </div>
@@ -107,10 +106,8 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
                 onBlur={handleAccountNumberBlur}
                 className="w-full flex-1 bg-white p-3 text-base rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
               />
-              <FaAddressBook className="text-xl text-red-800 cursor-pointer hover:text-red-700 me-2" onClick={handleClickContactBook}/>
+              <FaAddressBook className="text-xl text-red-800 cursor-pointer hover:text-red-700 me-2" onClick={handleClickContactBook} />
             </div>
-          
-            
           </div>
         </div>
 
@@ -128,23 +125,23 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
             </div>
           )
         }
-        
+
         <div className="w-full mt-4 flex justify-between items-center">
           <div className="w-3/12 font-semibold">Số tiền</div>
           <div className="w-7/12 ">
             <div className="flex items-center rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
               <input
-                  type="number"
-                  id="transaction_amount"
-                  name="transaction_amount"
-                  required
-                  placeholder="Nhập số tiền"
-                  value={formik.values.transaction_amount}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className="w-full flex-1 bg-white p-3 text-base rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
-                />
-               <label for="transaction_amount" class="focus-within:relative pr-3 text-md text-gray-400">VNĐ</label>
+                type="number"
+                id="transaction_amount"
+                name="transaction_amount"
+                required
+                placeholder="Nhập số tiền"
+                value={formik.values.transaction_amount}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="w-full flex-1 bg-white p-3 text-base rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
+              />
+              <label for="transaction_amount" class="focus-within:relative pr-3 text-md text-gray-400">VNĐ</label>
             </div>
           </div>
         </div>
@@ -171,7 +168,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
         <div className="w-full mt-4 flex justify-between items-center">
           <div className="w-3/12 font-semibold">Phí giao dịch</div>
           <div className="w-7/12 ">
-           {Number(1000).toLocaleString()} VNĐ
+            {Number(1000).toLocaleString()} VNĐ
           </div>
         </div>
 
