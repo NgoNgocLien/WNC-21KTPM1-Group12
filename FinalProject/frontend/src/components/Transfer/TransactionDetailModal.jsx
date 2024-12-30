@@ -13,10 +13,10 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction }) => {
   let feePayer = '';
 
   if (transaction.type === 'Sender' || transaction.type === 'Sender (Debt)') {
-    recipientAccount = transaction.id_recipient_account;
+    recipientAccount = transaction.recipient_account_number;
     recipientName = transaction.recipient_name;
   } else if (transaction.type === 'Recipient' || transaction.type === 'Recipient (Debt)') {
-    recipientAccount = transaction.id_sender_account;
+    recipientAccount = transaction.sender_account_number;
   }
 
   if (feePaymentMethod === 'SENDER') {
@@ -47,10 +47,12 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction }) => {
               </div>
               <div className="text-gray-900 font-semibold">{recipientAccount}</div>
 
-              <div className="text-gray-600 font-medium">
-                {transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? 'Tên thụ hưởng' : 'Tên người gửi'}
-              </div>
-              <div className="text-gray-900 font-semibold">{recipientName}</div>
+              {(transaction.type === 'Sender' || transaction.type === 'Sender (Debt)') && (
+                <>
+                  <div className="text-gray-600 font-medium">Người thụ hưởng</div>
+                  <div className="text-gray-900 font-semibold">{recipientName}</div>
+                </>
+              )}
             </>
           )}
 
