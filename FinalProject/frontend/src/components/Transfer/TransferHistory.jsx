@@ -21,6 +21,7 @@ export default function TransferHistory() {
   const [filter, setFilter] = useState('all');
   const [startDate, setStartDate] = useState(thirtyOneDaysAgo);
   const [endDate, setEndDate] = useState(today);
+  const [error, setError] = useState('');
 
   const [selectedTransaction, setSelectedTransaction] = useState(null); 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,9 +32,8 @@ export default function TransferHistory() {
         (filter === 'debt' && (t.type === 'Sender (Debt)' || t.type === 'Recipient (Debt)')) ||
         (filter === 'recipient' && (t.type === 'Recipient' || t.type === 'Deposit'));
 
-      const startDateMatch = !startDate || new Date(t.transaction_time) >= new Date(startDate);
-      const endDateMatch = !endDate || new Date(t.transaction_time) <= new Date(endDate);
-
+        const startDateMatch = !startDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) >= startDate.setHours(0, 0, 0, 0);
+        const endDateMatch = !endDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) <= endDate.setHours(0, 0, 0, 0);
       return typeMatch && startDateMatch && endDateMatch;
     });
   }, [transactions, filter, startDate, endDate]);
@@ -126,8 +126,17 @@ export default function TransferHistory() {
                   </p>
                 </div>
 
-                <div className={`ml-4 py-1 px-2 text-xs font-base rounded text-white ${labelColor}`}>
-                  {transactionLabel}
+                <div className="flex flex-col items-end space-y-1">
+                  <div className={`ml-4 py-1 px-2 text-xs font-base rounded text-white ${labelColor}`}>
+                    {transactionLabel}
+                  </div>
+                  {!isInternalTransaction && (
+                    <div className="flex items-center space-x-1">
+                      <span className="w-2 h-2 bg-red-600 rounded-full mt-0.5"></span>
+                      <span className="text-xs text-red-600">Giao dịch liên ngân hàng</span>
+                    </div>
+                  )}
+                  
                 </div>
               </div>
             );
@@ -148,8 +157,28 @@ export default function TransferHistory() {
     setSelectedTransaction(null);
   };
 
-  const handleStartDateChange = (date) => setStartDate(date);
-  const handleEndDateChange = (date) => setEndDate(date);
+  const validateDateRange = (start, end) => {
+    const diffInDays = (end - start) / (1000 * 3600 * 24);
+    return diffInDays <= 30;
+  };
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+    if (!validateDateRange(date, endDate)) {
+      setError('Khoảng thời gian tra cứu không được vượt quá 30 ngày');
+    } else {
+      setError('');
+    }
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+    if (!validateDateRange(startDate, date)) {
+      setError('Khoảng thời gian tra cứu không được vượt quá 30 ngày');
+    } else {
+      setError('');
+    }
+  };
 
   return (
     <>
@@ -188,6 +217,7 @@ export default function TransferHistory() {
               />
             </div>
           </div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
         </div>
 
         <div className="flex justify-end mt-4 gap-2">
