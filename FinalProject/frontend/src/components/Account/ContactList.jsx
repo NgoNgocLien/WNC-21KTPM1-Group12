@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FaTrash, FaPen  } from 'react-icons/fa';
 import { IoIosClose } from "react-icons/io";
 
-import { fetchUserContacts } from './../../redux/userThunk';
+import { getCustomerContacts } from './../../redux/userThunk';
 import { IDLE, LOADING, FAILED, INTERNAL, EXTERNAL } from './../../util/config';
 
 export default function ContactList({
@@ -19,7 +19,7 @@ export default function ContactList({
 
     useEffect(() => {
         if (contacts === null) {
-            dispatch(fetchUserContacts());
+            dispatch(getCustomerContacts());
         }
     }, [status, dispatch]);
 

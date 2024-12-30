@@ -8,10 +8,10 @@ import TransferAccount from './TransferAccount';
 import ContactList from '../Account/ContactList';
 import ExternalBankSelect from './ExternalBankSelect';
 
-import { fetchUserContacts } from '../../redux/userThunk';
+import { getCustomerContacts } from '../../redux/userThunk';
 import { SENDER, RECIPIENT } from '../../util/config';
-import getFullname from '../../util/getFullname';
 import { getAccessToken } from '../../util/cookie';
+import CustomerService from '../../services/CustomerService';
 
 
 export default function TransferInternalStep1({ setCurrentStep, setValues }) {
@@ -49,7 +49,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
   
   const handleClickContactBook = () => {
     if (contacts === null) {
-        dispatch(fetchUserContacts());
+        dispatch(getCustomerContacts());
     }
     setDisplayContacts(true);
   }
@@ -59,7 +59,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
     const account_number = e.target.value;
     if (account_number) {
       const bank_id = 1;
-      const recipient_name = await getFullname(access_token,account_number, bank_id);
+      const recipient_name = await CustomerService.getExternalRecipientInfo(bank_id, account_number);
       formik.setFieldValue('recipient_name', recipient_name);
     }
   };

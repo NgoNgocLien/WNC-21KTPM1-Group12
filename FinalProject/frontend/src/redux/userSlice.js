@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { 
-  fetchUserAccountInfo, 
-  fetchUserContacts, createOneContact, deleteOneContact, updateOneContact } from './userThunk';
+  getCustomerInfo, 
+  getCustomerContacts, createOneContact, deleteOneContact, updateOneContact } from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 import notify from '../util/notification';
 
@@ -44,12 +44,12 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUserAccountInfo.pending, (state) => {
+      .addCase(getCustomerInfo.pending, (state) => {
         state.status = LOADING;
         state.error = null;
       })
-      .addCase(fetchUserAccountInfo.fulfilled, (state, action) => {
-        console.log(action)
+      .addCase(getCustomerInfo.fulfilled, (state, action) => {
+        // console.log(action)
         state.status = SUCCEEDED;
         state.id = action.payload.data.id;
         state.fullname = action.payload.data.fullname;
@@ -59,20 +59,20 @@ const userSlice = createSlice({
         state.account_number = action.payload.data.accounts[0].account_number;
         state.balance = action.payload.data.accounts[0].account_balance;
       })
-      .addCase(fetchUserAccountInfo.rejected, (state, action) => {
+      .addCase(getCustomerInfo.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
       })
-      .addCase(fetchUserContacts.pending, (state) => {
+      .addCase(getCustomerContacts.pending, (state) => {
         state.status = LOADING;
         state.error = null;
       })
-      .addCase(fetchUserContacts.fulfilled, (state, action) => {
+      .addCase(getCustomerContacts.fulfilled, (state, action) => {
         // console.log(action)
         state.status = SUCCEEDED;
         state.contacts = action.payload.data
       })
-      .addCase(fetchUserContacts.rejected, (state, action) => {
+      .addCase(getCustomerContacts.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
       })
@@ -82,11 +82,12 @@ const userSlice = createSlice({
       })
       .addCase(createOneContact.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
-        state.contacts = [
+        const updatedContacts = [
           ...state.contacts,
           action.payload.data
         ]
-        notify("Thêm mới người nhận thành công");
+        state.contacts = updatedContacts.sort((a, b) => a.nickname.localeCompare(b.nickname));
+        notify(action.payload.message);
       })
       .addCase(createOneContact.rejected, (state, action) => {
         state.status = FAILED;
@@ -102,11 +103,13 @@ const userSlice = createSlice({
           (contact) => contact.id === action.payload.data.id
         );
         if (updatedContactIndex !== -1) {
-          state.contacts[updatedContactIndex] = {
+          const updatedContacts = [...state.contacts]
+          updatedContacts[updatedContactIndex] = {
             ...state.contacts[updatedContactIndex],
             nickname: action.payload.data.nickname
           };
-          notify("Chỉnh sửa nickname thành công");
+          state.contacts = updatedContacts.sort((a, b) => a.nickname.localeCompare(b.nickname));
+          notify(action.payload.message);
         }
       })
       .addCase(updateOneContact.rejected, (state, action) => {
@@ -119,9 +122,9 @@ const userSlice = createSlice({
       })
       .addCase(deleteOneContact.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
-        const filteredContacts = state.contacts.filter(contact => contact.id !== action.payload.id);
+        const filteredContacts = state.contacts.filter(contact => contact.id !== action.payload.data.id);
         state.contacts = [...filteredContacts];
-        notify("Xóa người nhận thành công");
+        notify(action.payload.message);
       })
       .addCase(deleteOneContact.rejected, (state, action) => {
         state.status = FAILED;

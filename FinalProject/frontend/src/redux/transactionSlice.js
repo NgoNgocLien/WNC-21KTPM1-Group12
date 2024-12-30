@@ -25,6 +25,13 @@ const transactionSlice = createSlice({
         status: action.payload.status,
         error: action.payload.eror
       }
+    },
+    resetTransactionStatus: (state) => {
+      return {
+        ...state,
+        status: IDLE,
+        error: null
+      }
     }
   },
   extraReducers: (builder) => {
@@ -58,5 +65,5 @@ const transactionSlice = createSlice({
   },
 });
 
-export const { reset } = transactionSlice.actions;
+export const { reset, resetTransactionStatus, setTransactionStatus } = transactionSlice.actions;
 export default transactionSlice.reducer;

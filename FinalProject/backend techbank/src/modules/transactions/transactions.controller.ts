@@ -17,11 +17,6 @@ import { CreateTransactionDto } from './dto/createTransaction.dto';
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
-  @Get('recipient_profile/:account_number')
-  findRecipientProfile(@Param('account_number') account_number: string) {
-    return this.transactionsService.findRecipientProfile(account_number);
-  }
-
   @Post('internal')
   createInternalTransaction(@Body() createTransactionDto: CreateTransactionDto) {
     return this.transactionsService.createInternalTransaction(createTransactionDto);

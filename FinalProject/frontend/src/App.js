@@ -30,8 +30,7 @@ import { login } from './redux/authSlice';
 import { setNotification, clearNotification } from './redux/notificationSlice';
 import { getAccessToken, getRoleFromToken } from './util/cookie';
 import { onMessageListener } from './util/fcm';
-import { FAILED, SUCCEEDED } from './util/config'
-import { openDialog } from './redux/dialogSlice';
+import { SUCCEEDED } from './util/config'
 
 
 const GuestRoute = ({ element }) => {
@@ -115,9 +114,6 @@ function AuthenticatedLayout() {
 
 function App() {
   const dispatch = useDispatch();
-  const { status: userStatus, error: userError } = useSelector((state) => state.user)
-  const { status: authStatus, error: authError } = useSelector((state) => state.auth)
-
   useEffect(() => {
     const role = getRoleFromToken();
     if (role) {
@@ -128,16 +124,6 @@ function App() {
       }));
     }
   }, [])
-
-  useEffect(() => {
-    if (userStatus === FAILED || authStatus === FAILED) {
-      dispatch(openDialog({
-        type: "error",
-        message: userError || authError,
-        actionBtn: false,
-      }));
-    }
-  }, [userStatus, authStatus])
 
   return (
     <>

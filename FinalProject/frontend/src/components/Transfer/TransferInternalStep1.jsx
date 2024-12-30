@@ -5,11 +5,12 @@ import * as Yup from 'yup';
 import { FaAddressBook } from "react-icons/fa";
 
 import TransferAccount from './TransferAccount';
-import { fetchUserContacts } from '../../redux/userThunk';
+import { getCustomerContacts } from '../../redux/userThunk';
 import { SENDER, RECIPIENT, INTERNAL_BAND_ID } from '../../util/config';
-import getFullname from '../../util/getFullname';
+// import getFullname from '../../util/getFullname';
 import { getAccessToken } from '../../util/cookie';
 import ContactList from '../Account/ContactList';
+import CustomerService from '../../services/CustomerService';
 
 
 export default function TransferInternalStep1({ setCurrentStep, setValues }) {
@@ -51,7 +52,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
   
   const handleClickContactBook = () => {
     if (contacts === null) {
-        dispatch(fetchUserContacts());
+        dispatch(getCustomerContacts());
     }
     setDisplayContacts(true);
   }
@@ -61,7 +62,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
     const account_number = e.target.value;
     if (account_number) {
       const bank_id = 1;
-      const recipient_name = await getFullname(access_token,account_number, bank_id);
+      const recipient_name = await CustomerService.getInternalRecipientInfo(account_number);
       formik.setFieldValue('recipient_name', recipient_name);
     }
   };

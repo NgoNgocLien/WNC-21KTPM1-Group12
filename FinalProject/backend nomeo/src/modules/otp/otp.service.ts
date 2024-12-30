@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
 import * as crypto from 'crypto';
 import { sendMail } from 'src/common/utils/sendMail'; // Assuming you have a MailService to send emails
@@ -17,56 +17,66 @@ export class OtpService {
 
   // Store OTP in DB and send email
   async generateAndSendOtp(email: string){
-    const otp = this.generateOtp();
-    const expiration_time = addMinutes(new Date(), 20); // OTP expires in 1 minute
+    try{
+      const otp = this.generateOtp();
+      const expiration_time = addMinutes(new Date(), 20); // OTP expires in 1 minute
+    
+      // Store OTP in DB
+      await this.prisma.otp.upsert({
+        where: { email },
+        update: { otp, expiration_time },
+        create: { email, otp, expiration_time },
+      });
+    
+      const htmlContent = `
+        <html>
+          <body>
+            <p>Chúng tôi xin thông báo mã OTP của quý khách để xác nhận giao dịch chuyển tiền là: <strong>${otp}</strong>.</p>
+            <p>Quý khách vui lòng nhập mã OTP này để hoàn tất giao dịch.</p>
+            <p>Mã OTP này sẽ hết hạn sau 2 phút kể từ thời điểm nhận được. Vui lòng thực hiện giao dịch trong thời gian quy định.</p>
+          </body>
+        </html>
+      `;
+    
+      await sendMail(email, 'Xác nhận giao dịch chuyển tiền', htmlContent);
   
-    // Store OTP in DB
-    await this.prisma.otp.upsert({
-      where: { email },
-      update: { otp, expiration_time },
-      create: { email, otp, expiration_time },
-    });
-  
-    const htmlContent = `
-      <html>
-        <body>
-          <p>Chúng tôi xin thông báo mã OTP của quý khách để xác nhận giao dịch chuyển tiền là: <strong>${otp}</strong>.</p>
-          <p>Quý khách vui lòng nhập mã OTP này để hoàn tất giao dịch.</p>
-          <p>Mã OTP này sẽ hết hạn sau 2 phút kể từ thời điểm nhận được. Vui lòng thực hiện giao dịch trong thời gian quy định.</p>
-        </body>
-      </html>
-    `;
-  
-    await sendMail(email, 'Xác nhận giao dịch chuyển tiền', htmlContent);
-
-    return {
-      message: "Send OTP successfully",
+      return {
+        message: "Send OTP successfully",
+      }
+    } catch(error){
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
   // Verify OTP
   async verifyOtp(email: string, otp: string){
-    const otpRecord = await this.prisma.otp.findUnique({
-      where: { email },
-    });
-
-    if (!otpRecord) {
+    try {
+      const otpRecord = await this.prisma.otp.findUnique({
+        where: { email },
+      });
+  
+      if (!otpRecord) {
+        return {
+          message: 'OTP không hợp lệ hoặc đã hết hạn',
+          data: false
+        }; 
+      }
+  
+      const isOtpValid = otpRecord.otp === otp && new Date() < otpRecord.expiration_time;
+      if (!isOtpValid)
+        return {
+          message: 'OTP không hợp lệ hoặc đã hết hạn',
+          data: false
+        }; 
+  
       return {
-        message: 'OTP is invalid',
-        data: false
+        message: 'OTP is valid',
+        data: true
       }; 
+    } catch(error){
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
-
-    const isOtpValid = otpRecord.otp === otp && new Date() < otpRecord.expiration_time;
-    if (!isOtpValid)
-      return {
-        message: 'OTP is invalid',
-        data: false
-      }; 
-
-    return {
-      message: 'OTP is valid',
-      data: true
-    }; 
   }
 }

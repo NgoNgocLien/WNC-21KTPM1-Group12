@@ -5,7 +5,7 @@ import { IDLE } from "../../../../util/config"
 import DebtItem from "../../../../components/Debt/DebtItem"
 import { FaAddressBook } from "react-icons/fa"
 import ContactList from "../../../../components/Account/ContactList"
-import { fetchUserContacts } from "../../../../redux/userThunk"
+import { getCustomerContacts } from "../../../../redux/userThunk"
 import { Field, Formik, Form, ErrorMessage } from "formik"
 import * as Yup from 'yup';
 
@@ -36,7 +36,7 @@ export default function DebtList() {
 
   const handleClickContactBook = () => {
     if (contacts === null) {
-      dispatch(fetchUserContacts());
+      dispatch(getCustomerContacts());
     }
     setDisplayContacts(true);
   }

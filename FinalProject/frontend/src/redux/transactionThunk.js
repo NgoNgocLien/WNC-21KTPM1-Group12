@@ -17,8 +17,8 @@ export const fetchAccountTransactions = createAsyncThunk(
             });
 
             if (!response.ok) {
-                console.log(response)
-                throw new Error('Failed to fetch account transaction');
+                const errorData = await response.json();
+                throw new Error(errorData.message);
             }
 
             const data = await response.json();
@@ -44,8 +44,8 @@ export const fetchBankName = createAsyncThunk(
             });
 
             if (!response.ok) {
-                console.log(response)
-                throw new Error('Failed to fetch bank info');
+                const errorData = await response.json();
+                throw new Error(errorData.message);
             }
 
             const data = await response.json();

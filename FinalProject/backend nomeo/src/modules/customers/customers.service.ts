@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
@@ -9,10 +10,8 @@ import { CreateContactDto } from './dto/createContact.dto';
 import { UpdateContactDto } from './dto/updateContact.dto';
 import { DeleteContactDto } from './dto/deleteContact.dto';
 import { CreateCustomerDto } from './dto/createCustomer.dto';
-const bcrypt = require('bcrypt');
 import { generateAccountNumber } from '../../common/utils/checksum.util';
-import { sendMail } from '../../common/utils/sendMail';
-import * as admin from 'firebase-admin';
+const bcrypt = require('bcrypt');
 
 @Injectable()
 export class CustomersService {
@@ -27,7 +26,8 @@ export class CustomersService {
         data: customers,
       };
     } catch (error) {
-      throw new Error('Error fetching customers: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -44,7 +44,8 @@ export class CustomersService {
         data: customer,
       };
     } catch (error) {
-      throw new Error('Error finding customer: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -61,7 +62,8 @@ export class CustomersService {
         data: customer,
       };
     } catch (error) {
-      throw new Error('Error finding customer: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -92,7 +94,67 @@ export class CustomersService {
         data: customer,
       };
     } catch (error) {
-      throw new Error('Error finding customer: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
+    }
+  }
+
+  
+  async findInternalProfile(account_number: string){
+    try{
+      const profile = await this.prisma.accounts.findUnique({
+        where:{
+          account_number: account_number,
+        },
+        select:{
+          account_number: true,
+          customers: {
+            select:{
+              fullname: true
+            }
+          }
+        }
+      })
+
+      return {
+        message: "Profile fetched successfully",
+        data: profile
+      }
+    } catch(error){
+      // if (error instanceof NotFoundException || error instanceof ConflictException) {
+      //   throw error;
+      // }
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
+    }
+  }
+
+  async findExternalProfile(account_number: string){
+    try{
+      const profile = await this.prisma.accounts.findUnique({
+        where:{
+          account_number: account_number,
+        },
+        select:{
+          account_number: true,
+          customers: {
+            select:{
+              fullname: true
+            }
+          }
+        }
+      })
+
+      return {
+        message: "Profile fetched successfully",
+        data: profile
+      }
+    } catch(error){
+      // if (error instanceof NotFoundException || error instanceof ConflictException) {
+      //   throw error;
+      // }
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -101,6 +163,7 @@ export class CustomersService {
       const customerExists = await this.prisma.customers.findUnique({
         where: { id },
       });
+
       if (!customerExists) {
         throw new NotFoundException(`Customer with id ${id} not found`);
       }
@@ -117,7 +180,11 @@ export class CustomersService {
         data: customer,
       };
     } catch (error) {
-      throw new Error('Error updating customer: ' + error.message);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -151,7 +218,8 @@ export class CustomersService {
         },
       };
     } catch (error) {
-      throw new Error('Error creating customer and account: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -161,7 +229,7 @@ export class CustomersService {
         where: { id },
       });
       if (!customerExists) {
-        throw new NotFoundException(`Customer with id ${id} not found`);
+        throw new NotFoundException(`Khách hàng không tồn tại`);
       }
 
       const accounts = await this.prisma.accounts.findMany({
@@ -175,7 +243,11 @@ export class CustomersService {
         data: accounts,
       };
     } catch (error) {
-      throw new Error('Error fetching accounts: ' + error.message);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -185,7 +257,7 @@ export class CustomersService {
         where: { id },
       });
       if (!customerExists) {
-        throw new NotFoundException(`Customer with id ${id} not found`);
+        throw new NotFoundException(`Khách hàng không tồn tại`);
       }
 
       const contacts = await this.prisma.contacts.findMany({
@@ -206,21 +278,27 @@ export class CustomersService {
         },
       });
 
-      const transformedContacts = contacts.map((contact) => ({
+      const transformedContacts = contacts
+      .map((contact) => ({
         id: contact.id,
         nickname: contact.nickname,
         account_number: contact.contact_account_number,
         contact_fullname: contact.contact_fullname,
         bank_name: contact.banks.name,
         bank_logo: contact.banks.logo,
-      }));
+      }))
+      .sort((a, b) => a.nickname.localeCompare(b.nickname));
 
       return {
         message: 'Contacts found successfully',
         data: transformedContacts,
       };
     } catch (error) {
-      throw new Error('Error fetching contacts: ' + error.message);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -230,9 +308,8 @@ export class CustomersService {
         where: { id: data.id_customer },
       });
       if (!customerExists) {
-        throw new NotFoundException(
-          `Customer with id ${data.id_customer} not found`,
-        );
+        throw new NotFoundException(`Khách hàng không tồn tại`);
+
       }
 
       const contactExists = await this.prisma.contacts.findFirst({
@@ -242,7 +319,7 @@ export class CustomersService {
         },
       });
       if (contactExists) {
-        throw new ConflictException(`Contact exists`);
+        throw new ConflictException(`'Người nhận đã tồn tại'`);
       }
 
       const newContact = await this.prisma.contacts.create({
@@ -267,11 +344,15 @@ export class CustomersService {
       };
 
       return {
-        message: 'Contact created successfully',
+        message: 'Thêm mới người nhận thành công',
         data: transformedContact,
       };
     } catch (error) {
-      throw new Error('Error creating contact: ' + error.message);
+      if (error instanceof NotFoundException || error instanceof ConflictException) {
+        throw error;
+      }
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -284,10 +365,10 @@ export class CustomersService {
         },
       });
       if (!contactExists) {
-        throw new NotFoundException(`Contact not found`);
+        throw new NotFoundException(`Không tìm thấy người nhận đã lưu`);
       }
 
-      const contact = await this.prisma.contacts.update({
+      await this.prisma.contacts.update({
         where: {
           id: data.id,
           // id_customer,
@@ -298,10 +379,15 @@ export class CustomersService {
       });
 
       return {
-        message: 'Contact updated successfully',
+        message: 'Chỉnh sửa tên gợi nhớ thành công',
+        data: data
       };
     } catch (error) {
-      throw new Error('Error updating contact: ' + error.message);
+      if (error instanceof NotFoundException || error instanceof ConflictException) {
+        throw error;
+      }
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -313,7 +399,7 @@ export class CustomersService {
         },
       });
       if (!contactExists) {
-        throw new NotFoundException(`Contact not found`);
+        throw new NotFoundException(`Không tìm thấy người nhận đã lưu`);
       }
 
       await this.prisma.contacts.delete({
@@ -323,10 +409,17 @@ export class CustomersService {
       });
 
       return {
-        message: 'Contact deleted successfully',
+        message: 'Xóa người nhận thành công',
+        data: {
+          id: data.id,
+        }
       };
     } catch (error) {
-      throw new Error('Error deleting contact: ' + error.message);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 }

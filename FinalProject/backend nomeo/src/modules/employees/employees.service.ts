@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/createEmployee.dto';
 import { UpdateEmployeeDto } from './dto/updateEmployee.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
@@ -28,7 +28,8 @@ export class EmployeesService {
         data: employee,
       };
     } catch (error) {
-      throw new Error('Error creating employee: ' + error.message);
+        console.log(error.message)
+        throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -50,7 +51,8 @@ export class EmployeesService {
         data: employees,
       };
     } catch (error) {
-      throw new Error('Error fetching employees: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -74,7 +76,8 @@ export class EmployeesService {
         data: employee,
       };
     } catch (error) {
-      throw new Error('Error finding employee: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -91,7 +94,8 @@ export class EmployeesService {
         data: employee,
       };
     } catch (error) {
-      throw new Error('Error finding employee: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -109,7 +113,8 @@ export class EmployeesService {
         data: employee,
       };
     } catch (error) {
-      throw new Error('Error updating employee: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -141,7 +146,8 @@ export class EmployeesService {
         data: employee,
       };
     } catch (error) {
-      throw new Error('Error updating employee: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -153,7 +159,7 @@ export class EmployeesService {
         },
       });
       if (!employeeExists) {
-        throw new NotFoundException(`Employee not found`);
+        throw new NotFoundException(`Nhân viên không tồn tại`);
       }
 
       await this.prisma.employees.update({
@@ -169,7 +175,11 @@ export class EmployeesService {
         message: 'Employee deleted successfully'
       };
     } catch (error) {
-      throw new Error('Error deleting employee: ' + error.message);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -189,7 +199,8 @@ export class EmployeesService {
         data: deposit,
       };
     } catch (error) {
-      throw new Error('Error creating deposit: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 }

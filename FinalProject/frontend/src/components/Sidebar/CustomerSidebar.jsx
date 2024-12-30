@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/authSlice';
-import { fetchUserAccountInfo } from '../../redux/userThunk';
+import { getCustomerInfo } from '../../redux/userThunk';
 import { ArrowRightStartOnRectangleIcon, ArrowsRightLeftIcon, ArrowUpTrayIcon, BanknotesIcon, BuildingLibraryIcon, CreditCardIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { clearToken } from '../../util/cookie';
 
@@ -13,7 +13,7 @@ const CustomerSidebar = () => {
 
   useEffect(() => {
     if (account_number === '' )
-      dispatch(fetchUserAccountInfo());
+      dispatch(getCustomerInfo());
   }, [status, dispatch]);
 
   const handleLogout = () => {
