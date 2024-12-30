@@ -1,1 +1,0 @@
-export const INTERNAL_BAND_ID: number = 1;

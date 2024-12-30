@@ -39,7 +39,7 @@ const EmployeeSidebar = () => {
             <div className="p-4 bg-red-900 rounded-xl">
               <div className="flex items-center justify-center p-4">
                 <img
-                  src="https://via.placeholder.com/150"
+                  src={`${process.env.PUBLIC_URL}/logo.jpg`}
                   alt="Avatar"
                   className="w-24 h-24 rounded-full border-2 border-white"
                 />

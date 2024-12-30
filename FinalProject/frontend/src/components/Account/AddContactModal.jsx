@@ -8,6 +8,7 @@ import { createOneContact } from '../../redux/userThunk';
 import getFullname from '../../util/getFullname'
 import banks from '../../util/banks'
 import { getAccessToken } from '../../util/cookie';
+import { customSelectStyles } from '../../util/customStyle';
 
 const bankOptions = banks.map(bank => ({
   value: bank.bank_id,
@@ -99,7 +100,7 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
               value={bankOptions.find(option => option.value === formik.values.bank_id)}
               onChange={(option) => handleChangeBankId(option)}
               options={bankOptions}
-              styles={customStyles}
+              styles={customSelectStyles}
               isDisabled={true && recipient}
               // className="outline-3 outline-black"
             />
@@ -148,6 +149,7 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
           <input
             type="text"
             name="nickname"
+            placeholder="Nhập tên gợi nhớ"
             value={formik.values.nickname}
             onChange={formik.handleChange}
             className="w-full flex-1 bg-white px-3 py-3 rounded-xl text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"

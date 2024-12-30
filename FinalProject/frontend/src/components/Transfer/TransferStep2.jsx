@@ -98,7 +98,7 @@ export default function TransferStep2({ setCurrentStep, values }) {
           </div>
         </div>
 
-        <div className="flex justify-center space-x-4 pt-4">
+        <div className="flex justify-center space-x-4 pt-4 mt-8">
             <button
               type="button"
               onClick={() => setCurrentStep(1)}

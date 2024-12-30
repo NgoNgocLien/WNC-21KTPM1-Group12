@@ -16,24 +16,21 @@ const CustomerSidebar = () => {
       dispatch(fetchUserAccountInfo());
   }, [status, dispatch]);
 
-  // if (status === LOADING) return <p>Loading...</p>;
-  // if (status === FAILED) return <p className="text-red-500">Error: {error}</p>;
-
   const handleLogout = () => {
     clearToken();
     dispatch(logout());
     window.location.href = "/";
   };
   return (
-    <div className="fixed h-screen w-80 p-3">
-      <div className="h-full w-full bg-red-800 text-white font-semibold flex flex-col justify-between rounded-xl">
+    <div className="fixed inset-0 h-screen w-80 p-3">
+      <div className=" w-full h-full bg-red-800 text-white font-semibold flex flex-col justify-between rounded-xl">
         <div className='px-4 flex flex-col gap-5'>
           <h1 className="text-3xl text-center mt-5">NoMeoBank</h1>
           <div className="text-center">
             <div className="p-4 bg-red-900 rounded-xl">
               <div className="flex items-center justify-center p-4">
                 <img
-                  src="https://via.placeholder.com/150"
+                  src={`${process.env.PUBLIC_URL}/logo.jpg`}
                   alt="Avatar"
                   className="w-24 h-24 rounded-full border-2 border-white"
                 />

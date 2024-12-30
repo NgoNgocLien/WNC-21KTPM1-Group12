@@ -93,9 +93,10 @@ function AuthenticatedLayout() {
   });
 
   return (
-    <div>
-      <ToastContainer />
+    <>
+      
       {sidebar}
+      <ToastContainer />
       <main className="ms-80 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
         <Outlet />
       </main>
@@ -108,7 +109,7 @@ function AuthenticatedLayout() {
 
         <Dialog type="info" isOpen={true} message="This is a message" />
       )}
-    </div>
+    </>
   );
 }
 

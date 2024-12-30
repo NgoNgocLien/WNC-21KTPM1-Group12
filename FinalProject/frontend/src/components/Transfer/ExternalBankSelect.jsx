@@ -3,24 +3,24 @@ import { useSelector } from 'react-redux';
 import Select from 'react-select';
 
 import banks from "../../util/banks";
+import { customSelectStyles } from "../../util/customStyle";
 
 export default function ExternalBankSelect({formik}) {
     return (
-        <div className="w-full flex bg-white rounded-xl justify-between">
+        <div className="w-full flex items-center bg-white rounded-xl justify-between">
             <div className="w-3/12 font-semibold">
                 Đến ngân hàng
             </div>
             <div className="w-7/12 flex flex-col font-semibold space-y-4">
                 <Select
                     name="id_recipient_bank"
-                    // placeholder="Chọn ngân hàng đến"
+                    placeholder="Chọn ngân hàng"
                     value={bankOptions.find(option => option.value === formik.values.id_recipient_bank)}
                     onChange={(option) => {
                         formik.setFieldValue('id_recipient_bank', option.value);
                     }}
                     options={bankOptions}
-                    styles={customStyles}
-                    // className="w-full flex-1 bg-white p-2 text-base text-gray-900 placeholder:test-base placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
+                    styles={customSelectStyles}
                     />
             </div>
         </div>

@@ -10,6 +10,16 @@ const EmployeeService = {
       throw error; // Re-throw error để xử lý tại nơi gọi
     }
   },
+
+  async makeDeposit(data) {
+    try {
+      const jsonObject = await BaseService.post('employees/deposit', data);
+      return jsonObject;
+    } catch (error) {
+      console.error('Error creating employee deposit:', error);
+      throw error; // Re-throw error để xử lý tại nơi gọi
+    }
+  },
 };
 
 export default EmployeeService;

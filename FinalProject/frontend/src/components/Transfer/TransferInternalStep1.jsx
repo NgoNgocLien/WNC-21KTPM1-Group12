@@ -208,7 +208,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
           type="submit"
           onClick={formik.handleSubmit}
           // disabled={!formik.isValid || formik.isSubmitting}
-          className="w-fit self-center px-4 py-2 mt-2 bg-red-800 text-white rounded-xl hover:bg-red-700"
+          className="w-fit self-center px-4 py-2 mt-8 bg-red-800 text-white rounded-xl hover:bg-red-700"
         >
           Tiếp tục
         </button>
