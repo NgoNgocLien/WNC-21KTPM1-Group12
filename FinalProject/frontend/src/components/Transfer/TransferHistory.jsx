@@ -7,6 +7,7 @@ import { IDLE, LOADING, FAILED, SUCCEEDED } from '../../util/config';
 import DatePicker from 'react-datepicker';
 import { format } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
+import TransactionDetailModal from './TransactionDetailModal';
 
 export default function TransferHistory() {
   const dispatch = useDispatch();
@@ -15,11 +16,14 @@ export default function TransferHistory() {
 
   const today = new Date();
   const thirtyOneDaysAgo = new Date();
-  thirtyOneDaysAgo.setDate(today.getDate() - 30);
+  thirtyOneDaysAgo.setDate(today.getDate() - 29);
 
   const [filter, setFilter] = useState('all');
   const [startDate, setStartDate] = useState(thirtyOneDaysAgo);
   const [endDate, setEndDate] = useState(today);
+
+  const [selectedTransaction, setSelectedTransaction] = useState(null); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((t) => {
@@ -97,7 +101,8 @@ export default function TransferHistory() {
             return (
               <div
                 key={uniqueKey}
-                className="p-4 border-b border-gray-300 flex items-center justify-between"
+                className="p-4 border-b border-gray-300 flex items-center justify-between cursor-pointer"
+                onClick={() => handleTransactionClick(transaction)}
               >
                 <div className="flex items-center space-x-4">
                   <img
@@ -128,6 +133,16 @@ export default function TransferHistory() {
       );
     }
     return null;
+  };
+
+  const handleTransactionClick = (transaction) => {
+    setSelectedTransaction(transaction); 
+    setIsModalOpen(true); 
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false); 
+    setSelectedTransaction(null);
   };
 
   const handleStartDateChange = (date) => setStartDate(date);
@@ -207,11 +222,16 @@ export default function TransferHistory() {
           </button>
         </div>
         <p className="text-sm text-right">
-          <span className="text-red-600">Quý khách lưu ý:</span> Thời gian tìm kiếm giới hạn trong 31 ngày
+          <span className="text-red-600">Quý khách lưu ý:</span> Thời gian tìm kiếm giới hạn trong 30 ngày
         </p>
       </div>
 
       <div className="mt-1 p-6 bg-white rounded-xl">{renderTransactions()}</div>
+      <TransactionDetailModal
+        isOpen={isModalOpen}
+        closeModal={closeModal}
+        transaction={selectedTransaction}
+      />
     </>
   );
 }

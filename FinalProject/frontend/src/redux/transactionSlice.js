@@ -16,8 +16,15 @@ const transactionSlice = createSlice({
     ...initialState
   },
   reducers: {
-    reset: (state) => {
+    reset: () => {
       return { ...initialState }
+    },
+    resetTransactionStatus: (state) => {
+      return {
+        ...state,
+        status: IDLE,
+        error: null
+      }
     },
     setTransactionStatus: (state,action) => {
       return {
