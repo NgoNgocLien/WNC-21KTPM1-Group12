@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// import { FaMoneyBillAlt, FaExchangeAlt, FaRegCreditCard } from 'react-icons/fa';
-import { ArrowsRightLeftIcon, BanknotesIcon, CreditCardIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { ArrowsRightLeftIcon, BanknotesIcon, CreditCardIcon } from '@heroicons/react/24/outline';
 import { fetchAccountTransactions, fetchBankName } from '../../redux/transactionThunk';
-import { IDLE, LOADING, FAILED, SUCCEEDED } from '../../util/config';
+import { IDLE, SUCCEEDED } from '../../util/config';
 import DatePicker from 'react-datepicker';
 import { format } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -18,7 +17,7 @@ export default function TransferHistory() {
   const thirtyOneDaysAgo = new Date();
   thirtyOneDaysAgo.setDate(today.getDate() - 29);
 
-  const [filter, setFilter] = useState('all');
+  const [filters, setFilters] = useState(['all']);
   const [startDate, setStartDate] = useState(thirtyOneDaysAgo);
   const [endDate, setEndDate] = useState(today);
   const [error, setError] = useState('');
@@ -28,15 +27,17 @@ export default function TransferHistory() {
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((t) => {
-      const typeMatch = filter === 'all' || (filter === 'sender' && (t.type === 'Sender')) ||
-        (filter === 'debt' && (t.type === 'Sender (Debt)' || t.type === 'Recipient (Debt)')) ||
-        (filter === 'recipient' && (t.type === 'Recipient' || t.type === 'Deposit'));
+      const typeMatch = 
+        filters.includes('all') || 
+        filters.includes('sender') && (t.type === 'Sender') || 
+        filters.includes('debt') && (t.type === 'Sender (Debt)' || t.type === 'Recipient (Debt)') || 
+        filters.includes('recipient') && (t.type === 'Recipient' || t.type === 'Deposit');
 
-        const startDateMatch = !startDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) >= startDate.setHours(0, 0, 0, 0);
-        const endDateMatch = !endDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) <= endDate.setHours(0, 0, 0, 0);
+      const startDateMatch = !startDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) >= startDate.setHours(0, 0, 0, 0);
+      const endDateMatch = !endDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) <= endDate.setHours(0, 0, 0, 0);
       return typeMatch && startDateMatch && endDateMatch;
     });
-  }, [transactions, filter, startDate, endDate]);
+  }, [transactions, filters, startDate, endDate]);
 
   useEffect(() => {
     if (status === IDLE) {
@@ -180,6 +181,21 @@ export default function TransferHistory() {
     }
   };
 
+  const handleFilterButtonClick = (filter) => {
+    setFilters((prev) => {
+      const newFilters = prev.includes(filter)
+        ? prev.filter((f) => f !== filter)
+        : [...prev, filter];
+  
+      // If none of the individual filters are selected, select 'all'
+      if (!newFilters.includes('recipient') && !newFilters.includes('sender') && !newFilters.includes('debt')) {
+        return ['all'];
+      }
+  
+      return newFilters.includes('all') ? newFilters.filter((f) => f !== 'all') : newFilters;
+    });
+  };
+
   return (
     <>
       <div className="p-6 bg-white rounded-xl space-y-4">
@@ -222,34 +238,34 @@ export default function TransferHistory() {
 
         <div className="flex justify-end mt-4 gap-2">
           <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'recipient' ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-200'
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('recipient') ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-200'
               } text-white`}
-            onClick={() => setFilter('recipient')}
+              onClick={() => handleFilterButtonClick('recipient')}
           >
             <BanknotesIcon className="w-6 h-6" />
             Nhận tiền
           </button>
           <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'sender' ? 'bg-yellow-500 hover:bg-yellow-400' : 'bg-gray-200'
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('sender') ? 'bg-yellow-500 hover:bg-yellow-400' : 'bg-gray-200'
               } text-white`}
-            onClick={() => setFilter('sender')}
+              onClick={() => handleFilterButtonClick('sender')}
           >
             <ArrowsRightLeftIcon className="w-6 h-6" />
             Chuyển tiền
           </button>
           <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filter === 'debt' ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-200'
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('debt') ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-200'
               } text-white`}
-            onClick={() => setFilter('debt')}
+              onClick={() => handleFilterButtonClick('debt')}
           >
             <CreditCardIcon className="w-6 h-6" />
             Thanh toán nợ
           </button>
           <button
             className={`flex items-center gap-2 py-2 px-4 rounded-xl ${
-              filter === 'all' ? 'bg-red-800 hover:bg-red-700' : 'bg-gray-200'
+              filters.includes('all') ? 'bg-red-800 hover:bg-red-700' : 'bg-gray-200'
             } text-white`}
-            onClick={() => setFilter('all')}
+            onClick={() => setFilters(['all'])}
           >
             Tất cả
           </button>
