@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ArrowsRightLeftIcon, BanknotesIcon, CreditCardIcon } from '@heroicons/react/24/outline';
-import { fetchAccountTransactions, fetchBankName } from '../../redux/transactionThunk';
+import { getAccountTransactions, getBankName } from '../../redux/transactionThunk';
 import { IDLE, SUCCEEDED } from '../../util/config';
 import DatePicker from 'react-datepicker';
 import { format } from 'date-fns';
@@ -41,7 +41,7 @@ export default function TransferHistory() {
 
   useEffect(() => {
     if (status === IDLE) {
-      dispatch(fetchAccountTransactions());
+      dispatch(getAccountTransactions());
     }
   }, [dispatch, status]);
 
@@ -53,7 +53,7 @@ export default function TransferHistory() {
           : transaction.id_sender_bank;
 
       if (bankId && !banks[bankId]) {
-        dispatch(fetchBankName(bankId));
+        dispatch(getBankName(bankId));
       }
     });
   }, [filteredTransactions, banks, dispatch]);

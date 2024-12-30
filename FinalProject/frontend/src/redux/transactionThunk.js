@@ -1,57 +1,26 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { BASE_URL } from './../util/config'
-import { getAccessToken } from './../util/cookie'
+import TransactionService from '../services/TransactionService';
 
-export const fetchAccountTransactions = createAsyncThunk(
-    'transaction/fetchAccountTransactions',
-    async (_, { rejectWithValue, getState }) => {
-        const access_token = getAccessToken(); 
-
+export const getAccountTransactions = createAsyncThunk(
+    'transaction/getAccountTransactions',
+    async (_, { rejectWithValue }) => {
         try {
-            const response = await fetch(`${BASE_URL}/transactions/account`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${access_token}`,
-                },
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message);
-            }
-
-            const data = await response.json();
-            return data;
+            const response = await TransactionService.getAccountTransactions();
+            return response;
         } catch (error) {
-            return rejectWithValue(error.response?.data?.message || 'Something went wrong');
+        return rejectWithValue(error.message);
         }
     }
 );
 
-export const fetchBankName = createAsyncThunk(
-    'transaction/fetchBankName',
-    async (id_bank, { rejectWithValue, getState }) => {
-        const access_token = getAccessToken(); 
-
+export const getBankName = createAsyncThunk(
+    'transaction/getBankName',
+    async (id_bank, { rejectWithValue }) => {
         try {
-            const response = await fetch(`${BASE_URL}/transactions/bank/${id_bank}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${access_token}`,
-                },
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message);
-            }
-
-            const data = await response.json();
-            return data;
+            const response = await TransactionService.getBankName(id_bank);
+            return response;
         } catch (error) {
-            return rejectWithValue(error.response?.data?.message || 'Something went wrong');
+        return rejectWithValue(error.message);
         }
     }
 );

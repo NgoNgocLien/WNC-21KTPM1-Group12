@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchAccountTransactions, fetchBankName } from './transactionThunk';
+import { getAccountTransactions, getBankName } from './transactionThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 
 const initialState = {
@@ -43,29 +43,29 @@ const transactionSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAccountTransactions.pending, (state) => {
+      .addCase(getAccountTransactions.pending, (state) => {
         state.status = LOADING;
         state.error = null;
       })
-      .addCase(fetchAccountTransactions.fulfilled, (state, action) => {
+      .addCase(getAccountTransactions.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
         state.transactions = action.payload.data.transactions;
         state.totalTransactions = action.payload.data.transactions.length;
       })
-      .addCase(fetchAccountTransactions.rejected, (state, action) => {
+      .addCase(getAccountTransactions.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
       })
-      .addCase(fetchBankName.pending, (state) => {
+      .addCase(getBankName.pending, (state) => {
         state.status = LOADING;
         state.error = null;
       })
-      .addCase(fetchBankName.fulfilled, (state, action) => {
+      .addCase(getBankName.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
         const { id, name, public_key, logo } = action.payload.data;
         state.banks[id] = { name, public_key, logo };
       })
-      .addCase(fetchBankName.rejected, (state, action) => {
+      .addCase(getBankName.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
       });
