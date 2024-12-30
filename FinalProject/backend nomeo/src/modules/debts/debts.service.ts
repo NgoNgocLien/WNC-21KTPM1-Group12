@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateDebtDto } from './dto/createDebt.dto';
 import { UpdateDebtDto } from './dto/updateDebt.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
@@ -26,7 +26,8 @@ export class DebtsService {
         data: debt,
       };
     } catch (error) {
-      throw new Error('Error creating debt: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -39,7 +40,8 @@ export class DebtsService {
         data: debts,
       };
     } catch (error) {
-      throw new Error('Error fetching debts: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -56,7 +58,8 @@ export class DebtsService {
         data: debt,
       };
     } catch (error) {
-      throw new Error('Error fetching debt: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -117,7 +120,8 @@ export class DebtsService {
         },
       };
     } catch (error) {
-      throw new Error('Error fetching outgoing debts: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -178,7 +182,8 @@ export class DebtsService {
         },
       };
     } catch (error) {
-      throw new Error('Error fetching incoming debts: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -222,7 +227,8 @@ export class DebtsService {
         data: debts,
       };
     } catch (error) {
-      throw new Error('Error fetching pending debts: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -282,7 +288,8 @@ export class DebtsService {
         data: debts,
       };
     } catch (error) {
-      throw new Error('Error fetching completed debts: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
@@ -428,7 +435,8 @@ export class DebtsService {
         },
       };
     } catch (error) {
-      throw new Error('Error paying debt: ' + error.message);
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 }

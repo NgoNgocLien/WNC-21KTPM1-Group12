@@ -13,7 +13,8 @@ export default class BaseService {
       }
     });
     if (!response.ok) {
-      throw new Error('Failed to fetch data');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to fetch data');
     } else {
       return await response.json();
     }
@@ -30,7 +31,8 @@ export default class BaseService {
       body: JSON.stringify(data)
     });
     if (!response.ok) {
-      throw new Error('Failed to post data');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to post data');
     } else {
       return await response.json();
     }
@@ -42,12 +44,13 @@ export default class BaseService {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getAccessToken()}`
+        'Authorization': `Bearer ${accessToken}`
       },
       body: JSON.stringify(data)
     });
     if (!response.ok) {
-      throw new Error('Failed to put data');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to put data');
     } else {
       return await response.json();
     }
@@ -64,23 +67,26 @@ export default class BaseService {
       body: JSON.stringify(data)
     });
     if (!response.ok) {
-      throw new Error('Failed to patch data');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to patch data');
     } else {
       return await response.json();
     }
   }
 
-  static async delete(url) {
+  static async delete(url, data) {
     const accessToken = getAccessToken();
     const response = await fetch(`${BASE_URL}/${url}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`
-      }
+      },
+      body: JSON.stringify(data)
     });
     if (!response.ok) {
-      throw new Error('Failed to delete data');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to delete data');
     } else {
       return await response.json();
     }

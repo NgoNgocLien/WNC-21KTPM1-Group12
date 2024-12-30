@@ -15,6 +15,7 @@ import { OtpModule } from './modules/otp/otp.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { RsaModule } from './common/rsa/rsa.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     TransactionsModule,
     OtpModule,
     NotificationsModule,
+    RsaModule,
   ],
   controllers: [],
   providers: [

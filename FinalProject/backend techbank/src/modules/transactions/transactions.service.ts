@@ -10,31 +10,6 @@ import { INTERNAL_BAND_ID } from 'src/common/utils/config';
 export class TransactionsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findRecipientProfile(account_number: string){
-    try{
-      const profile = await this.prisma.accounts.findUnique({
-        where:{
-          account_number: account_number,
-        },
-        select:{
-          account_number: true,
-          customers: {
-            select:{
-              fullname: true
-            }
-          }
-        }
-      })
-
-      return {
-        message: "Profile fetched successfully",
-        data: profile
-      }
-    } catch(error){
-      throw new Error('Error fetching profile: ' + error.message);
-    }
-  }
-
   async createInternalTransaction(createTransactionDto: CreateTransactionDto) {
     try{
       const senderExists = await this.prisma.accounts.findUnique({

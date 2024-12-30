@@ -5,10 +5,10 @@ import Select from 'react-select';
 import * as Yup from 'yup';
 
 import { createOneContact } from '../../redux/userThunk';
-import getFullname from '../../util/getFullname'
 import banks from '../../util/banks'
 import { getAccessToken } from '../../util/cookie';
 import { customSelectStyles } from '../../util/customStyle';
+import CustomerService from '../../services/CustomerService';
 
 const bankOptions = banks.map(bank => ({
   value: bank.bank_id,
@@ -26,10 +26,7 @@ const bankOptions = banks.map(bank => ({
 
 const AddContactModal = ({ isOpen, closeModal, recipient }) => {
   const dispatch = useDispatch();
-  const access_token = getAccessToken();
-  // const [disabledInput, setDisabledInput]
-
-  console.log(recipient)
+  
   const formik = useFormik({
     initialValues: {
       bank_id: 1, 
@@ -60,12 +57,27 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
     }
   }, [recipient]);
 
+  const getFullname = async (account_number, bank_id) => {
+    try {
+      if (bank_id === 1){
+        const fullname = await CustomerService.getInternalRecipientInfo(account_number);
+        return fullname;
+      }
+
+      const fullname = await CustomerService.getExternalRecipientInfo(bank_id, account_number);
+      return fullname;
+
+    } catch (e){
+      console.log(e)
+    }
+  }
+
   const handleAccountNumberBlur = async (e) => {
     formik.handleBlur(e);
     const account_number = e.target.value;
     if (account_number) {
       const bank_id = formik.getFieldProps('bank_id').value
-      const contact_fullname = await getFullname(access_token, account_number, bank_id);
+      const contact_fullname = await getFullname(account_number, bank_id);
       formik.setFieldValue('contact_fullname', contact_fullname);
       formik.setFieldValue('nickname', contact_fullname);
     }
@@ -78,7 +90,7 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
       const account_number = formik.getFieldProps('account_number').value;
       // console.log({account_number, bank_id});
       if (account_number) {
-        const contact_fullname = await getFullname(access_token, account_number, bank_id);
+        const contact_fullname = await getFullname(account_number, bank_id);
         formik.setFieldValue('contact_fullname', contact_fullname);
         formik.setFieldValue('nickname', contact_fullname);
       }

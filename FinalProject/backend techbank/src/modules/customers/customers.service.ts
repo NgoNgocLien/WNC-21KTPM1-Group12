@@ -96,6 +96,57 @@ export class CustomersService {
     }
   }
 
+  
+  async findInternalProfile(account_number: string){
+    try{
+      const profile = await this.prisma.accounts.findUnique({
+        where:{
+          account_number: account_number,
+        },
+        select:{
+          account_number: true,
+          customers: {
+            select:{
+              fullname: true
+            }
+          }
+        }
+      })
+
+      return {
+        message: "Profile fetched successfully",
+        data: profile
+      }
+    } catch(error){
+      throw new Error('Error fetching profile: ' + error.message);
+    }
+  }
+
+  async findExternalProfile(account_number: string){
+    try{
+      const profile = await this.prisma.accounts.findUnique({
+        where:{
+          account_number: account_number,
+        },
+        select:{
+          account_number: true,
+          customers: {
+            select:{
+              fullname: true
+            }
+          }
+        }
+      })
+
+      return {
+        message: "Profile fetched successfully",
+        data: profile
+      }
+    } catch(error){
+      throw new Error('Error fetching profile: ' + error.message);
+    }
+  }
+
   async update(id: number, updateCustomerDto: UpdateCustomerDto) {
     try {
       const customerExists = await this.prisma.customers.findUnique({

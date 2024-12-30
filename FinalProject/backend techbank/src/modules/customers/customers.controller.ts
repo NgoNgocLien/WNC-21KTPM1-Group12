@@ -9,7 +9,8 @@ import {
   Get,
   Inject, LoggerService,
   Patch,
-  Delete
+  Delete,
+  Param
 } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston'
 import { CustomersService } from './customers.service';
@@ -37,6 +38,19 @@ export class CustomersController {
   @Get('profile')
   getCustomerProfile(@Req() req: Request) {
     return this.customersService.getProfile(req.user['sub']);
+  }
+
+  @Get('/profile/internal/:account_number')
+    findInternalProfile(@Param('account_number') account_number: string) {
+      return this.customersService.findInternalProfile(account_number);
+  }
+
+  @Get('profile/external/:bank_id/:account_number')
+    findExternalProfile(
+      @Param('account_number') account_number: string,
+      @Param('bank_id') bank_id: string
+    ) {
+      return this.customersService.findExternalProfile(account_number);
   }
 
   @HttpCode(HttpStatus.OK)

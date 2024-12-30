@@ -1,56 +1,26 @@
 // userThunks.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { BASE_URL } from './../util/config'
-import { getAccessToken } from './../util/cookie'
+import CustomerService from '../services/CustomerService';
 
-export const fetchUserAccountInfo = createAsyncThunk(
-    'user/fetchUserAccountInfo',
-    async (_, { rejectWithValue, getState }) => {
-        const access_token = getAccessToken(); 
-  
+export const getCustomerInfo = createAsyncThunk(
+    'user/getCustomerInfo',
+    async (_, { rejectWithValue, }) => {  
         try {
-            const response = await fetch(`${BASE_URL}/customers/profile`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`, 
-            },
-            });
-    
-            if (!response.ok) {
-                console.log(response)
-            throw new Error('Failed to fetch user account info');
-            }
-    
-            const data = await response.json();
-            return data;
+            const response = await CustomerService.getCustomerInfo();
+            return response;
         } catch (error) {
         return rejectWithValue(error.message);
         }
     }
 );
 
-export const fetchUserContacts = createAsyncThunk(
-    'user/fetchUserContacts',
-    async (_, { rejectWithValue, getState }) => {
-        const access_token = getAccessToken(); 
-  
+export const getCustomerContacts = createAsyncThunk(
+    'user/getCustomerContacts',
+    async (_, { rejectWithValue, }) => {
         try {
-            const response = await fetch(`${BASE_URL}/customers/contacts`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`, 
-            },
-            });
-    
-            if (!response.ok) {
-                console.log(response)
-            throw new Error('Failed to fetch user account info');
-            }
-    
-            const data = await response.json();
-            return data;
+            const response = await CustomerService.getCustomerContacts();
+            return response;
+
         } catch (error) {
         return rejectWithValue(error.message);
         }
@@ -60,38 +30,17 @@ export const fetchUserContacts = createAsyncThunk(
 export const createOneContact = createAsyncThunk(
     'user/createOneContact',
     async (values, { rejectWithValue, getState }) => {
-        const state = getState();
-        const access_token = getAccessToken(); 
-        console.log({
-            id_customer: state.user.id,
-            contact_account_number: values.account_number,
-            id_bank: values.bank_id,
-            nickname: values.nickname,
-            contact_fullname: values.contact_fullname
-        })
         try {
-            const response = await fetch(`${BASE_URL}/customers/contacts`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`, 
-            },
-            body: JSON.stringify({
+            const state = getState();
+            const data = {
                 id_customer: state.user.id,
                 contact_account_number: values.account_number,
                 id_bank: values.bank_id,
                 nickname: values.nickname,
                 contact_fullname: values.contact_fullname
-            })
-            });
-    
-            if (!response.ok) {
-                console.log(response)
-            throw new Error('Failed to fetch user account info');
-            }
-    
-            const data = await response.json();
-            return data;
+            };
+            const response = await CustomerService.createOneContact(data);
+            return response;
         } catch (error) {
         return rejectWithValue(error.message);
         }
@@ -100,29 +49,15 @@ export const createOneContact = createAsyncThunk(
 
 export const updateOneContact = createAsyncThunk(
     'user/updateOneContact',
-    async (body, { rejectWithValue, getState }) => {
-        const access_token = getAccessToken(); 
-  
+    async (body, { rejectWithValue, getState }) => {  
+
         try {
-            const response = await fetch(`${BASE_URL}/customers/contacts`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`, 
-            },
-            body: JSON.stringify({ 
+            const data = { 
                 id: body.id,
                 nickname: body.nickname
-            })
-            });
-    
-            if (!response.ok) {
-                console.log(response)
-            throw new Error('Failed to fetch user account info');
             }
-    
-            const data = await response.json();
-            return {data: body, message: data.message};
+            const response = await CustomerService.updateOneContact(data);
+            return response;
         } catch (error) {
         return rejectWithValue(error.message);
         }
@@ -131,26 +66,13 @@ export const updateOneContact = createAsyncThunk(
 
 export const deleteOneContact = createAsyncThunk(
     'user/deleteOneContact',
-    async (id, { rejectWithValue, getState }) => {
-        const access_token = getAccessToken(); 
-  
+    async (id, { rejectWithValue, getState }) => {  
         try {
-            const response = await fetch(`${BASE_URL}/customers/contacts`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`, 
-            },
-            body: JSON.stringify({ id: id })
-            });
-    
-            if (!response.ok) {
-                console.log(response)
-            throw new Error('Failed to fetch user account info');
+            const data = { 
+                id: id,
             }
-    
-            const data = await response.json();
-            return { id, message: data.message };
+            const response = await CustomerService.deleteOneContact(data);
+            return response;
         } catch (error) {
         return rejectWithValue(error.message);
         }
