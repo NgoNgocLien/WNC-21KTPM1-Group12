@@ -64,7 +64,7 @@ export default function TransferHistory() {
       }
 
       return (
-        <div className="max-h-96 overflow-y-auto space-y-4">
+        <div className="max-h-96 overflow-y-auto">
           {filteredTransactions.map((transaction) => {
             const uniqueKey = `${transaction.type}-${transaction.id}`;
             const formattedTime = format(new Date(transaction.transaction_time), 'dd/MM/yyyy - HH:mm:ss');
@@ -95,13 +95,16 @@ export default function TransferHistory() {
               labelColor = 'bg-blue-500';
             }
 
+            const isInternalTransaction = bankId === 1; // Giao dịch nội bộ nếu bankId là 1
+            const transactionBgColor = isInternalTransaction ? 'bg-white' : 'bg-red-100';
+
             const formattedAmount = new Intl.NumberFormat().format(transaction.transaction_amount);
             const formattedBalance = new Intl.NumberFormat().format(transaction.current_balance);
 
             return (
               <div
                 key={uniqueKey}
-                className="p-4 border-b border-gray-300 flex items-center justify-between cursor-pointer"
+                className={`p-4 border-b border-gray-300 flex items-center justify-between cursor-pointer ${transactionBgColor}`}
                 onClick={() => handleTransactionClick(transaction)}
               >
                 <div className="flex items-center space-x-4">
@@ -137,7 +140,7 @@ export default function TransferHistory() {
 
   const handleTransactionClick = (transaction) => {
     setSelectedTransaction(transaction); 
-    setIsModalOpen(true); 
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
@@ -231,6 +234,16 @@ export default function TransferHistory() {
         isOpen={isModalOpen}
         closeModal={closeModal}
         transaction={selectedTransaction}
+        account_number={account_number}
+        bankName={
+          selectedTransaction
+            ? selectedTransaction.type === 'Deposit'
+              ? null
+              : selectedTransaction.type === 'Sender' || selectedTransaction?.type === 'Sender (Debt)'
+              ? banks[selectedTransaction?.id_recipient_bank]?.name
+              : banks[selectedTransaction?.id_sender_bank]?.name
+            : null
+        }
       />
     </>
   );

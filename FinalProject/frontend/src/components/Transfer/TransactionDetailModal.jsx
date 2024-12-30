@@ -1,7 +1,8 @@
 import React from 'react';
 import { format } from 'date-fns';
+import { useSelector } from 'react-redux';
 
-const TransactionDetailModal = ({ isOpen, closeModal, transaction }) => {
+const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_number, bankName }) => {
   if (!isOpen || !transaction) return null;
 
   const formattedTime = format(new Date(transaction.transaction_time), 'dd/MM/yyyy - HH:mm:ss');
@@ -34,6 +35,9 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction }) => {
         </div>
 
         <div className="grid grid-cols-2 gap-y-4">
+          <div className="text-gray-600 font-base">Tài khoản nguồn</div>
+          <div className="text-gray-800 font-medium">{account_number}</div>
+
           <div className="text-gray-600 font-base">Thời gian giao dịch</div>
           <div className="text-gray-800 font-medium">{formattedTime}</div>
 
@@ -46,7 +50,7 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction }) => {
           {transaction.type !== 'Deposit' && (
             <>
               <div className="text-gray-600 font-base">
-                {transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? 'Tài khoản nhận' : 'Tài khoản gửi'}
+                {transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? 'Tài khoản thụ hưởng' : 'Tài khoản gửi'}
               </div>
               <div className="text-gray-800 font-medium">{recipientAccount}</div>
 
@@ -56,6 +60,9 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction }) => {
                   <div className="text-gray-800 font-medium">{recipientName}</div>
                 </>
               )}
+
+              <div className="text-gray-600 font-base">Ngân hàng</div>
+              <div className="text-gray-800 font-medium">{bankName}</div>
             </>
           )}
 
@@ -68,11 +75,11 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction }) => {
 
           <div className="text-gray-600 font-base">Nội dung giao dịch</div>
           <div className="text-gray-800 font-medium">
-            {transaction.transaction_message || transaction.deposit_message}
+            {transaction.transaction_message || transaction.deposit_message || "(Không có nội dung)"} 
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex justify-center">
           <button
             onClick={closeModal}
             className="py-2 px-4 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600"
