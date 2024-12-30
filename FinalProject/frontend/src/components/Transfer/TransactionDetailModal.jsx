@@ -6,6 +6,7 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction }) => {
 
   const formattedTime = format(new Date(transaction.transaction_time), 'dd/MM/yyyy - HH:mm:ss');
   const formattedAmount = new Intl.NumberFormat().format(transaction.transaction_amount);
+  const formattedBalance = new Intl.NumberFormat().format(transaction.current_balance);
   const feePaymentMethod = transaction.fee_payment_method;
 
   let recipientAccount = '';
@@ -28,29 +29,31 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction }) => {
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white shadow-xl rounded-lg w-11/12 max-w-lg p-6">
-        <div className="flex justify-between items-center border-b pb-4 mb-4">
-          <h3 className="text-xl font-bold text-gray-700">Chi tiết giao dịch</h3>
-          <button onClick={closeModal} className="text-gray-500 hover:text-red-500 text-2xl">&times;</button>
+        <div className="flex justify-center items-center pb-4 mb-4">
+          <h3 className="text-xl font-semibold text-black">Chi tiết giao dịch</h3>
         </div>
 
         <div className="grid grid-cols-2 gap-y-4">
-          <div className="text-gray-600 font-medium">Thời gian giao dịch</div>
-          <div className="text-gray-900 font-semibold">{formattedTime}</div>
+          <div className="text-gray-600 font-base">Thời gian giao dịch</div>
+          <div className="text-gray-800 font-medium">{formattedTime}</div>
 
-          <div className="text-gray-600 font-medium">Số tiền giao dịch</div>
-          <div className="text-gray-900 font-semibold">{formattedAmount} VNĐ</div>
+          <div className="text-gray-600 font-base">Số tiền giao dịch</div>
+          <div className="text-gray-800 font-medium">{formattedAmount} VNĐ</div>
+
+          <div className="text-gray-600 font-base">Số dư sau giao dịch</div>
+          <div className="text-gray-800 font-medium">{formattedBalance} VNĐ</div>
 
           {transaction.type !== 'Deposit' && (
             <>
-              <div className="text-gray-600 font-medium">
+              <div className="text-gray-600 font-base">
                 {transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? 'Tài khoản nhận' : 'Tài khoản gửi'}
               </div>
-              <div className="text-gray-900 font-semibold">{recipientAccount}</div>
+              <div className="text-gray-800 font-medium">{recipientAccount}</div>
 
               {(transaction.type === 'Sender' || transaction.type === 'Sender (Debt)') && (
                 <>
-                  <div className="text-gray-600 font-medium">Người thụ hưởng</div>
-                  <div className="text-gray-900 font-semibold">{recipientName}</div>
+                  <div className="text-gray-600 font-base">Người thụ hưởng</div>
+                  <div className="text-gray-800 font-medium">{recipientName}</div>
                 </>
               )}
             </>
@@ -58,15 +61,24 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction }) => {
 
           {transaction.type !== 'Deposit' && feePayer && (
             <>
-              <div className="text-gray-600 font-medium">Phí</div>
-              <div className="text-gray-900 font-semibold">{feePayer}</div>
+              <div className="text-gray-600 font-base">Phí</div>
+              <div className="text-gray-800 font-medium">{feePayer}</div>
             </>
           )}
 
-          <div className="text-gray-600 font-medium">Nội dung giao dịch</div>
-          <div className="text-gray-900 font-semibold">
+          <div className="text-gray-600 font-base">Nội dung giao dịch</div>
+          <div className="text-gray-800 font-medium">
             {transaction.transaction_message || transaction.deposit_message}
           </div>
+        </div>
+
+        <div className="mt-6 flex justify-end">
+          <button
+            onClick={closeModal}
+            className="py-2 px-4 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600"
+          >
+            Đóng
+          </button>
         </div>
       </div>
     </div>
