@@ -10,6 +10,7 @@ import Login from './pages/Guest/Login';
 import CustomerSidebar from './components/Sidebar/CustomerSidebar';
 import EmployeeSidebar from './components/Sidebar/EmployeeSidebar';
 import Dialog from './components/Dialog';
+import LoadingIndicator from './components/LoadingIndicator';
 
 import Account from './pages/SignIn/Customer/Account';
 import Transfer from './pages/SignIn/Customer/Transfer/Transfer';
@@ -92,9 +93,10 @@ function AuthenticatedLayout() {
   });
 
   return (
-    <div>
-      <ToastContainer />
+    <>
+      
       {sidebar}
+      <ToastContainer />
       <main className="ms-80 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
         <Outlet />
       </main>
@@ -107,7 +109,7 @@ function AuthenticatedLayout() {
 
         <Dialog type="info" isOpen={true} message="This is a message" />
       )}
-    </div>
+    </>
   );
 }
 
@@ -139,6 +141,7 @@ function App() {
 
   return (
     <>
+      <LoadingIndicator/>
       <Dialog />
 
       <Router>

@@ -5,7 +5,7 @@ import TransferInternalStep1 from '../../../../components/Transfer/TransferInter
 import TransferStep2 from '../../../../components/Transfer/TransferStep2';
 import TransferStep3 from '../../../../components/Transfer/TransferStep3';
 import TransferStep4 from '../../../../components/Transfer/TransferStep4';
-import AddContactModal from '../../../../components/Account/Modal/AddContactModal';
+import AddContactModal from '../../../../components/Account/AddContactModal';
 import { INTERNAL } from '../../../../util/config';
 
 export default function TransferInternal() {

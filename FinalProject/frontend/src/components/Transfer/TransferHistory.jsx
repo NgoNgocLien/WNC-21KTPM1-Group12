@@ -97,7 +97,7 @@ export default function TransferHistory() {
             return (
               <div
                 key={uniqueKey}
-                className="p-4 border-b border-gray-300 rounded-lg flex items-center justify-between"
+                className="p-4 border-b border-gray-300 flex items-center justify-between"
               >
                 <div className="flex items-center space-x-4">
                   <img
@@ -135,7 +135,7 @@ export default function TransferHistory() {
 
   return (
     <>
-      <div className="p-6 bg-white rounded-2xl space-y-4">
+      <div className="p-6 bg-white rounded-xl space-y-4">
         <div className="grid grid-cols-1 gap-4">
           <div>
             <label className="block text-base font-medium text-gray-500 mb-2">Tài khoản</label>
@@ -211,7 +211,7 @@ export default function TransferHistory() {
         </p>
       </div>
 
-      <div className="mt-1 p-6 bg-white rounded-2xl">{renderTransactions()}</div>
+      <div className="mt-1 p-6 bg-white rounded-xl">{renderTransactions()}</div>
     </>
   );
 }

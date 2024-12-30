@@ -14,16 +14,16 @@ export default function NotFound() {
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <NavLink
             to="/"
-            className="px-4 py-2 bg-red-800 text-white rounded-lg hover:bg-red-900"
+            className="px-4 py-2 bg-red-800 text-white rounded-xl hover:bg-red-900"
           >
             Quay về trang chủ
           </NavLink>
           <NavLink
             to="/"
-            className="relative px-4 py-2 bg-white text-red-800 rounded-lg hover:bg-red-800 hover:text-white"
+            className="relative px-4 py-2 bg-white text-red-800 rounded-xl hover:bg-red-800 hover:text-white"
           >
             Liên hệ hỗ trợ <span aria-hidden="true">&rarr;</span>
-            <span className="absolute inset-0 rounded-lg border-2 border-red-800 pointer-events-none"></span>
+            <span className="absolute inset-0 rounded-xl border-2 border-red-800 pointer-events-none"></span>
           </NavLink>
         </div>
       </div>

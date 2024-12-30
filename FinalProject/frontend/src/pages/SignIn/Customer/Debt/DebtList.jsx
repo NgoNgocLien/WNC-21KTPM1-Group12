@@ -24,7 +24,7 @@ export default function DebtList() {
   const [displayContacts, setDisplayContacts] = useState(false)
   const [selectedContact, setSelectedContact] = useState(null);
 
-  const { account_number, balance, contacts, fullname } = useSelector((state) => state.user);
+  const { contacts, fullname } = useSelector((state) => state.user);
   const { incomingDebts, outgoingDebts, status } = useSelector((state) => state.debt)
 
   useEffect(() => {

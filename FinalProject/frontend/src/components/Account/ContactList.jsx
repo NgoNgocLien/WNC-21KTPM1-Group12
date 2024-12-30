@@ -42,18 +42,18 @@ export default function ContactList({
     return (
     <>
        
-    <div className="flex flex-col p-4 bg-white rounded-lg ">
+    <div className="flex flex-col p-4 bg-white rounded-xl ">
         {
             isMutable ? (
-            <div className="flex space-x-4 p-[2px] bg-gray-200 rounded-lg">
+            <div className="flex space-x-4 p-[2px] bg-gray-200 rounded-xl">
                 <button
-                    className={`w-1/2 py-2 px-4 rounded-lg font-semibold text-gray-500 ${activeTab === INTERNAL ? 'text-red-800 bg-white' : 'bg-gray-200'}`}
+                    className={`w-1/2 py-2 px-4 rounded-xl font-semibold text-gray-500 ${activeTab === INTERNAL ? 'text-red-800 bg-white' : 'bg-gray-200'}`}
                     onClick={() => setActiveTab(INTERNAL)}
                 >
                     Nội bộ
                 </button>
                 <button
-                    className={`w-1/2 py-2 px-4 rounded-lg font-semibold text-gray-500 ${activeTab === EXTERNAL ? 'text-red-800 bg-white' : 'bg-gray-200'}`}
+                    className={`w-1/2 py-2 px-4 rounded-xl font-semibold text-gray-500 ${activeTab === EXTERNAL ? 'text-red-800 bg-white' : 'bg-gray-200'}`}
                     onClick={() => setActiveTab(EXTERNAL)}
                 >
                     Liên ngân hàng
@@ -72,7 +72,12 @@ export default function ContactList({
         {
             filterContacts?.length === 0 
             ?
-                <p className="self-center">Chưa có người nhận</p>
+                (
+                    <div className="w-full flex flex-col justify-center items-center space-y-2 ">
+                        <img src={`${process.env.PUBLIC_URL}/status/not-found.png`} className="w-2/12 m-0"></img>
+                        <p className="m-0">Chưa có người nhận</p>
+                    </div>
+                )
             :
                 
                 filterContacts?.map((contact) => (
@@ -124,7 +129,7 @@ export default function ContactList({
             !isMutable && (
                 <button 
                     onClick={() => setDisplayContacts(false)}
-                    className="w-fit mt-4 py-2 px-4 self-center bg-red-800 text-white font-semibold rounded-lg hover:bg-red-700">
+                    className="w-fit mt-4 py-2 px-4 self-center bg-red-800 text-white font-semibold rounded-xl hover:bg-red-700">
                     Đóng
                 </button>
             )

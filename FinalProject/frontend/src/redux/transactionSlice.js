@@ -19,6 +19,13 @@ const transactionSlice = createSlice({
     reset: (state) => {
       return { ...initialState }
     },
+    setTransactionStatus: (state,action) => {
+      return {
+        ...state,
+        status: action.payload.status,
+        error: action.payload.eror
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
