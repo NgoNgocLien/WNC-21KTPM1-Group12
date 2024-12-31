@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { 
   getCustomerInfo, 
-  getCustomerContacts, createOneContact, deleteOneContact, updateOneContact, getCustomers } from './userThunk';
+  getCustomerContacts, createOneContact, deleteOneContact, updateOneContact, getCustomers, createCustomer } from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 import notify from '../util/notification';
 
@@ -17,6 +17,8 @@ const initialState = {
   customers: null,
   status: IDLE,
   error: null,
+  customerCreationStatus: IDLE,
+  customerCreationError: null,
 }
 
 const userSlice = createSlice({
@@ -142,6 +144,18 @@ const userSlice = createSlice({
       .addCase(getCustomers.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
+      })
+      .addCase(createCustomer.pending, (state) => {
+        state.customerCreationStatus = LOADING;
+        state.customerCreationError = null;
+      })
+      .addCase(createCustomer.fulfilled, (state, action) => {
+        state.customerCreationStatus = SUCCEEDED;
+        notify(action.payload.message);
+      })
+      .addCase(createCustomer.rejected, (state, action) => {
+        state.customerCreationStatus = FAILED;
+        state.customerCreationError = action.payload;
       });
     }
 });

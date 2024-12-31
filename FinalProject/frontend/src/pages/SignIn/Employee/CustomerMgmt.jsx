@@ -81,7 +81,7 @@ export default function CustomerMgmt() {
         {customers ? (
           <CustomerTable customers={currentData} />
         ) : (
-          <p className="text-gray-600">Đang tải danh sách khách hàng...</p>
+          <p className="text-gray-600 text-center"></p>
         )}
 
         {isModalOpen && (

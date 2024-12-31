@@ -2,7 +2,7 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-//import { createCustomer } from '../../redux/userThunk';
+import { createCustomer, getCustomers } from '../../redux/userThunk';
 
 const AddCustomerModal = ({ isOpen, closeModal }) => {
   const dispatch = useDispatch();
@@ -11,19 +11,22 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
     initialValues: {
       username: '',
       password: '',
-      name: '',
+      fullname: '',
       email: '',
       phone: '',
     },
     validationSchema: Yup.object({
       username: Yup.string().required('Tên đăng nhập là bắt buộc'),
       password: Yup.string().required('Mật khẩu là bắt buộc'),
-      name: Yup.string().required('Họ tên là bắt buộc'),
+      fullname: Yup.string().required('Họ tên là bắt buộc'),
       email: Yup.string().email('Email không hợp lệ').required('Email là bắt buộc'),
-      phone: Yup.string().required('Số điện thoại là bắt buộc'),
+      phone: Yup.string()
+        .matches(/^[0-9]+$/, 'Số điện thoại chỉ chứa các chữ số')
+        .required('Số điện thoại là bắt buộc'),
     }),
     onSubmit: (values, { resetForm }) => {
-      //dispatch(createCustomer(values));
+      dispatch(createCustomer(values));
+      dispatch(getCustomers());
       closeModal();
       resetForm();
     },
@@ -39,7 +42,9 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
         <form onSubmit={formik.handleSubmit} className="w-full my-4">
           {/* Login Information */}
           <div className="my-2">
-            <label htmlFor="username" className="block text-sm font-semibold">Tên đăng nhập</label>
+            <label htmlFor="username" className="block text-sm font-semibold">Tên đăng nhập
+              <span className="text-red-500"> *</span>
+            </label>
             <input
               id="username"
               type="text"
@@ -55,7 +60,9 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
           </div>
 
           <div className="my-2">
-            <label htmlFor="password" className="block text-sm font-semibold">Mật khẩu</label>
+            <label htmlFor="password" className="block text-sm font-semibold">Mật khẩu
+            <span className="text-red-500"> *</span>
+            </label>
             <input
               id="password"
               type="password"
@@ -72,23 +79,27 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
 
           {/* Personal Information */}
           <div className="my-2">
-            <label htmlFor="name" className="block text-sm font-semibold">Họ tên</label>
+            <label htmlFor="fullname" className="block text-sm font-semibold">Họ tên
+            <span className="text-red-500"> *</span>
+            </label>
             <input
-              id="name"
+              id="fullname"
               type="text"
-              name="name"
+              name="fullname"
               className="w-full px-4 py-2 border border-gray-300 rounded-xl"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.name}
+              value={formik.values.fullname}
             />
-            {formik.touched.name && formik.errors.name && (
-              <div className="text-red-500 text-sm">{formik.errors.name}</div>
+            {formik.touched.fullname && formik.errors.fullname && (
+              <div className="text-red-500 text-sm">{formik.errors.fullname}</div>
             )}
           </div>
 
           <div className="my-2">
-            <label htmlFor="email" className="block text-sm font-semibold">Email</label>
+            <label htmlFor="email" className="block text-sm font-semibold">Email
+            <span className="text-red-500"> *</span>
+            </label>
             <input
               id="email"
               type="email"
@@ -104,7 +115,9 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
           </div>
 
           <div className="my-2">
-            <label htmlFor="phone" className="block text-sm font-semibold">Số điện thoại</label>
+            <label htmlFor="phone" className="block text-sm font-semibold">Số điện thoại
+            <span className="text-red-500"> *</span>
+            </label>
             <input
               id="phone"
               type="text"
