@@ -1,6 +1,5 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { useSelector } from 'react-redux';
 
 const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_number, bankName }) => {
   if (!isOpen || !transaction) return null;
@@ -75,7 +74,7 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_numbe
 
           <div className="text-gray-600 font-base">Nội dung giao dịch</div>
           <div className="text-gray-800 font-medium">
-            {transaction.transaction_message || transaction.deposit_message || "(Không có nội dung)"} 
+            {transaction.transaction_message || transaction.deposit_message || "(Không có nội dung)"}
           </div>
         </div>
 

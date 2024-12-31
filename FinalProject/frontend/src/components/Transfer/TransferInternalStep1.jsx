@@ -52,7 +52,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
 
   const handleClickContactBook = () => {
     if (contacts === null) {
-        dispatch(getCustomerContacts());
+      dispatch(getCustomerContacts());
     }
     setDisplayContacts(true);
   }

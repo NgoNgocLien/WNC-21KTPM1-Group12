@@ -14,9 +14,9 @@ export class CreateDebtDto {
   @IsDefined()
   id_creditor: number;
 
-  @IsNumber()
+  @IsString()
   @IsDefined()
-  id_debtor: number;
+  debtor_account_number: string;
 
   @IsNumber()
   @IsDefined()

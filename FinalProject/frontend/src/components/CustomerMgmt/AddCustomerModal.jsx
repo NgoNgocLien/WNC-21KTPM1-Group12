@@ -20,8 +20,8 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
     }),
     onSubmit: (values, { resetForm }) => {
       //dispatch(createCustomer(values));
-      closeModal();  
-      resetForm(); 
+      closeModal();
+      resetForm();
     },
   });
 
