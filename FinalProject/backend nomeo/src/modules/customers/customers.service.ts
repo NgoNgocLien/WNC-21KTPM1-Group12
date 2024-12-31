@@ -19,7 +19,15 @@ export class CustomersService {
 
   async getAllCustomers() {
     try {
-      const customers = await this.prisma.customers.findMany();
+      const customers = await this.prisma.customers.findMany({
+        include: {
+          accounts: {
+            select: {
+              account_number: true
+            },
+          },
+        },
+      });
 
       return {
         message: 'Customers fetched successfully',
