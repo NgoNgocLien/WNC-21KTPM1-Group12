@@ -151,6 +151,7 @@ const userSlice = createSlice({
       })
       .addCase(createCustomer.fulfilled, (state, action) => {
         state.customerCreationStatus = SUCCEEDED;
+        state.customers.push(action.payload.data);
         notify(action.payload.message);
       })
       .addCase(createCustomer.rejected, (state, action) => {
