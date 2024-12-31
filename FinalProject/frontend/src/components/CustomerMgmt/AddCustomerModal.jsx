@@ -2,24 +2,34 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-//import { createCustomer } from '../../redux/userThunk';
+import { createCustomer, getCustomers } from '../../redux/userThunk';
 
 const AddCustomerModal = ({ isOpen, closeModal }) => {
   const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
-      name: '',
+      username: '',
+      password: '',
+      fullname: '',
       email: '',
       phone: '',
     },
     validationSchema: Yup.object({
-      name: Yup.string().required('Họ tên là bắt buộc'),
+      username: Yup.string().required('Tên đăng nhập là bắt buộc'),
+      password: Yup.string().required('Mật khẩu là bắt buộc'),
+      fullname: Yup.string().required('Họ tên là bắt buộc'),
       email: Yup.string().email('Email không hợp lệ').required('Email là bắt buộc'),
-      phone: Yup.string().required('Số điện thoại là bắt buộc'),
+      phone: Yup.string()
+        .matches(/^[0-9]+$/, 'Số điện thoại chỉ chứa các chữ số')
+        .required('Số điện thoại là bắt buộc'),
     }),
     onSubmit: (values, { resetForm }) => {
+<<<<<<< HEAD
       //dispatch(createCustomer(values));
+=======
+      dispatch(createCustomer(values));
+>>>>>>> af169b4917a8a793b85945c7a25a1ec7f7259d35
       closeModal();
       resetForm();
     },
@@ -33,24 +43,66 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
         <h3 className="text-xl font-semibold">Thêm Mới Khách Hàng</h3>
 
         <form onSubmit={formik.handleSubmit} className="w-full my-4">
+          {/* Login Information */}
           <div className="my-2">
-            <label htmlFor="name" className="block text-sm font-semibold">Họ tên</label>
+            <label htmlFor="username" className="block text-sm font-semibold">Tên đăng nhập
+              <span className="text-red-500"> *</span>
+            </label>
             <input
-              id="name"
+              id="username"
               type="text"
-              name="name"
+              name="username"
               className="w-full px-4 py-2 border border-gray-300 rounded-xl"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.name}
+              value={formik.values.username}
             />
-            {formik.touched.name && formik.errors.name && (
-              <div className="text-red-500 text-sm">{formik.errors.name}</div>
+            {formik.touched.username && formik.errors.username && (
+              <div className="text-red-500 text-sm">{formik.errors.username}</div>
             )}
           </div>
 
           <div className="my-2">
-            <label htmlFor="email" className="block text-sm font-semibold">Email</label>
+            <label htmlFor="password" className="block text-sm font-semibold">Mật khẩu
+            <span className="text-red-500"> *</span>
+            </label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-xl"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.password}
+            />
+            {formik.touched.password && formik.errors.password && (
+              <div className="text-red-500 text-sm">{formik.errors.password}</div>
+            )}
+          </div>
+
+          {/* Personal Information */}
+          <div className="my-2">
+            <label htmlFor="fullname" className="block text-sm font-semibold">Họ tên
+            <span className="text-red-500"> *</span>
+            </label>
+            <input
+              id="fullname"
+              type="text"
+              name="fullname"
+              className="w-full px-4 py-2 border border-gray-300 rounded-xl"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.fullname}
+            />
+            {formik.touched.fullname && formik.errors.fullname && (
+              <div className="text-red-500 text-sm">{formik.errors.fullname}</div>
+            )}
+          </div>
+
+          <div className="my-2">
+            <label htmlFor="email" className="block text-sm font-semibold">Email
+            <span className="text-red-500"> *</span>
+            </label>
             <input
               id="email"
               type="email"
@@ -66,7 +118,9 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
           </div>
 
           <div className="my-2">
-            <label htmlFor="phone" className="block text-sm font-semibold">Số điện thoại</label>
+            <label htmlFor="phone" className="block text-sm font-semibold">Số điện thoại
+            <span className="text-red-500"> *</span>
+            </label>
             <input
               id="phone"
               type="text"

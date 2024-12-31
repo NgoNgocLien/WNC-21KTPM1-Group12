@@ -90,3 +90,15 @@ export const getCustomers = createAsyncThunk(
       }
     }
 );
+
+export const createCustomer = createAsyncThunk(
+    'user/createCustomer',
+    async (values, { rejectWithValue }) => {
+      try {
+        const response = await CustomerService.createCustomer(values); 
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+);

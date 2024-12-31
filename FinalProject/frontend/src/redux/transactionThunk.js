@@ -24,3 +24,15 @@ export const getBankName = createAsyncThunk(
         }
     }
 );
+
+export const getCustomerTransactions = createAsyncThunk(
+    'transaction/getCustomerTransactions',
+    async (account_number, { rejectWithValue }) => {
+        try {
+            const response = await TransactionService.getCustomerTransactions(account_number);
+            return response;
+        } catch (error) {
+        return rejectWithValue(error.message);
+        }
+    }
+);
