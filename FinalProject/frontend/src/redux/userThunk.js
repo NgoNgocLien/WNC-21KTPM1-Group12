@@ -78,3 +78,15 @@ export const deleteOneContact = createAsyncThunk(
         }
     }
 );
+
+export const getCustomers = createAsyncThunk(
+    'user/getCustomers',
+    async (_, { rejectWithValue }) => {
+      try {
+        const response = await CustomerService.getCustomers();
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+);

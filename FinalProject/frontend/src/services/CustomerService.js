@@ -71,6 +71,15 @@ const CustomerService = {
     }
   },
 
+  async getCustomers() {
+    try {
+      const jsonObject = await BaseService.get(`customers`);
+      return jsonObject;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 };
 
 export default CustomerService;
