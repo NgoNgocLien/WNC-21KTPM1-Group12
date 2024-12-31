@@ -25,11 +25,7 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
         .required('Số điện thoại là bắt buộc'),
     }),
     onSubmit: (values, { resetForm }) => {
-<<<<<<< HEAD
-      //dispatch(createCustomer(values));
-=======
       dispatch(createCustomer(values));
->>>>>>> af169b4917a8a793b85945c7a25a1ec7f7259d35
       closeModal();
       resetForm();
     },
@@ -64,7 +60,7 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
 
           <div className="my-2">
             <label htmlFor="password" className="block text-sm font-semibold">Mật khẩu
-            <span className="text-red-500"> *</span>
+              <span className="text-red-500"> *</span>
             </label>
             <input
               id="password"
@@ -83,7 +79,7 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
           {/* Personal Information */}
           <div className="my-2">
             <label htmlFor="fullname" className="block text-sm font-semibold">Họ tên
-            <span className="text-red-500"> *</span>
+              <span className="text-red-500"> *</span>
             </label>
             <input
               id="fullname"
@@ -101,7 +97,7 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
 
           <div className="my-2">
             <label htmlFor="email" className="block text-sm font-semibold">Email
-            <span className="text-red-500"> *</span>
+              <span className="text-red-500"> *</span>
             </label>
             <input
               id="email"
@@ -119,7 +115,7 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
 
           <div className="my-2">
             <label htmlFor="phone" className="block text-sm font-semibold">Số điện thoại
-            <span className="text-red-500"> *</span>
+              <span className="text-red-500"> *</span>
             </label>
             <input
               id="phone"
