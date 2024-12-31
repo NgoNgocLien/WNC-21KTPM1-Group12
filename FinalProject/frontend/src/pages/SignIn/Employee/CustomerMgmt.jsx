@@ -4,6 +4,7 @@ import { getCustomers } from '../../../redux/userThunk';
 import CustomerTable from '../../../components/Table/CustomerTable';
 import AddCustomerModal from '../../../components/CustomerMgmt/AddCustomerModal';
 import { PlusIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import TransferHistory from '../../../components/CustomerMgmt/TransferHistory';
 
 export default function CustomerMgmt() {
   const dispatch = useDispatch();
@@ -110,6 +111,9 @@ export default function CustomerMgmt() {
           </div>
         </div>
       </div>
+
+      <p className="text-xl font-semibold mt-6 mb-6">Lịch sử giao dịch</p>
+      <TransferHistory/>
     </div>
   );
 }
