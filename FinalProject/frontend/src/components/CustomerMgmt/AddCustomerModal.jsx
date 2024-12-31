@@ -9,19 +9,23 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
 
   const formik = useFormik({
     initialValues: {
+      username: '',
+      password: '',
       name: '',
       email: '',
       phone: '',
     },
     validationSchema: Yup.object({
+      username: Yup.string().required('Tên đăng nhập là bắt buộc'),
+      password: Yup.string().required('Mật khẩu là bắt buộc'),
       name: Yup.string().required('Họ tên là bắt buộc'),
       email: Yup.string().email('Email không hợp lệ').required('Email là bắt buộc'),
       phone: Yup.string().required('Số điện thoại là bắt buộc'),
     }),
     onSubmit: (values, { resetForm }) => {
       //dispatch(createCustomer(values));
-      closeModal();  
-      resetForm(); 
+      closeModal();
+      resetForm();
     },
   });
 
@@ -33,6 +37,40 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
         <h3 className="text-xl font-semibold">Thêm Mới Khách Hàng</h3>
 
         <form onSubmit={formik.handleSubmit} className="w-full my-4">
+          {/* Login Information */}
+          <div className="my-2">
+            <label htmlFor="username" className="block text-sm font-semibold">Tên đăng nhập</label>
+            <input
+              id="username"
+              type="text"
+              name="username"
+              className="w-full px-4 py-2 border border-gray-300 rounded-xl"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.username}
+            />
+            {formik.touched.username && formik.errors.username && (
+              <div className="text-red-500 text-sm">{formik.errors.username}</div>
+            )}
+          </div>
+
+          <div className="my-2">
+            <label htmlFor="password" className="block text-sm font-semibold">Mật khẩu</label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-xl"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.password}
+            />
+            {formik.touched.password && formik.errors.password && (
+              <div className="text-red-500 text-sm">{formik.errors.password}</div>
+            )}
+          </div>
+
+          {/* Personal Information */}
           <div className="my-2">
             <label htmlFor="name" className="block text-sm font-semibold">Họ tên</label>
             <input

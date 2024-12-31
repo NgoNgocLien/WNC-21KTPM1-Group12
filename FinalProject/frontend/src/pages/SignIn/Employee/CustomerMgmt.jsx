@@ -12,10 +12,18 @@ export default function CustomerMgmt() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const [sortedCustomers, setSortedCustomers] = useState([]);
 
   useEffect(() => {
     dispatch(getCustomers());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (customers) {
+      const sortedCustomers = [...customers].sort((a, b) => a.id - b.id);
+      setSortedCustomers(sortedCustomers);
+    }
+  }, [customers]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -26,14 +34,14 @@ export default function CustomerMgmt() {
   };
 
   const handleSearch = () => {
-    // You can filter the customers based on the search query
-    const filteredCustomers = customers.filter((customer) =>
+    if (!sortedCustomers) return [];
+    
+    const filteredCustomers = sortedCustomers.filter((customer) =>
       customer.fullname.toLowerCase().includes(searchQuery.toLowerCase())
     );
     return filteredCustomers;
   };
 
-  const sortedCustomers = customers ? [...customers].sort((a, b) => a.id - b.id) : [];
   const filteredCustomers = handleSearch();
   const customersToDisplay = filteredCustomers.length > 0 ? filteredCustomers : sortedCustomers;
 
@@ -56,7 +64,7 @@ export default function CustomerMgmt() {
 
       <div className="p-4 bg-white rounded-xl shadow-lg space-y-6 w-full">
         <div className="flex flex-col lg:flex-row items-center justify-between mb-6 mt-2">
-          <div className="relative w-full ">
+          <div className="relative w-full">
             <input
               type="text"
               value={searchQuery}
