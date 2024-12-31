@@ -219,10 +219,19 @@ export class CustomersService {
       });
 
       return {
-        message: 'Customer and account created successfully',
+        message: 'Tạo khách hàng và tài khoản thanh toán thành công',
         data: {
-          customer,
-          account,
+          id: customer.id,
+          username: customer.username,
+          password: customer.password,
+          fullname: customer.fullname,
+          email: customer.email,
+          phone: customer.phone,
+          refresh_token: customer.refresh_token || null,
+          fcm_token: customer.fcm_token || null,
+          accounts: [
+            { account_number: account.account_number }
+          ],
         },
       };
     } catch (error) {
