@@ -158,6 +158,11 @@ export class DebtsService {
                 id: true,
                 username: true,
                 fullname: true,
+                accounts: {
+                  select: {
+                    account_number: true,
+                  },
+                },
               },
             },
           },
@@ -186,6 +191,11 @@ export class DebtsService {
                 id: true,
                 username: true,
                 fullname: true,
+                accounts: {
+                  select: {
+                    account_number: true,
+                  },
+                },
               },
             },
           },
