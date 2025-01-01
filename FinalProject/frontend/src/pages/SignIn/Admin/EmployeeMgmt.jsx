@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getEmployees } from '../../../redux/userThunk';
 import EmployeeTable from '../../../components/Table/EmployeeTable';
-import AddCustomerModal from '../../../components/CustomerMgmt/AddCustomerModal';
+import AddEmployeeModal from '../../../components/EmployeeMgmt/AddEmployeeModal';
 import { PlusIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 export default function EmployeeMgmt() {
@@ -85,7 +85,7 @@ export default function EmployeeMgmt() {
         )}
 
         {isModalOpen && (
-          <AddCustomerModal isOpen={isModalOpen} closeModal={closeModal} />
+          <AddEmployeeModal isOpen={isModalOpen} closeModal={closeModal} />
         )}
 
         <div className="flex justify-center my-4">
