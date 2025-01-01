@@ -96,20 +96,21 @@ export default function CustomerMgmt() {
               disabled={currentPage === 1}
               className="py-1 px-3 bg-red-300 text-gray-900 rounded-lg hover:bg-red-500 disabled:opacity-50"
             >
-              Prev
+              Trước
             </button>
             <span className="py-1 px-3 text-gray-700">
-              Page {currentPage} of {totalPages}
+              Trang {currentPage} của {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
               className="py-1 px-3 bg-red-300 text-gray-900 rounded-lg hover:bg-red-500 disabled:opacity-50"
             >
-              Next
+              Tiếp theo
             </button>
           </div>
         </div>
+
       </div>
 
       <p className="text-xl font-semibold mt-6 mb-6">Lịch sử giao dịch</p>

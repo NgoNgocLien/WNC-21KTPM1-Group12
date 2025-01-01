@@ -273,40 +273,42 @@ export default function TransferHistory() {
       </div>
 
       <div className="flex justify-end mt-4 gap-2">
-          <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('recipient') ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-200'
-              } text-white`}
-            onClick={() => handleFilterButtonClick('recipient')}
-          >
-            <BanknotesIcon className="w-6 h-6" />
-            Nhận tiền
-          </button>
-          <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('sender') ? 'bg-yellow-500 hover:bg-yellow-400' : 'bg-gray-200'
-              } text-white`}
-            onClick={() => handleFilterButtonClick('sender')}
-          >
-            <ArrowsRightLeftIcon className="w-6 h-6" />
-            Chuyển tiền
-          </button>
-          <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('debt') ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-200'
-              } text-white`}
-            onClick={() => handleFilterButtonClick('debt')}
-          >
-            <CreditCardIcon className="w-6 h-6" />
-            Thanh toán nợ
-          </button>
-          <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${
-              filters.includes('all') ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-200'
-            } text-white`}
-            onClick={() => setFilters(['all'])}
-          >
-            Tất cả
-          </button>
-        </div>
-
+        {filteredTransactions.length > 0 && (
+          <>
+            <button
+              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('recipient') ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-200'
+                } text-white`}
+              onClick={() => handleFilterButtonClick('recipient')}
+            >
+              <BanknotesIcon className="w-6 h-6" />
+              Nhận tiền
+            </button>
+            <button
+              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('sender') ? 'bg-yellow-500 hover:bg-yellow-400' : 'bg-gray-200'
+                } text-white`}
+              onClick={() => handleFilterButtonClick('sender')}
+            >
+              <ArrowsRightLeftIcon className="w-6 h-6" />
+              Chuyển tiền
+            </button>
+            <button
+              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('debt') ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-200'
+                } text-white`}
+              onClick={() => handleFilterButtonClick('debt')}
+            >
+              <CreditCardIcon className="w-6 h-6" />
+              Thanh toán nợ
+            </button>
+            <button
+              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('all') ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-200'
+                } text-white`}
+              onClick={() => setFilters(['all'])}
+            >
+              Tất cả
+            </button>
+          </>
+        )}
+      </div>
       <div className="my-4">{renderTransactions()}</div>
 
       <TransactionDetailModal
