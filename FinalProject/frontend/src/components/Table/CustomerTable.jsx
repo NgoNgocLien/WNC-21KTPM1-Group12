@@ -33,7 +33,7 @@ const CustomerTable = ({ customers }) => {
               <td className="py-2 px-3 text-sm text-gray-700">
                 <button
                   className="text-red-500 hover:text-red-700 focus:outline-none transition duration-200 ease-in-out"
-                  title="View"
+                  title="Edit"
                 >
                   <FaEdit className="w-5 h-5" />
                 </button>

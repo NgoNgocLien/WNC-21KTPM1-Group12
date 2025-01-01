@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { 
   getCustomerInfo, 
-  getCustomerContacts, createOneContact, deleteOneContact, updateOneContact, getCustomers, createCustomer } from './userThunk';
+  getCustomerContacts, createOneContact, deleteOneContact, updateOneContact, getCustomers, createCustomer, 
+  getEmployees} from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 import notify from '../util/notification';
 
@@ -15,10 +16,13 @@ const initialState = {
   balance: null,
   contacts: null,
   customers: null,
+  employees: null,
   status: IDLE,
   error: null,
-  customerCreationStatus: IDLE,
-  customerCreationError: null,
+  customerStatus: IDLE,
+  customerError: null,
+  employeeStatus: IDLE,
+  employeeError: null,
 }
 
 const userSlice = createSlice({
@@ -146,17 +150,29 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(createCustomer.pending, (state) => {
-        state.customerCreationStatus = LOADING;
-        state.customerCreationError = null;
+        state.customerStatus = LOADING;
+        state.customerError = null;
       })
       .addCase(createCustomer.fulfilled, (state, action) => {
-        state.customerCreationStatus = SUCCEEDED;
+        state.customerStatus = SUCCEEDED;
         state.customers.push(action.payload.data);
         notify(action.payload.message);
       })
       .addCase(createCustomer.rejected, (state, action) => {
-        state.customerCreationStatus = FAILED;
-        state.customerCreationError = action.payload;
+        state.customerStatus = FAILED;
+        state.customerError = action.payload;
+      })
+      .addCase(getEmployees.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(getEmployees.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+        state.employees = action.payload.data;
+      })
+      .addCase(getEmployees.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
       });
     }
 });
