@@ -172,7 +172,7 @@ export default function DebtList() {
               </div>
             </div>
             <div className="w-full border-b border-gray-200 my-6"></div>
-            <button className="bg-red-800 text-white font-semibold rounded-xl py-2 px-6 self-end" type="submit" disabled={formik.isSubmitting} onClick={formik.handleSubmit}>
+            <button className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-xl py-2 px-6 self-end" type="submit" disabled={formik.isSubmitting} onClick={formik.handleSubmit}>
               Tạo
             </button>
           </form>

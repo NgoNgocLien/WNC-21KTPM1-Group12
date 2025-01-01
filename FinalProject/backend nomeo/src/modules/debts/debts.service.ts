@@ -118,6 +118,9 @@ export class DebtsService {
               },
             },
           },
+          orderBy: {
+            created_at: 'desc',
+          },
         }),
         this.prisma.debts.findMany({
           where: {
@@ -165,6 +168,9 @@ export class DebtsService {
               },
             },
           },
+          orderBy: {
+            created_at: 'desc',
+          },
         }),
       ]);
 
@@ -204,6 +210,9 @@ export class DebtsService {
               },
             },
           },
+          orderBy: {
+            created_at: 'desc',
+          },
         }),
         this.prisma.debts.findMany({
           where: {
@@ -236,6 +245,9 @@ export class DebtsService {
                 },
               },
             },
+          },
+          orderBy: {
+            created_at: 'desc',
           },
         }),
       ]);
