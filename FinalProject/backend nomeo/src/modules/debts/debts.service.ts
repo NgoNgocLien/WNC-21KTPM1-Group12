@@ -96,6 +96,25 @@ export class DebtsService {
                 id: true,
                 username: true,
                 fullname: true,
+                accounts: {
+                  select: {
+                    account_number: true,
+                  },
+                },
+              },
+            },
+            debt_deletions: {
+              select: {
+                deletion_message: true,
+              },
+            },
+            debt_payments: {
+              select: {
+                transactions: {
+                  select: {
+                    transaction_message: true,
+                  },
+                },
               },
             },
           },
@@ -124,6 +143,25 @@ export class DebtsService {
                 id: true,
                 username: true,
                 fullname: true,
+                accounts: {
+                  select: {
+                    account_number: true,
+                  },
+                },
+              },
+            },
+            debt_deletions: {
+              select: {
+                deletion_message: true,
+              },
+            },
+            debt_payments: {
+              select: {
+                transactions: {
+                  select: {
+                    transaction_message: true,
+                  },
+                },
               },
             },
           },
