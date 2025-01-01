@@ -120,29 +120,34 @@ export class EmployeesService {
 
   async updateEmployee(id: number, updateEmployeeDto: UpdateEmployeeDto) {
     try {
+      const updatedData: any = {
+        username: updateEmployeeDto.username,
+        fullname: updateEmployeeDto.fullname,
+        email: updateEmployeeDto.email,
+        phone: updateEmployeeDto.phone,
+      };
+  
+      if (updateEmployeeDto.password && updateEmployeeDto.password !== undefined) {
+        updatedData.password = bcrypt.hashSync(updateEmployeeDto.password, 10);
+      }
+  
       const employee = await this.prisma.employees.update({
         where: {
           id,
         },
-        data: {
-          username: updateEmployeeDto.username,
-          password: bcrypt.hashSync(updateEmployeeDto.password, 10),
-          fullname: updateEmployeeDto.fullname,
-          email: updateEmployeeDto.email,
-          phone: updateEmployeeDto.phone,
-        },
+        data: updatedData,
         select: {
           id: true,
           username: true,
           fullname: true,
           email: true,
           phone: true,
-          status: true
+          status: true,
         },
       });
 
       return {
-        message: 'Employee updated successfully',
+        message: 'Cập nhật nhân viên thành công',
         data: employee,
       };
     } catch (error) {
