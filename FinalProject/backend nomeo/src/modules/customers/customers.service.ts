@@ -219,7 +219,7 @@ export class CustomersService {
       });
 
       return {
-        message: 'Tạo khách hàng và tài khoản thanh toán thành công',
+        message: 'Thêm mới khách hàng và tài khoản thanh toán thành công',
         data: {
           id: customer.id,
           username: customer.username,
