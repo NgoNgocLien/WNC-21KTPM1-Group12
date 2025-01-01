@@ -3,6 +3,7 @@ import { formatMoney, formatTime } from '../../util/format'
 import { cancelDebt, declineDebt } from '../../redux/debtThunk'
 import DebtDetailModal from './DebtDetailModal'
 import { useState } from 'react'
+import Avatar from '../Avatar'
 
 export default function DebtItem({ debt, type }) {
   const { id, account_number, fullname, username } = useSelector((state) => state.user)
@@ -23,17 +24,19 @@ export default function DebtItem({ debt, type }) {
       setDebtDetail({
         debtor: {
           id,
-          accounts: [account_number],
+          accounts: [{ account_number }], // Chuyển về dạng mảng để phù hợp với dữ liệu trả về từ server
           fullname,
           username
         },
         ...debt
       })
-    } else {
+    } else if (type === 'OUTGOING') {
+      console.log(debt.creditor)
+      console.log(debt.debtor)
       setDebtDetail({
         creditor: {
           id,
-          account_number: [{ account_number }],
+          accounts: [{ account_number }],
           fullname,
           username
         },
@@ -56,7 +59,7 @@ export default function DebtItem({ debt, type }) {
       <li className="py-4 flex flex-col gap-y-2">
         <div className="flex justify-between items-center gap-x-6 ">
           <div className="flex gap-x-4 items-center cursor-pointer" onClick={() => openDebtDetail()}>
-            <img className="size-12 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+            <Avatar size={12} fullname={type === 'INCOMING' ? debt.creditor.fullname : debt.debtor.fullname} />
             <div className="flex flex-col justify-evenly">
               {type === 'INCOMING' && <p className="text-sm text-gray-500">{debt.creditor.fullname}</p>}
               {type === 'OUTGOING' && <p className="text-sm text-gray-500">{debt.debtor.fullname}</p>}
