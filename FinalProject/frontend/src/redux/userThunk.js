@@ -115,3 +115,15 @@ export const getEmployees = createAsyncThunk(
       }
     }
 );
+
+export const createEmployee = createAsyncThunk(
+    'user/createEmployee',
+    async (values, { rejectWithValue }) => {
+      try {
+        const response = await EmployeeService.createEmployee(values); 
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+);

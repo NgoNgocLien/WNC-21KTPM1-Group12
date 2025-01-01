@@ -2,7 +2,7 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { createCustomer } from '../../redux/userThunk';
+import { createEmployee } from '../../redux/userThunk';
 
 const AddEmployeeModal = ({ isOpen, closeModal }) => {
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ const AddEmployeeModal = ({ isOpen, closeModal }) => {
         .required('Số điện thoại là bắt buộc'),
     }),
     onSubmit: (values, { resetForm }) => {
-      dispatch(createCustomer(values));
+      dispatch(createEmployee(values));
       closeModal();
       resetForm();
     },
