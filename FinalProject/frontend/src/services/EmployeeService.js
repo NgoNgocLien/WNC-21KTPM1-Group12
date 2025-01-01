@@ -20,6 +20,26 @@ const EmployeeService = {
       throw error; // Re-throw error để xử lý tại nơi gọi
     }
   },
+
+  async getEmployees() {
+    try {
+      const jsonObject = await BaseService.get(`employees`);
+      return jsonObject;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  async createEmployee(data) {
+    try {
+      const jsonObject = await BaseService.post(`employees`, data);
+      return jsonObject;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
 };
 
 export default EmployeeService;

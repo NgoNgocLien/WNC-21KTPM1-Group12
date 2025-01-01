@@ -9,6 +9,7 @@ import Login from './pages/Guest/Login';
 
 import CustomerSidebar from './components/Sidebar/CustomerSidebar';
 import EmployeeSidebar from './components/Sidebar/EmployeeSidebar';
+import AdminSidebar from './components/Sidebar/AdminSidebar';
 import Dialog from './components/Dialog';
 import LoadingIndicator from './components/LoadingIndicator';
 
@@ -77,6 +78,8 @@ function AuthenticatedLayout() {
       sidebar = <EmployeeSidebar />;
       break;
     case 'admin':
+      sidebar = <AdminSidebar />;
+      break;
     default:
       break;
   }

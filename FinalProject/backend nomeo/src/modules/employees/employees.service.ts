@@ -24,7 +24,7 @@ export class EmployeesService {
       });
 
       return {
-        message: 'Employee created successfully',
+        message: 'Thêm mới nhân viên thành công',
         data: employee,
       };
     } catch (error) {

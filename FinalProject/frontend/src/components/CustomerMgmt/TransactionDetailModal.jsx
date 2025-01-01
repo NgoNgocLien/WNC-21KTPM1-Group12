@@ -1,6 +1,5 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { useSelector } from 'react-redux';
 
 const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_number, bankName }) => {
   if (!isOpen || !transaction) return null;
@@ -35,6 +34,9 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_numbe
         </div>
 
         <div className="grid grid-cols-2 gap-y-4">
+          <div className="text-gray-600 font-base">Mã giao dịch</div>
+          <div className="text-gray-800 font-medium">{transaction.id}</div>
+
           <div className="text-gray-600 font-base">Tài khoản nguồn</div>
           <div className="text-gray-800 font-medium">{account_number}</div>
 

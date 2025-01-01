@@ -1,6 +1,7 @@
 // userThunks.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import CustomerService from '../services/CustomerService';
+import EmployeeService from '../services/EmployeeService';
 
 export const getCustomerInfo = createAsyncThunk(
     'user/getCustomerInfo',
@@ -96,6 +97,30 @@ export const createCustomer = createAsyncThunk(
     async (values, { rejectWithValue }) => {
       try {
         const response = await CustomerService.createCustomer(values); 
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+);
+
+export const getEmployees = createAsyncThunk(
+    'user/getEmployees',
+    async (_, { rejectWithValue }) => {
+      try {
+        const response = await EmployeeService.getEmployees();
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+);
+
+export const createEmployee = createAsyncThunk(
+    'user/createEmployee',
+    async (values, { rejectWithValue }) => {
+      try {
+        const response = await EmployeeService.createEmployee(values); 
         return response;
       } catch (error) {
         return rejectWithValue(error.message);

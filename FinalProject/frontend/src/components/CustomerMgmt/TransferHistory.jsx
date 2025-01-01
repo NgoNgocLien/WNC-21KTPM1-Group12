@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ArrowsRightLeftIcon, BanknotesIcon, CreditCardIcon } from '@heroicons/react/24/outline';
+import { ArrowsRightLeftIcon, BanknotesIcon, CreditCardIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { getCustomerTransactions, getBankName } from '../../redux/transactionThunk';
 import { IDLE, SUCCEEDED } from '../../util/config';
 import DatePicker from 'react-datepicker';
@@ -22,22 +22,14 @@ export default function TransferHistory() {
   const [endDate, setEndDate] = useState(today);
   const [error, setError] = useState('');
   const [inputAccountNumber, setInputAccountNumber] = useState(null);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null); 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const filteredTransactions = useMemo(() => {
-    return transactions.filter((t) => {
-      const typeMatch = 
-        filters.includes('all') || 
-        filters.includes('sender') && (t.type === 'Sender') || 
-        filters.includes('debt') && (t.type === 'Sender (Debt)' || t.type === 'Recipient (Debt)') || 
-        filters.includes('recipient') && (t.type === 'Recipient' || t.type === 'Deposit');
-
-      const startDateMatch = !startDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) >= startDate.setHours(0, 0, 0, 0);
-      const endDateMatch = !endDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) <= endDate.setHours(0, 0, 0, 0);
-
-      return typeMatch && startDateMatch && endDateMatch;
-    });
+  useEffect(() => {
+    if (status === SUCCEEDED && transactions.length > 0) {
+      applyFilters();
+    }
   }, [transactions, filters, startDate, endDate]);
 
   useEffect(() => {
@@ -53,17 +45,38 @@ export default function TransferHistory() {
     });
   }, [filteredTransactions, banks, dispatch]);
 
-  const handleBlur = () => {
+  const handleSearch = () => {
     if (inputAccountNumber) {
-    const customerExists = customers.some(customer => customer.accounts[0].account_number === inputAccountNumber);
-    
-    if (customerExists) {
-      dispatch(getCustomerTransactions(inputAccountNumber));
-      setError(''); 
+      const customerExists = customers.some(
+        (customer) => customer.accounts[0].account_number === inputAccountNumber
+      );
+
+      if (customerExists) {
+        setError('');
+        dispatch(getCustomerTransactions(inputAccountNumber));
+      } else {
+        setError('Số tài khoản không tồn tại');
+      }
     } else {
-      setError('Số tài khoản không tồn tại');
+      setError('Vui lòng nhập số tài khoản');
     }
-  }
+  };
+
+  const applyFilters = () => {
+    const newFilteredTransactions = transactions.filter((t) => {
+      const typeMatch =
+        filters.includes('all') ||
+        (filters.includes('sender') && t.type === 'Sender') ||
+        (filters.includes('debt') && (t.type === 'Sender (Debt)' || t.type === 'Recipient (Debt)')) ||
+        (filters.includes('recipient') && (t.type === 'Recipient' || t.type === 'Deposit'));
+
+      const startDateMatch = !startDate || new Date(t.transaction_time) >= startDate;
+      const endDateMatch = !endDate || new Date(t.transaction_time) <= endDate;
+
+      return typeMatch && startDateMatch && endDateMatch;
+    });
+
+    setFilteredTransactions(newFilteredTransactions);
   };
 
   const renderTransactions = () => {
@@ -78,6 +91,7 @@ export default function TransferHistory() {
             const uniqueKey = `${transaction.type}-${transaction.id}`;
             const formattedTime = format(new Date(transaction.transaction_time), 'dd/MM/yyyy - HH:mm:ss');
             const amountSign = transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? '-' : '+';
+
             let bankId;
             if (transaction.type === 'Deposit') {
               bankId = 1;
@@ -104,7 +118,7 @@ export default function TransferHistory() {
               labelColor = 'bg-blue-500';
             }
 
-            const isInternalTransaction = bankId === 1; // Giao dịch nội bộ nếu bankId là 1
+            const isInternalTransaction = bankId === 1;
             const transactionBgColor = isInternalTransaction ? 'bg-white' : 'bg-red-100';
 
             const formattedAmount = new Intl.NumberFormat().format(transaction.transaction_amount);
@@ -123,12 +137,12 @@ export default function TransferHistory() {
                     className="w-10 h-10 rounded-full"
                   />
                   <div>
-                    <p className="font-semibold">{transaction.transaction_message || transaction.deposit_message || "(Không có nội dung)"}</p>
+                    <p className="font-semibold">{transaction.transaction_message || transaction.deposit_message || '(Không có nội dung)'}</p>
                     <span className="text-sm text-gray-700 mr-5">{formattedTime}</span>
                     <span className="text-sm">Số dư: {formattedBalance} VNĐ</span>
                   </div>
                 </div>
-                <div className='amount w-60 text-right'>
+                <div className="amount w-60 text-right">
                   <p className={`text-lg ${amountSign === '+' ? 'text-green-600' : 'text-red-600'}`}>
                     {amountSign}{formattedAmount} VNĐ
                   </p>
@@ -155,12 +169,12 @@ export default function TransferHistory() {
   };
 
   const handleTransactionClick = (transaction) => {
-    setSelectedTransaction(transaction); 
+    setSelectedTransaction(transaction);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false); 
+    setIsModalOpen(false);
     setSelectedTransaction(null);
   };
 
@@ -192,11 +206,11 @@ export default function TransferHistory() {
       const newFilters = prev.includes(filter)
         ? prev.filter((f) => f !== filter)
         : [...prev, filter];
-  
+
       if (!newFilters.includes('recipient') && !newFilters.includes('sender') && !newFilters.includes('debt')) {
         return ['all'];
       }
-  
+
       return newFilters.includes('all') ? newFilters.filter((f) => f !== 'all') : newFilters;
     });
   };
@@ -210,8 +224,10 @@ export default function TransferHistory() {
             <input
               type="text"
               value={inputAccountNumber}
-              onChange={(e) => setInputAccountNumber(e.target.value)}
-              onBlur={handleBlur}
+              onChange={(e) => {
+                setInputAccountNumber(e.target.value);
+                setError('');
+              }}
               className="w-full p-3 border border-gray-300 rounded-xl"
               placeholder="Nhập số tài khoản"
             />
@@ -243,40 +259,72 @@ export default function TransferHistory() {
           {error && <p className="text-red-500 text-sm">{error}</p>}
         </div>
 
-        <div className="flex justify-end mt-4 gap-2">
+        <div className="flex justify-end mt-4">
           <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('recipient') ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-200'
-              } text-white`}
-            onClick={() => handleFilterButtonClick('recipient')}
+            onClick={handleSearch}
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${
+              error ? 'bg-gray-200 text-white cursor-not-allowed' : 'bg-red-600 text-white hover:bg-red-500'
+            }`}
           >
-            <BanknotesIcon className="w-6 h-6" />
-            Nhận tiền
-          </button>
-          <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('sender') ? 'bg-yellow-500 hover:bg-yellow-400' : 'bg-gray-200'
-              } text-white`}
-            onClick={() => handleFilterButtonClick('sender')}
-          >
-            <ArrowsRightLeftIcon className="w-6 h-6" />
-            Chuyển tiền
-          </button>
-          <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('debt') ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-200'
-              } text-white`}
-            onClick={() => handleFilterButtonClick('debt')}
-          >
-            <CreditCardIcon className="w-6 h-6" />
-            Thanh toán nợ
+            <MagnifyingGlassIcon className="w-5 h-5"/>
+            Tra cứu
           </button>
         </div>
       </div>
 
+      <div className="flex justify-end mt-4 gap-2">
+        {filteredTransactions.length > 0 && (
+          <>
+            <button
+              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('recipient') ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-200'
+                } text-white`}
+              onClick={() => handleFilterButtonClick('recipient')}
+            >
+              <BanknotesIcon className="w-6 h-6" />
+              Nhận tiền
+            </button>
+            <button
+              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('sender') ? 'bg-yellow-500 hover:bg-yellow-400' : 'bg-gray-200'
+                } text-white`}
+              onClick={() => handleFilterButtonClick('sender')}
+            >
+              <ArrowsRightLeftIcon className="w-6 h-6" />
+              Chuyển tiền
+            </button>
+            <button
+              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('debt') ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-200'
+                } text-white`}
+              onClick={() => handleFilterButtonClick('debt')}
+            >
+              <CreditCardIcon className="w-6 h-6" />
+              Thanh toán nợ
+            </button>
+            <button
+              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('all') ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-200'
+                } text-white`}
+              onClick={() => setFilters(['all'])}
+            >
+              Tất cả
+            </button>
+          </>
+        )}
+      </div>
       <div className="my-4">{renderTransactions()}</div>
 
       <TransactionDetailModal
         isOpen={isModalOpen}
-        onClose={closeModal}
+        closeModal={closeModal}
         transaction={selectedTransaction}
+        account_number={inputAccountNumber}
+        bankName={
+          selectedTransaction
+            ? selectedTransaction.type === 'Deposit'
+              ? null
+              : selectedTransaction.type === 'Sender' || selectedTransaction?.type === 'Sender (Debt)'
+              ? banks[selectedTransaction?.id_recipient_bank]?.name
+              : banks[selectedTransaction?.id_sender_bank]?.name
+            : null
+        }
       />
     </>
   );

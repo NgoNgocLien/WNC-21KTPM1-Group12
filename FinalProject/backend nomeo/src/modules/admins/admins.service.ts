@@ -40,6 +40,9 @@ export class AdminsService {
       const admin = await this.prisma.admins.findUnique({
         where: {
           id,
+        }, select: {
+          id: true,
+          username: true,
         },
       });
 
