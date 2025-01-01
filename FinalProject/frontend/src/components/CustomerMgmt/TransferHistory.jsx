@@ -311,8 +311,18 @@ export default function TransferHistory() {
 
       <TransactionDetailModal
         isOpen={isModalOpen}
-        onClose={closeModal}
+        closeModal={closeModal}
         transaction={selectedTransaction}
+        account_number={inputAccountNumber}
+        bankName={
+          selectedTransaction
+            ? selectedTransaction.type === 'Deposit'
+              ? null
+              : selectedTransaction.type === 'Sender' || selectedTransaction?.type === 'Sender (Debt)'
+              ? banks[selectedTransaction?.id_recipient_bank]?.name
+              : banks[selectedTransaction?.id_sender_bank]?.name
+            : null
+        }
       />
     </>
   );
