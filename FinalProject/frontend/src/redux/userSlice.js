@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { 
   getCustomerInfo, 
   getCustomerContacts, createOneContact, deleteOneContact, updateOneContact, getCustomers, createCustomer, 
-  getEmployees, createEmployee} from './userThunk';
+  getEmployees, createEmployee, updateEmployee} from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 import notify from '../util/notification';
 
@@ -184,6 +184,26 @@ const userSlice = createSlice({
         notify(action.payload.message);
       })
       .addCase(createEmployee.rejected, (state, action) => {
+        state.employeeStatus = FAILED;
+        state.employeeError = action.payload;
+      })
+      .addCase(updateEmployee.pending, (state) => {
+        state.employeeStatus = LOADING;
+        state.employeeError = null;
+      })
+      .addCase(updateEmployee.fulfilled, (state, action) => {
+        state.employeeStatus = SUCCEEDED;
+        const updatedEmployeeIndex = state.employees.findIndex(
+          (employee) => employee.id === action.payload.data.id
+        );
+        if (updatedEmployeeIndex !== -1) {
+          const updatedEmployees = [...state.employees];
+          updatedEmployees[updatedEmployeeIndex] = action.payload.data;  
+          state.employees = updatedEmployees; 
+        }
+        notify(action.payload.message);
+      })
+      .addCase(updateEmployee.rejected, (state, action) => {
         state.employeeStatus = FAILED;
         state.employeeError = action.payload;
       });

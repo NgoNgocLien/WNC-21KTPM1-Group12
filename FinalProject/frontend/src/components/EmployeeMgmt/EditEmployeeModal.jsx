@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { createEmployee } from '../../redux/userThunk';
+import { updateEmployee } from '../../redux/userThunk';
 
 const EditEmployeeModal = ({ isOpen, closeModal, employee }) => {
   const dispatch = useDispatch();
@@ -29,7 +29,7 @@ const EditEmployeeModal = ({ isOpen, closeModal, employee }) => {
     },
     validationSchema: Yup.object({
       username: Yup.string().required('Tên đăng nhập là bắt buộc'),
-      password: Yup.string(),
+      password: Yup.string().required('Mật khẩu là bắt buộc'),
       fullname: Yup.string().required('Họ tên là bắt buộc'),
       email: Yup.string().email('Email không hợp lệ').required('Email là bắt buộc'),
       phone: Yup.string()
@@ -37,7 +37,11 @@ const EditEmployeeModal = ({ isOpen, closeModal, employee }) => {
         .required('Số điện thoại là bắt buộc'),
     }),
     onSubmit: (values, { resetForm }) => {
-      dispatch(createEmployee(values));
+      const updatedValues = {
+        ...values,
+        password: values.password === '******' ? undefined : values.password,
+      };
+      dispatch(updateEmployee({ id: employee.id, data: updatedValues }));
       closeModal();
       resetForm();
     },

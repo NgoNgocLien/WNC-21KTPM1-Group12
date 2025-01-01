@@ -40,6 +40,16 @@ const EmployeeService = {
       throw error;
     }
   },
+
+  async updateEmployee(id, data) {
+    try {
+      const jsonObject = await BaseService.patch(`employees/${id}`, data);
+      return jsonObject;
+    } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
 };
 
 export default EmployeeService;

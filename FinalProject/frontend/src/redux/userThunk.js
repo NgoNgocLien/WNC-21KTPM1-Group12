@@ -127,3 +127,15 @@ export const createEmployee = createAsyncThunk(
       }
     }
 );
+
+export const updateEmployee = createAsyncThunk(
+    'user/updateEmployee',
+    async ({ id, data }, { rejectWithValue }) => {  
+      try {
+        const response = await EmployeeService.updateEmployee(id, data);
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+  }
+);
