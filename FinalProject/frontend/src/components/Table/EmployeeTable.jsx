@@ -1,7 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { HiEye, HiPencil, HiTrash } from 'react-icons/hi';
+import EditEmployeeModal from '../EmployeeMgmt/EditEmployeeModal';
 
 const EmployeeTable = ({ employees }) => {
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleEdit = (employee) => {
+    setSelectedEmployee(employee);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEmployee(null);
+  };
+
   return (
     <div className="overflow-x-auto shadow-md">
       <table className="min-w-full divide-y divide-gray-200 bg-white">
@@ -42,6 +56,7 @@ const EmployeeTable = ({ employees }) => {
                 <button
                   className="text-green-500 hover:text-green-700 focus:outline-none transition duration-200 ease-in-out"
                   title="Edit"
+                  onClick={() => handleEdit(employee)}
                 >
                   <HiPencil className="w-5 h-5" />
                 </button>
@@ -56,6 +71,13 @@ const EmployeeTable = ({ employees }) => {
           ))}
         </tbody>
       </table>
+
+      <EditEmployeeModal
+        isOpen={isModalOpen}
+        closeModal={handleCloseModal}
+        employee={selectedEmployee}
+      />
+
     </div>
   );
 };
