@@ -1,38 +1,27 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { formatMoney, formatTime } from '../../util/format'
-import { cancelDebt, declineDebt } from '../../redux/debtThunk'
 import DebtDetailModal from './DebtDetailModal'
 import { useState } from 'react'
 import Avatar from '../Avatar'
+import DebtMessageDialog from './DebtMessageDialog'
 
 export default function DebtItem({ debt, type }) {
   const { id, account_number, fullname, username } = useSelector((state) => state.user)
-  const dispatch = useDispatch()
-
-  const handleDeclineDebt = async (id_debt) => {
-    dispatch(declineDebt({ id_debt, data: { id_deleter: id, deletion_message: 'Từ chối nhắc nợ' } }))
-  }
-
-  const handleCancelDebt = async (id_debt) => {
-    dispatch(cancelDebt({ id_debt, data: { id_deleter: id, deletion_message: 'Hủy nhắc nợ' } }))
-  }
-
-  const [isOpen, setIsOpen] = useState(false)
+  const [detailIsOpen, setDetailIsOpen] = useState(false)
+  const [messageIsOpen, setMessageIsOpen] = useState(false)
   const [debtDetail, setDebtDetail] = useState(null)
   const openDebtDetail = () => {
     if (type === 'INCOMING') {
       setDebtDetail({
         debtor: {
           id,
-          accounts: [{ account_number }], // Chuyển về dạng mảng để phù hợp với dữ liệu trả về từ server
+          accounts: [{ account_number }],
           fullname,
           username
         },
         ...debt
       })
     } else if (type === 'OUTGOING') {
-      console.log(debt.creditor)
-      console.log(debt.debtor)
       setDebtDetail({
         creditor: {
           id,
@@ -43,18 +32,26 @@ export default function DebtItem({ debt, type }) {
         ...debt
       })
     }
-    console.log(debtDetail)
-    setIsOpen(true)
+    setDetailIsOpen(true)
 
   }
-  const handleCloseDebtDetail = () => {
-    setIsOpen(false)
+  const closeDebtDetail = () => {
+    setDetailIsOpen(false)
+  }
+  const openMessageDialog = () => {
+    setMessageIsOpen(true)
+  }
+  const closeMessageDialog = () => {
+    setMessageIsOpen(false)
   }
 
   return (
     <>
-      {isOpen &&
-        <DebtDetailModal isOpen={isOpen} handleCloseDebtDetail={handleCloseDebtDetail} debt={debtDetail} type={type} />
+      {detailIsOpen &&
+        <DebtDetailModal isOpen={detailIsOpen} handleClose={closeDebtDetail} debt={debtDetail} type={type} />
+      }
+      {messageIsOpen &&
+        <DebtMessageDialog isOpen={messageIsOpen} type={type} handleClose={closeMessageDialog} data={{ id_debt: debt.id, id_deleter: id }} />
       }
       <li className="py-4 flex flex-col gap-y-2">
         <div className="flex justify-between items-center gap-x-6 ">
@@ -78,20 +75,20 @@ export default function DebtItem({ debt, type }) {
           <div className="flex items-center w-full gap-x-2">
             <p className="truncate text-md text-gray-500 bg-gray-100 p-2 rounded-xl flex-1">{(debt.debt_message === '' || debt.debt_message === null) ? '(Không có nội dung)' : debt.debt_message}</p>
             <button
-              onClick={() => handleDeclineDebt(debt.id)}
-              className="text-sm text-white bg-red-700 px-3 py-2 rounded-xl font-semibold"
+              onClick={openMessageDialog}
+              className="text-sm text-white bg-red-800 hover:bg-red-700 px-3 py-2 rounded-xl font-semibold"
             >
               Từ chối
             </button>
-            <button className="text-sm text-white bg-blue-700 px-3 py-2 rounded-xl font-semibold">Thanh toán</button>
+            <button className="text-sm text-white bg-blue-700 hover:bg-blue-600 px-3 py-2 rounded-xl font-semibold">Thanh toán</button>
           </div>
         )}
         {type === 'OUTGOING' && debt.status === 'PENDING' && (
           <div className="flex items-center w-full gap-x-2">
             <p className="truncate text-md text-gray-500 bg-gray-100 p-2 rounded-xl flex-1">{(debt.debt_message === '' || debt.debt_message === null) ? '(Không có nội dung)' : debt.debt_message}</p>
             <button
-              onClick={() => handleCancelDebt(debt.id)}
-              className="text-sm text-white bg-red-700 px-3 py-2 rounded-xl font-semibold"
+              onClick={openMessageDialog}
+              className="text-sm text-white bg-red-800 hover:bg-red-700 px-3 py-2 rounded-xl font-semibold"
             >
               Hủy nhắc nợ
             </button>

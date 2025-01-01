@@ -2,7 +2,7 @@ import { IoIosClose } from 'react-icons/io'
 import { formatMoney } from '../../util/format'
 import Avatar from '../Avatar'
 
-export default function DebtDetailModal({ type, debt, isOpen = false, handleCloseDebtDetail = () => { } }) {
+export default function DebtDetailModal({ type, debt, isOpen = false, handleClose = () => { } }) {
 
   console.log(JSON.stringify(debt, null, 2))
 
@@ -12,7 +12,7 @@ export default function DebtDetailModal({ type, debt, isOpen = false, handleClos
 
         <div className="flex justify-between items-center">
           <h3 className="text-xl font-semibold">Chi tiết nhắc nợ</h3>
-          <IoIosClose className="text-gray-500 text-3xl cursor-pointer hover:text-gray-700" onClick={handleCloseDebtDetail} />
+          <IoIosClose className="text-gray-500 text-3xl cursor-pointer hover:text-gray-700" onClick={handleClose} />
         </div>
         <div className="m-2">
           <p className="mt-2 text-center text-2xl font-medium">{formatMoney(debt.debt_amount)} VNĐ</p>

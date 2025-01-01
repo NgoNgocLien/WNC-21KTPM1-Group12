@@ -96,7 +96,6 @@ function AuthenticatedLayout() {
 
   return (
     <>
-      
       {sidebar}
       <ToastContainer />
       <main className="ms-80 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
@@ -130,7 +129,7 @@ function App() {
 
   return (
     <>
-      <LoadingIndicator/>
+      <LoadingIndicator />
       <Dialog />
 
       <Router>

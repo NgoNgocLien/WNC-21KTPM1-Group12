@@ -21,7 +21,7 @@ const LoadingIndicator = () => {
   if (!loading) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-30 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-30 z-100">
       <img src={`${process.env.PUBLIC_URL}/loading-gif.gif`} className="w-16"></img>
     </div>
   );
