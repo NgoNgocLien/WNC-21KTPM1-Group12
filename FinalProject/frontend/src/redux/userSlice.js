@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { 
   getCustomerInfo, 
-  getCustomerContacts, createOneContact, deleteOneContact, updateOneContact } from './userThunk';
+  getCustomerContacts, createOneContact, deleteOneContact, updateOneContact, getCustomers, createCustomer, 
+  getEmployees, createEmployee, updateEmployee} from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 import notify from '../util/notification';
 
@@ -14,8 +15,14 @@ const initialState = {
   account_number: '',
   balance: null,
   contacts: null,
+  customers: null,
+  employees: null,
   status: IDLE,
   error: null,
+  customerStatus: IDLE,
+  customerError: null,
+  employeeStatus: IDLE,
+  employeeError: null,
 }
 
 const userSlice = createSlice({
@@ -129,6 +136,76 @@ const userSlice = createSlice({
       .addCase(deleteOneContact.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
+      })
+      .addCase(getCustomers.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(getCustomers.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+        state.customers = action.payload.data;
+      })
+      .addCase(getCustomers.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
+      })
+      .addCase(createCustomer.pending, (state) => {
+        state.customerStatus = LOADING;
+        state.customerError = null;
+      })
+      .addCase(createCustomer.fulfilled, (state, action) => {
+        state.customerStatus = SUCCEEDED;
+        state.customers.push(action.payload.data);
+        notify(action.payload.message);
+      })
+      .addCase(createCustomer.rejected, (state, action) => {
+        state.customerStatus = FAILED;
+        state.customerError = action.payload;
+      })
+      .addCase(getEmployees.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(getEmployees.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+        state.employees = action.payload.data;
+      })
+      .addCase(getEmployees.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
+      })
+      .addCase(createEmployee.pending, (state) => {
+        state.employeeStatus = LOADING;
+        state.employeeError = null;
+      })
+      .addCase(createEmployee.fulfilled, (state, action) => {
+        state.employeeStatus = SUCCEEDED;
+        state.employees.push(action.payload.data);
+        notify(action.payload.message);
+      })
+      .addCase(createEmployee.rejected, (state, action) => {
+        state.employeeStatus = FAILED;
+        state.employeeError = action.payload;
+      })
+      .addCase(updateEmployee.pending, (state) => {
+        state.employeeStatus = LOADING;
+        state.employeeError = null;
+      })
+      .addCase(updateEmployee.fulfilled, (state, action) => {
+        state.employeeStatus = SUCCEEDED;
+        const updatedEmployeeIndex = state.employees.findIndex(
+          (employee) => employee.id === action.payload.data.id
+        );
+        if (updatedEmployeeIndex !== -1) {
+          const updatedEmployees = [...state.employees];
+          updatedEmployees[updatedEmployeeIndex] = action.payload.data;  
+          state.employees = updatedEmployees; 
+        }
+        notify(action.payload.message);
+      })
+      .addCase(updateEmployee.rejected, (state, action) => {
+        state.employeeStatus = FAILED;
+        state.employeeError = action.payload;
       });
     }
 });

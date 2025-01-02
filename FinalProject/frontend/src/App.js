@@ -9,6 +9,7 @@ import Login from './pages/Guest/Login';
 
 import CustomerSidebar from './components/Sidebar/CustomerSidebar';
 import EmployeeSidebar from './components/Sidebar/EmployeeSidebar';
+import AdminSidebar from './components/Sidebar/AdminSidebar';
 import Dialog from './components/Dialog';
 import LoadingIndicator from './components/LoadingIndicator';
 
@@ -77,6 +78,8 @@ function AuthenticatedLayout() {
       sidebar = <EmployeeSidebar />;
       break;
     case 'admin':
+      sidebar = <AdminSidebar />;
+      break;
     default:
       break;
   }
@@ -93,7 +96,6 @@ function AuthenticatedLayout() {
 
   return (
     <>
-      
       {sidebar}
       <ToastContainer />
       <main className="ms-80 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
@@ -127,7 +129,7 @@ function App() {
 
   return (
     <>
-      <LoadingIndicator/>
+      <LoadingIndicator />
       <Dialog />
 
       <Router>

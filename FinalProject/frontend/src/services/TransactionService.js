@@ -19,7 +19,17 @@ const TransactionService = {
         console.error(error);
         throw error; 
         }
-    }
+    },
+
+    async getCustomerTransactions(account_number) {
+        try {
+        const jsonObject = await BaseService.get(`transactions/account/${account_number}`);
+        return jsonObject;
+        } catch (error) {
+        console.error(error);
+        throw error;
+        }
+    },
 };
 
 export default TransactionService;

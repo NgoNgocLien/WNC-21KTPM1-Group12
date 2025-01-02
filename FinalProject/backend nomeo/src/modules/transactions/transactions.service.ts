@@ -255,4 +255,124 @@ export class TransactionsService {
       throw new Error('Error fetching profile: ' + error.message);
     }
   }
+
+  async getCustomerTransactions(account_number: string) {
+    try {
+      const account = await this.prisma.accounts.findUnique({
+        where: { account_number }
+      });
+
+      if (!account) throw new NotFoundException(`Số tài khoản không tồn tại`);
+
+      // Lấy danh sách giao dịch chuyển khoản (Sender)
+      const sentTransactions = await this.prisma.transactions.findMany({
+        where: { sender_account_number: account_number }
+      });
+  
+      const sentTransactionsWithType = sentTransactions.map((t) => ({
+        ...t,
+        type: 'Sender',
+        transaction_amount: t.transaction_amount.toNumber(),
+        current_balance: 0
+      }));
+      
+      // Lấy danh sách giao dịch nhận tiền (Recipient)
+      const receivedTransactions = await this.prisma.transactions.findMany({
+        where: { recipient_account_number: account_number }
+      });
+  
+      const receivedTransactionsWithType = receivedTransactions.map((t) => ({
+        ...t,
+        type: 'Recipient',
+        transaction_amount: t.transaction_amount.toNumber(),
+        current_balance: 0
+      }));
+      
+  
+      // Lọc giao dịch thanh toán nhắc nợ từ bảng debt_payments
+      const debtPayments = await this.prisma.debt_payments.findMany({
+        where: { id_transaction: { in: [...sentTransactions.map((t) => t.id), ...receivedTransactions.map((t) => t.id)] } },
+      });
+
+      const debtTransactionIds = debtPayments.map((d) => d.id_transaction);
+
+      // Loại bỏ các giao dịch thanh toán nhắc nợ khỏi Recipient
+      const filteredReceivedTransactions = receivedTransactionsWithType.filter(
+        (t) => !debtTransactionIds.includes(t.id),
+      );
+      
+      // Loại bỏ các giao dịch thanh toán nhắc nợ khỏi Sender
+      const filteredSentTransactions = sentTransactionsWithType.filter(
+        (t) => !debtTransactionIds.includes(t.id),
+      );
+
+      // Danh sách các giao dịch thanh toán nhắc nợ
+      const debtTransactions = [
+        ...sentTransactionsWithType,
+        ...receivedTransactionsWithType,
+      ].filter((t) => debtTransactionIds.includes(t.id))
+       .map((t) => {
+        const isSender = t.sender_account_number === account_number;
+        return {
+          ...t,
+          type: isSender ? 'Sender (Debt)' : 'Recipient (Debt)',
+        }; 
+      });
+
+      // Lấy các giao dịch nạp tiền từ bảng deposits
+      const deposits = await this.prisma.deposits.findMany({
+        where: { id_customer: account.id_customer }
+      });
+  
+      const depositsWithType = deposits.map((d) => ({
+        ...d,
+        type: 'Deposit',
+        transaction_time: d.deposit_time,
+        transaction_amount: d.deposit_amount.toNumber(),
+        current_balance: 0
+      }));
+  
+      // // Gộp các giao dịch Recipient (bao gồm nhận tiền và nạp tiền)
+      const allReceivedTransactions = [
+        ...filteredReceivedTransactions,
+        ...depositsWithType,
+      ];
+      
+      const allTransactions = [
+        ...filteredSentTransactions,
+        ...allReceivedTransactions,
+        ...debtTransactions
+      ].sort((a, b) => (b.transaction_time > a.transaction_time ? 1 : -1));
+
+      const transactionsWithBalance = [];
+
+      for (let i = allTransactions.length - 1; i >= 0; i--) {
+        const currentTransaction = allTransactions[i];
+
+        if (i === allTransactions.length - 1) {
+          currentTransaction.current_balance += currentTransaction.transaction_amount;
+        } else {
+          const previousTransaction = allTransactions[i + 1];
+          currentTransaction.current_balance = previousTransaction.current_balance;
+
+          if (currentTransaction.type === 'Sender' || currentTransaction.type === 'Sender (Debt)') {
+            currentTransaction.current_balance -= currentTransaction.transaction_amount;
+          } else if (currentTransaction.type === 'Deposit' || currentTransaction.type === 'Recipient' || currentTransaction.type === 'Recipient (Debt)') {
+            currentTransaction.current_balance += currentTransaction.transaction_amount;
+          }
+        }
+
+        transactionsWithBalance.unshift(currentTransaction);
+      }
+
+      return {
+        message: 'Get account transactions successfully',
+        data: {
+          transactions: transactionsWithBalance,
+        },
+      };
+    } catch (error) {
+      throw new Error('Error fetching account transactions: ' + error.message);
+    }
+  }
 }

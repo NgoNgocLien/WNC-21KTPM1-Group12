@@ -1,6 +1,7 @@
 // userThunks.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import CustomerService from '../services/CustomerService';
+import EmployeeService from '../services/EmployeeService';
 
 export const getCustomerInfo = createAsyncThunk(
     'user/getCustomerInfo',
@@ -77,4 +78,64 @@ export const deleteOneContact = createAsyncThunk(
         return rejectWithValue(error.message);
         }
     }
+);
+
+export const getCustomers = createAsyncThunk(
+    'user/getCustomers',
+    async (_, { rejectWithValue }) => {
+      try {
+        const response = await CustomerService.getCustomers();
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+);
+
+export const createCustomer = createAsyncThunk(
+    'user/createCustomer',
+    async (values, { rejectWithValue }) => {
+      try {
+        const response = await CustomerService.createCustomer(values); 
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+);
+
+export const getEmployees = createAsyncThunk(
+    'user/getEmployees',
+    async (_, { rejectWithValue }) => {
+      try {
+        const response = await EmployeeService.getEmployees();
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+);
+
+export const createEmployee = createAsyncThunk(
+    'user/createEmployee',
+    async (values, { rejectWithValue }) => {
+      try {
+        const response = await EmployeeService.createEmployee(values); 
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+);
+
+export const updateEmployee = createAsyncThunk(
+    'user/updateEmployee',
+    async ({ id, data }, { rejectWithValue }) => {  
+      try {
+        const response = await EmployeeService.updateEmployee(id, data);
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+  }
 );

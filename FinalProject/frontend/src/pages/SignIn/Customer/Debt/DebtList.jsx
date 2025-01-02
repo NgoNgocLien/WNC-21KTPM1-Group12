@@ -1,21 +1,17 @@
 import { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { fetchIncomingDebts, fetchOutgoingDebts } from "../../../../redux/debtThunk"
+import { fetchIncomingDebts, fetchOutgoingDebts, createDebt } from "../../../../redux/debtThunk"
 import { IDLE } from "../../../../util/config"
 import DebtItem from "../../../../components/Debt/DebtItem"
 import { FaAddressBook } from "react-icons/fa"
 import ContactList from "../../../../components/Account/ContactList"
 import { getCustomerContacts } from "../../../../redux/userThunk"
-import { Formik, Form, ErrorMessage, useFormik, Field } from "formik"
+import { useFormik } from "formik"
 import * as Yup from 'yup';
+import CustomerService from "../../../../services/CustomerService"
 
 const INCOMING = 'INCOMING'
 const OUTGOING = 'OUTGOING'
-
-const createDebtSchema = Yup.object().shape({
-  account_number: Yup.string().required('Số tài khoản là bắt buộc'),
-  amount: Yup.number().required('Số tiền là bắt buộc'),
-});
 
 export default function DebtList() {
   const dispatch = useDispatch()
@@ -23,9 +19,10 @@ export default function DebtList() {
   const [activeTab, setActiveTab] = useState(INCOMING)
   const [displayContacts, setDisplayContacts] = useState(false)
   const [selectedContact, setSelectedContact] = useState(null);
+  const [recipientName, setRecipientName] = useState(null);
 
-  const { contacts, fullname } = useSelector((state) => state.user);
-  const { incomingDebts, outgoingDebts, status } = useSelector((state) => state.debt)
+  const { id, fullname, contacts } = useSelector((state) => state.user);
+  const { incomingDebts, outgoingDebts, status } = useSelector((state) => state.debt);
 
   useEffect(() => {
     if (status === IDLE) {
@@ -41,7 +38,6 @@ export default function DebtList() {
     setDisplayContacts(true);
   }
 
-
   const formik = useFormik({
     initialValues: {
       account_number: null,
@@ -53,13 +49,34 @@ export default function DebtList() {
       amount: Yup.number().required('Số tiền là bắt buộc'),
     }),
     onSubmit: (values, { resetForm }) => {
-      console.log(values);
+      dispatch(createDebt({
+        id_creditor: id,
+        debtor_account_number: values.account_number,
+        debt_amount: values.amount,
+        debt_message: values.message
+      }));
       resetForm();
     },
   })
 
+  const handleAccountNumberBlur = async (e) => {
+    formik.handleBlur(e);
+    const account_number = e.target.value;
+    if (account_number) {
+      try {
+        formik.handleBlur(e);
+        const account_number = e.target.value;
+        if (account_number) {
+          const recipient_name = await CustomerService.getInternalRecipientInfo(account_number);
+          setRecipientName(recipient_name);
+        }
+      } catch (error) {
+        setRecipientName("");
+      }
+    }
+  };
+
   useEffect(() => {
-    console.log(selectedContact)
     if (selectedContact) {
       formik.setFieldValue("account_number", selectedContact.account_number)
     }
@@ -93,7 +110,7 @@ export default function DebtList() {
                   name="account_number"
                   onChange={formik.handleChange}
                   value={formik.values.account_number}
-                  onBlur={formik.handleBlur}
+                  onBlur={handleAccountNumberBlur}
                   type="text"
                   required
                   placeholder="Nhập số tài khoản"
@@ -105,6 +122,14 @@ export default function DebtList() {
             {formik.touched.account_number && formik.errors.account_number && (
               <div className="w-7/12 ms-auto text-red-500 text-sm mt-1">{formik.errors.account_number}</div>
             )}
+            {recipientName === "" ? (
+              <div className="w-7/12 ms-auto text-red-500 font-sm text-md mt-1">Không tìm thấy số tài khoản</div>
+            ) :
+              (
+                <div className="w-7/12 ms-auto text-gray-500 font-medium text-md mt-1">{recipientName?.toUpperCase()}</div>
+              )
+            }
+
             <div className="w-full flex justify-between items-center mt-4">
               <label htmlFor="amount" className="w-3/12 font-medium text-gray-900">
                 Số tiền
@@ -147,7 +172,7 @@ export default function DebtList() {
               </div>
             </div>
             <div className="w-full border-b border-gray-200 my-6"></div>
-            <button className="bg-red-800 text-white font-semibold rounded-xl py-2 px-6 self-end" type="submit" disabled={formik.isSubmitting} onClick={formik.handleSubmit}>
+            <button className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-xl py-2 px-6 self-end" type="submit" disabled={formik.isSubmitting} onClick={formik.handleSubmit}>
               Tạo
             </button>
           </form>

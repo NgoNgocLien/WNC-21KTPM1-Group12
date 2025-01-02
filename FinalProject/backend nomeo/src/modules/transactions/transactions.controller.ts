@@ -42,6 +42,11 @@ export class TransactionsController {
     return this.transactionsService.getAccountTransactions(req.user['sub']);
   }
 
+  @Get('account/:account_number')
+  findCustomerTransactions(@Param('account_number') account_number: string) {
+    return this.transactionsService.getCustomerTransactions(account_number);
+  }
+
   @Get('bank/:id_bank')
   findBankTransactions(@Param('id_bank') id_bank: number) {
     return this.transactionsService.findBankTransactions(id_bank);

@@ -1,11 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { createCustomer, getCustomers } from '../../redux/userThunk';
+import { updateEmployee } from '../../redux/userThunk';
 
-const AddCustomerModal = ({ isOpen, closeModal }) => {
+const EditEmployeeModal = ({ isOpen, closeModal, employee }) => {
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (employee) {
+      formik.setValues({
+        username: employee.username,
+        password: '******',
+        fullname: employee.fullname,
+        email: employee.email,
+        phone: employee.phone,
+      });
+    }
+  }, [employee]);
 
   const formik = useFormik({
     initialValues: {
@@ -25,7 +37,11 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
         .required('Số điện thoại là bắt buộc'),
     }),
     onSubmit: (values, { resetForm }) => {
-      dispatch(createCustomer(values));
+      const updatedValues = {
+        ...values,
+        password: values.password === '******' ? undefined : values.password,
+      };
+      dispatch(updateEmployee({ id: employee.id, data: updatedValues }));
       closeModal();
       resetForm();
     },
@@ -36,7 +52,7 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-20">
       <div className="bg-white p-6 rounded-xl w-96 flex flex-col items-center">
-        <h3 className="text-xl font-semibold">Thêm Mới Khách Hàng</h3>
+        <h3 className="text-xl font-semibold">Chỉnh Sửa Nhân Viên</h3>
 
         <form onSubmit={formik.handleSubmit} className="w-full my-4">
           {/* Login Information */}
@@ -146,7 +162,7 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
               type="submit"
               className="px-4 py-2 bg-red-800 text-white rounded-xl hover:bg-red-700"
             >
-              Thêm khách hàng
+              Cập nhật nhân viên
             </button>
           </div>
         </form>
@@ -155,4 +171,4 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
   );
 };
 
-export default AddCustomerModal;
+export default EditEmployeeModal;
