@@ -7,6 +7,7 @@ import { EmployeesService } from 'src/modules/employees/employees.service';
 import { AdminsService } from 'src/modules/admins/admins.service';
 import { JwtPayload } from './types/JwtPayload';
 import { Role } from './types/Role';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,7 @@ export class AuthService {
     private employeesService: EmployeesService,
     private adminsService: AdminsService,
     private jwtService: JwtService,
+    private prisma: PrismaService
   ) {}
 
   async login(
@@ -194,5 +196,10 @@ export class AuthService {
       console.error(error);
       return false;
     }
+  }
+
+  async isValidPublicKey(publicKey: string): Promise<boolean> {
+    const client = await this.prisma.banks.findMany({ where: { public_key: publicKey } });
+    return client !== null;
   }
 }

@@ -10,6 +10,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenGuard } from './guards/accessToken.guard';
 import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
+import { PrismaService } from 'src/common/prisma/prisma.service';
+import { RsaStrategy } from './strategies/rsa.strategy';
+import { BanksService } from '../banks/banks.service';
 
 @Module({
   imports: [
@@ -21,12 +24,15 @@ import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
   controllers: [AuthController],
   providers: [
     AuthService,
+    BanksService,
     {
       provide: 'APP_GUARD',
       useClass: AccessTokenGuard,
     },
     AccessTokenStrategy,
     RefreshTokenStrategy,
+    RsaStrategy,
+    PrismaService
   ],
   exports: [AuthService],
 })

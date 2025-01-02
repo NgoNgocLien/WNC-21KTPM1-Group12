@@ -27,6 +27,8 @@ model banks {
   name                                               String         @db.VarChar(100)
   public_key                                         String
   logo                                               String?
+  secret_key                                         String?
+  code                                               String?
   contacts                                           contacts[]
   transactions_transactions_id_recipient_bankTobanks transactions[] @relation("transactions_id_recipient_bankTobanks")
   transactions_transactions_id_sender_bankTobanks    transactions[] @relation("transactions_id_sender_bankTobanks")

@@ -8,15 +8,20 @@ import {
   HttpStatus,
   ParseIntPipe,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/createTransaction.dto';
+import { RsaGuard } from '../auth/guards/rsa.guard';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('transactions')
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
+  @Public()
+  @UseGuards(RsaGuard)
   @Get('recipient_profile/:account_number')
   findRecipientProfile(@Param('account_number') account_number: string) {
     return this.transactionsService.findRecipientProfile(account_number);
