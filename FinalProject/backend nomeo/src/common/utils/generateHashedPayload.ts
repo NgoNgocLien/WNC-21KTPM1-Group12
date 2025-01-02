@@ -68,12 +68,12 @@ function generateRequestData(payload: Payload, publicKey: string, hmacKey: strin
 }
 
 // Generate the request data
-const requestData1 = generateRequestData(payload, publicKey, hmacKey);
-console.log('Request Data 1:', requestData1);
+// const requestData1 = generateRequestData(payload, publicKey, hmacKey);
+// console.log('Request Data 1:', requestData1);
 
-// const timestamp = Math.floor(Date.now() / 1000).toString();
-// const requestData2 = crypto.createHmac('sha256', hmacKey).update("ACC123456789" + timestamp).digest('hex');
-// console.log('Request Data 2:', {
-//     timestamp,
-//     requestData2
-// });
+const timestamp = Math.floor(Date.now() / 1000).toString();
+const requestData2 = crypto.createHmac('sha256', hmacKey).update("ACC123456789" + timestamp).digest('hex');
+console.log('Request Data 2:', {
+    timestamp,
+    requestData2
+});

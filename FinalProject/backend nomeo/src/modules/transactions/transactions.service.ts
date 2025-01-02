@@ -36,9 +36,14 @@ export class TransactionsService {
         }
       })
 
+      const data = {
+        account_number: profile.account_number,
+        fullname: profile.customers.fullname
+      }
+
       return {
         message: "Profile fetched successfully",
-        data: profile
+        data: data
       }
     } catch(error){
       throw new Error('Error fetching profile: ' + error.message);
