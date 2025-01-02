@@ -10,28 +10,14 @@ import {
   export class BanksService {
     constructor(private readonly prisma: PrismaService) {}
   
-    async getSecretKey(code: string) {
+    async getBank(code: string) {
         const bank = await this.prisma.banks.findMany({
           where: {
             code,
           },
         });
             
-        return bank ? bank[0].secret_key : null
-    }
-  
-    async getPublicKey(code: string) {
-        const bank = await this.prisma.banks.findMany({
-            where: {
-              code,
-            },
-          });
-              
-          return bank ? bank[0].public_key : null
-    }
-
-    async getPrivateKey(){
-        return process.env.PRIVATE_KEY
+        return bank ? bank[0]: null
     }
   }
   

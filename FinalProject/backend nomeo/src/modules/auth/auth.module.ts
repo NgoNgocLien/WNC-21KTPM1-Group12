@@ -11,8 +11,9 @@ import { AccessTokenGuard } from './guards/accessToken.guard';
 import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import { RsaStrategy } from './strategies/rsa.strategy';
+import { TransactionStrategy } from './strategies/transaction.strategy';
 import { BanksService } from '../banks/banks.service';
+import { CustomerInfoStrategy } from './strategies/customerInfo.strategy';
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import { BanksService } from '../banks/banks.service';
     },
     AccessTokenStrategy,
     RefreshTokenStrategy,
-    RsaStrategy,
+    TransactionStrategy,
+    CustomerInfoStrategy,
     PrismaService
   ],
   exports: [AuthService],

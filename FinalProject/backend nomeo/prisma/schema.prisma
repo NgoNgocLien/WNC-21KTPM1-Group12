@@ -142,9 +142,10 @@ model transactions {
   transaction_message      String?
   fee_payment_method       String?         @db.VarChar(10)
   transaction_time         DateTime        @default(now()) @db.Timestamp(6)
-  digital_signature        String?
+  sender_signature         String?
   recipient_name           String?         @db.VarChar(100)
   id                       String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  recipient_signature      String?
   debt_payments            debt_payments[]
   recipient_bank           banks           @relation("transactions_id_recipient_bankTobanks", fields: [id_recipient_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sender_bank              banks           @relation("transactions_id_sender_bankTobanks", fields: [id_sender_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)

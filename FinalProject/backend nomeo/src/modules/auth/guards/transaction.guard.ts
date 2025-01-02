@@ -2,7 +2,7 @@ import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/com
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class RsaGuard extends AuthGuard('rsa') {
+export class TransactionGuard extends AuthGuard('transaction') {
   canActivate(context: ExecutionContext) {
     return super.canActivate(context);
   }
