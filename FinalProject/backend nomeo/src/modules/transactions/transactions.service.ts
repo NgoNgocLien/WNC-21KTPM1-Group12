@@ -10,14 +10,16 @@ import { BanksService } from '../banks/banks.service';
 import { CustomersService } from '../customers/customers.service';
 import { ExternalTransactionPayload } from '../auth/types/ExternalTransactionPayload';
 import { time } from 'console';
-import { generateResponseData } from 'src/common/utils/encryptTransaction';
+import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionResponse';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class TransactionsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly banksService: BanksService,
-    private readonly customersService: CustomersService
+    private readonly customersService: CustomersService,
+    private readonly authService: AuthService
   ) {}
 
   async findRecipientProfile(account_number: string){
@@ -132,11 +134,19 @@ export class TransactionsService {
   // }
   // }
 
+  generateExternalResponseData(data: string, public_key: string, private_key: string, secret_key: string): ExternalTransactionResponse{
+    const encryptData = this.authService.encryptData(data, public_key);
+    const hashData = this.authService.hashPayload(encryptData, secret_key);
+    const signature = this.authService.createSignature(hashData, private_key)
+    return {
+      recipient_signature: signature
+    }
+  }
+
   async receiveExternalTransaction(bank_code: string, sender_signature: string, payload: ExternalTransactionPayload) {
     try {
       const bank = await this.banksService.getBank(bank_code);
 
-      console.log(payload.recipient_account_number);
       const customer = await this.customersService.findInternalProfile(payload.recipient_account_number)
       const recipient_name = customer.data.customers.fullname;
 
@@ -153,10 +163,22 @@ export class TransactionsService {
         },
       });
 
-      const responseData = generateResponseData(
+      await this.prisma.accounts.update({
+        where: {
+          account_number: transaction.recipient_account_number
+        },
+        data: {
+          account_balance: {
+            increment: transaction.transaction_amount,
+          }
+        }
+      })
+
+      const responseData: ExternalTransactionResponse = this.generateExternalResponseData(
         JSON.stringify(transaction),
-        bank.public_key,
-        bank.secret_key
+        bank.rsa_public_key,
+        process.env.RSA_PRIVATE_KEY,
+        bank.secret_key,
       )
 
       await this.prisma.transactions.update({

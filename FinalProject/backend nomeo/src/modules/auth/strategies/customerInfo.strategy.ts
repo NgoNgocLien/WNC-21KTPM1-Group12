@@ -4,10 +4,14 @@ import { Strategy } from 'passport-custom';
 import { Request } from 'express';
 import * as crypto from 'crypto';
 import { BanksService } from 'src/modules/banks/banks.service';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class CustomerInfoStrategy extends PassportStrategy(Strategy, 'customer-info') {
-  constructor(private readonly banksService: BanksService) {
+  constructor(
+    private readonly banksService: BanksService,
+    private readonly authService: AuthService
+  ) {
     super();
   }
 
@@ -27,14 +31,11 @@ export class CustomerInfoStrategy extends PassportStrategy(Strategy, 'customer-i
     }
 
 
-    const currentTime = Math.floor(Date.now() / 1000);
-    const requestTime = parseInt(timestamp, 10);
-    if (isNaN(requestTime) || (currentTime - requestTime) > 3000) {
+    if (!this.authService.verifyTimestamp(timestamp)){
       throw new UnauthorizedException('Request has expired');
     }
 
-    const expectedHash = crypto.createHmac('sha256', bank.secret_key).update(accountNumber + timestamp).digest('hex');
-    if (expectedHash !== payloadHash) {
+    if (this.authService.verifyHash(accountNumber + timestamp, bank.secret_key, payloadHash)){
       throw new UnauthorizedException('Invalid payload hash');
     }
 

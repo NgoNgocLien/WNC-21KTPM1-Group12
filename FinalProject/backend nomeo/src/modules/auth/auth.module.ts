@@ -14,6 +14,7 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { TransactionStrategy } from './strategies/transaction.strategy';
 import { BanksService } from '../banks/banks.service';
 import { CustomerInfoStrategy } from './strategies/customerInfo.strategy';
+import { EmployeesService } from '../employees/employees.service';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CustomerInfoStrategy } from './strategies/customerInfo.strategy';
     RefreshTokenStrategy,
     TransactionStrategy,
     CustomerInfoStrategy,
+    EmployeesService,
     PrismaService
   ],
   exports: [AuthService],

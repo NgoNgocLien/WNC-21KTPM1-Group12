@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 
 import { CustomersService } from 'src/modules/customers/customers.service';
 import { EmployeesService } from 'src/modules/employees/employees.service';
@@ -198,8 +199,52 @@ export class AuthService {
     }
   }
 
-  async isValidPublicKey(publicKey: string): Promise<boolean> {
-    const client = await this.prisma.banks.findMany({ where: { public_key: publicKey } });
-    return client !== null;
+  hashPayload(data: string, secret_key: string){
+    return crypto.createHmac('sha256', secret_key)
+      .update(data)  
+      .digest('hex');
   }
+
+  verifyHash(data: string, secret_key: string, hashData: string){
+    const expected = crypto.createHmac('sha256', secret_key)
+      .update(data)  // Concatenate encryptedPayload, timestamp, and iv
+      .digest('hex');
+
+    return expected === hashData;
+  }
+
+  encryptData(data: string, public_key: string){
+    const dataBuffer = Buffer.from(data);
+    const encryptedPayload = crypto.publicEncrypt(public_key, dataBuffer).toString('base64');
+    return encryptedPayload;
+  }
+
+  decryptData(data: string, private_key: string){
+    const encryptedBuffer = Buffer.from(data, 'base64');
+    const decryptedBuffer = crypto.privateDecrypt(private_key, encryptedBuffer);
+    return JSON.parse(decryptedBuffer.toString())
+  }
+
+  createSignature(data: string, private_key: string){
+    const sign = crypto.createSign('SHA256');
+    sign.update(data);
+    sign.end();
+
+    return sign.sign(private_key, 'base64');
+  }
+
+  verifySignature(data: string, public_key: string, signature: string){
+    const verify = crypto.createVerify('SHA256');
+    verify.update(data);
+    verify.end();
+    
+    return verify.verify(public_key, signature, 'base64');
+  }
+
+  verifyTimestamp(timestamp: string){
+    const currentTime = Math.floor(Date.now() / 1000);
+    const requestTime = parseInt(timestamp, 10);
+    return !(isNaN(requestTime) || (currentTime - requestTime) > 300000) 
+  }
+
 }

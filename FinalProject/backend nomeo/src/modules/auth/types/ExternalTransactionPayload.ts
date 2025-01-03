@@ -6,6 +6,7 @@ type ExternalTransactionPayload = {
   transaction_amount: number | string;
   transaction_message: string;
   fee_payment_method: FeePayment;
+  timestamp: number | string;
 };
 
 export { ExternalTransactionPayload };
