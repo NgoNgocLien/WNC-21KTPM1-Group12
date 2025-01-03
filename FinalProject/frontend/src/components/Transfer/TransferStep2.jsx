@@ -9,7 +9,8 @@ export default function TransferStep2({ setCurrentStep, values }) {
   const access_token = getAccessToken();
 
   const handleConfirm = async () => {
-    const response = await fetch(`${BASE_URL}/otp/send`,{
+    setCurrentStep(3);
+    await fetch(`${BASE_URL}/otp/send`,{
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
@@ -19,12 +20,6 @@ export default function TransferStep2({ setCurrentStep, values }) {
           email
       })
     })
-
-    if (!response.ok){
-      throw new Error('Failed to fetch user account info');
-    } else{
-      setCurrentStep(3)
-    }
   }
 
   return (
