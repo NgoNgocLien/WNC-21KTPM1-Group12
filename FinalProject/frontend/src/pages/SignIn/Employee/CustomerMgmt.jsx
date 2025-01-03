@@ -5,10 +5,11 @@ import CustomerTable from '../../../components/Table/CustomerTable';
 import AddCustomerModal from '../../../components/CustomerMgmt/AddCustomerModal';
 import { PlusIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import TransferHistory from '../../../components/CustomerMgmt/TransferHistory';
+import { IDLE, SUCCEEDED } from '../../../util/config';
 
 export default function CustomerMgmt() {
   const dispatch = useDispatch();
-  const { customers } = useSelector((state) => state.user);
+  const { customers, status } = useSelector((state) => state.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,15 +66,18 @@ export default function CustomerMgmt() {
 
       <div className="p-4 bg-white rounded-xl shadow-lg space-y-6 w-full">
         <div className="flex flex-col lg:flex-row items-center justify-between mb-6 mt-2">
-          <div className="relative w-full">
+          <div className="relative w-full z-90">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Tìm kiếm theo họ tên"
-              className="w-full p-1.5 px-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 transition duration-300 ease-in-out"
+              className={`w-full p-1.5 px-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 ${status === SUCCEEDED ? '' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
             />
-            <button className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none" onClick={handleSearch}>
+            <button className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none" 
+            onClick={handleSearch}
+            
+            >
               <MagnifyingGlassIcon className="w-5 h-5" />
             </button>
           </div>
