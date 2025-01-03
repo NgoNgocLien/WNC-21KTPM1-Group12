@@ -166,7 +166,7 @@ export default function TransferHistory() {
 
   const validateDateRange = (start, end) => {
     const diffInDays = (end - start) / (1000 * 3600 * 24);
-    return diffInDays <= 30;
+    return diffInDays < 30;
   };
 
   const handleStartDateChange = (date) => {
@@ -193,7 +193,6 @@ export default function TransferHistory() {
         ? prev.filter((f) => f !== filter)
         : [...prev, filter];
   
-      // If none of the individual filters are selected, select 'all'
       if (!newFilters.includes('recipient') && !newFilters.includes('sender') && !newFilters.includes('debt')) {
         return ['all'];
       }
@@ -223,7 +222,7 @@ export default function TransferHistory() {
                 selected={startDate}
                 onChange={handleStartDateChange}
                 dateFormat="dd/MM/yyyy"
-                className="w-full p-3 border border-gray-300 rounded-xl"
+                className={`w-full p-3 border border-gray-300 rounded-xl ${status === SUCCEEDED ? '' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div>
@@ -234,7 +233,7 @@ export default function TransferHistory() {
                 selected={endDate}
                 onChange={handleEndDateChange}
                 dateFormat="dd/MM/yyyy"
-                className="w-full p-3 border border-gray-300 rounded-xl"
+                className={`w-full p-3 border border-gray-300 rounded-xl ${status === SUCCEEDED ? '' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div>

@@ -25,10 +25,11 @@ model admins {
 model banks {
   id                                                 Int            @id @default(autoincrement())
   name                                               String         @db.VarChar(100)
-  public_key                                         String
+  rsa_public_key                                     String
   logo                                               String?
   secret_key                                         String?
   code                                               String?
+  pgp_public_key                                     String?
   contacts                                           contacts[]
   transactions_transactions_id_recipient_bankTobanks transactions[] @relation("transactions_id_recipient_bankTobanks")
   transactions_transactions_id_sender_bankTobanks    transactions[] @relation("transactions_id_sender_bankTobanks")

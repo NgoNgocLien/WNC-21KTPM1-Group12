@@ -155,7 +155,7 @@ export class TransactionsService {
 
       const responseData = generateResponseData(
         JSON.stringify(transaction),
-        bank.public_key,
+        bank.rsa_public_key,
         bank.secret_key
       )
 

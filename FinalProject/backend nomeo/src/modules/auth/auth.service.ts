@@ -199,7 +199,7 @@ export class AuthService {
   }
 
   async isValidPublicKey(publicKey: string): Promise<boolean> {
-    const client = await this.prisma.banks.findMany({ where: { public_key: publicKey } });
+    const client = await this.prisma.banks.findMany({ where: { rsa_public_key: publicKey } });
     return client !== null;
   }
 }
