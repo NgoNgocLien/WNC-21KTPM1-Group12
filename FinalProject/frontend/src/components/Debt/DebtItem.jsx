@@ -1,11 +1,14 @@
 import { useSelector } from 'react-redux'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import { formatMoney, formatTime } from '../../util/format'
 import DebtDetailModal from './DebtDetailModal'
-import { useState } from 'react'
 import Avatar from '../Avatar'
 import DebtMessageDialog from './DebtMessageDialog'
 
 export default function DebtItem({ debt, type }) {
+  const navigate = useNavigate();
   const { id, account_number, fullname, username } = useSelector((state) => state.user)
   const [detailIsOpen, setDetailIsOpen] = useState(false)
   const [messageIsOpen, setMessageIsOpen] = useState(false)
@@ -44,7 +47,14 @@ export default function DebtItem({ debt, type }) {
   const closeMessageDialog = () => {
     setMessageIsOpen(false)
   }
-
+  const handlePayment = () => {
+    console.log(debt)
+    navigate("/customers/transfer-internal", {
+      state:{
+        debt: debt
+      }
+    })
+  }
   return (
     <>
       {detailIsOpen &&
@@ -80,7 +90,11 @@ export default function DebtItem({ debt, type }) {
             >
               Từ chối
             </button>
-            <button className="text-sm text-white bg-blue-700 hover:bg-blue-600 px-3 py-2 rounded-xl font-semibold">Thanh toán</button>
+            <button 
+              onClick={handlePayment}
+              className="text-sm text-white bg-blue-700 hover:bg-blue-600 px-3 py-2 rounded-xl font-semibold">
+              Thanh toán
+            </button>
           </div>
         )}
         {type === 'OUTGOING' && debt.status === 'PENDING' && (

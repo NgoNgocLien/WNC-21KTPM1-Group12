@@ -1,4 +1,6 @@
 import React from 'react';
+import { IoIosClose } from 'react-icons/io'
+
 import { format } from 'date-fns';
 
 const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_number, bankName }) => {
@@ -28,9 +30,10 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_numbe
 
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white shadow-xl rounded-lg w-11/12 max-w-lg p-6">
-        <div className="flex justify-center items-center pb-4 mb-4">
+      <div className="bg-white shadow-xl rounded-lg w-11/12 max-w-lg p-6 pb-8">
+        <div className="flex justify-between items-center pb-4 mb-4">
           <h3 className="text-xl font-semibold text-black">Chi tiết giao dịch</h3>
+          <IoIosClose className="text-gray-500 text-3xl cursor-pointer hover:text-gray-700" onClick={closeModal} />
         </div>
 
         <div className="grid grid-cols-2 gap-y-4">
@@ -67,7 +70,7 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_numbe
 
           {transaction.type !== 'Deposit' && feePayer && (
             <>
-              <div className="text-gray-600 font-base">Phí</div>
+              <div className="text-gray-600 font-base">Phí giao dịch</div>
               <div className="text-gray-800 font-medium">{feePayer}</div>
             </>
           )}
@@ -78,14 +81,14 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_numbe
           </div>
         </div>
 
-        <div className="mt-6 flex justify-center">
+        {/* <div className="mt-6 flex justify-center">
           <button
             onClick={closeModal}
-            className="py-2 px-4 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600"
+            className="py-2 px-4 bg-red-800 text-white font-medium rounded-lg hover:bg-red-700"
           >
             Đóng
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

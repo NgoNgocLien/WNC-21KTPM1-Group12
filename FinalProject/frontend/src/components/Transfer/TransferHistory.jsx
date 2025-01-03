@@ -131,12 +131,18 @@ export default function TransferHistory() {
                   <div className={`ml-4 py-1 px-2 text-xs font-base rounded text-white ${labelColor}`}>
                     {transactionLabel}
                   </div>
-                  {!isInternalTransaction && (
+                  {!isInternalTransaction ? (
                     <div className="flex items-center space-x-1">
                       <span className="w-2 h-2 bg-red-600 rounded-full mt-0.5"></span>
                       <span className="text-xs text-red-600">Giao dịch liên ngân hàng</span>
                     </div>
-                  )}
+                  ) : (
+                    <div className="flex items-center space-x-1">
+                      <span className="w-2 h-2 bg-white rounded-full mt-0.5"></span>
+                      <span className="text-xs text-white">Giao dịch liên ngân hàng</span>
+                    </div>
+                  )
+                }
                   
                 </div>
               </div>

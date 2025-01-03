@@ -35,7 +35,7 @@ fQhOgFSG+gmn2U0IKajgGCYuttWKn+w4yjuDu2YyA8aAd5yy/5eM1+ODe/VcThVa
 -----END PUBLIC KEY-----`;
 
 // Secret key for HMAC (for signing the request data)
-const hmacKey = 'TECHBANK_NOMEOBANK'; // HMAC key for verifying integrity
+const hmacKey = 'TECHBANK_NOMEOBANK'; 
 
 // Function to encrypt payload using AES
 function encryptPayloadWithAES(payload: Payload, aesKey: Buffer): { encryptedPayload: string, iv: string } {
@@ -67,9 +67,12 @@ function generateRequestData(payload: Payload, publicKey: string, hmacKey: strin
   return { encryptedPayload, encryptedAESKey, timestamp, signature, iv };
 }
 
-// Generate the request data
+// POST /transactions/external/receive
+
 // const requestData1 = generateRequestData(payload, publicKey, hmacKey);
 // console.log('Request Data 1:', requestData1);
+
+// POST /transactions/recipient_profile
 
 const timestamp = Math.floor(Date.now() / 1000).toString();
 const requestData2 = crypto.createHmac('sha256', hmacKey).update("ACC123456789" + timestamp).digest('hex');
@@ -77,3 +80,4 @@ console.log('Request Data 2:', {
     timestamp,
     requestData2
 });
+
