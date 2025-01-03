@@ -240,7 +240,7 @@ export default function TransferHistory() {
                 selected={startDate}
                 onChange={handleStartDateChange}
                 dateFormat="dd/MM/yyyy"
-                className={`w-full p-3 border rounded-xl ${status === SUCCEEDED ? 'border-gray-300' : 'bg-gray-200 bg-opacity-5 border-gray-400'} ${status_trans === SUCCEEDED ? 'border-gray-300' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
+                className={`w-full p-3 border rounded-xl ${status === SUCCEEDED ? '' : 'bg-gray-200 bg-opacity-5 border-gray-400'} ${status_trans === SUCCEEDED ? 'border-gray-300' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div>
@@ -251,7 +251,7 @@ export default function TransferHistory() {
                 selected={endDate}
                 onChange={handleEndDateChange}
                 dateFormat="dd/MM/yyyy"
-                className={`w-full p-3 border rounded-xl ${status === SUCCEEDED ? 'border-gray-300' : 'bg-gray-200 bg-opacity-5 border-gray-400'} ${status_trans === SUCCEEDED ? 'border-gray-300' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
+                className={`w-full p-3 border rounded-xl ${status === SUCCEEDED ? '' : 'bg-gray-200 bg-opacity-5 border-gray-400'} ${status_trans === SUCCEEDED ? 'border-gray-300' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div>
@@ -273,7 +273,7 @@ export default function TransferHistory() {
       </div>
 
       <div className="flex justify-end mt-4 gap-2">
-        {filteredTransactions.length > 0 && (
+        {transactions.length > 0 && (
           <>
             <button
               className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('recipient') ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-200'
