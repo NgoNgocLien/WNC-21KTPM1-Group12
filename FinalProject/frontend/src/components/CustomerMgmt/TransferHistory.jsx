@@ -10,8 +10,8 @@ import TransactionDetailModal from './TransactionDetailModal';
 
 export default function TransferHistory() {
   const dispatch = useDispatch();
-  const { transactions, banks, status } = useSelector((state) => state.transaction);
-  const { customers } = useSelector((state) => state.user);
+  const { transactions, banks, status: status_trans } = useSelector((state) => state.transaction);
+  const { customers, status } = useSelector((state) => state.user);
 
   const today = new Date();
   const thirtyOneDaysAgo = new Date();
@@ -240,7 +240,7 @@ export default function TransferHistory() {
                 selected={startDate}
                 onChange={handleStartDateChange}
                 dateFormat="dd/MM/yyyy"
-                className="w-full p-3 border border-gray-300 rounded-xl"
+                className={`w-full p-3 border rounded-xl ${status === SUCCEEDED ? 'border-gray-300' : 'bg-gray-200 bg-opacity-5 border-gray-400'} ${status_trans === SUCCEEDED ? 'border-gray-300' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div>
@@ -251,7 +251,7 @@ export default function TransferHistory() {
                 selected={endDate}
                 onChange={handleEndDateChange}
                 dateFormat="dd/MM/yyyy"
-                className="w-full p-3 border border-gray-300 rounded-xl"
+                className={`w-full p-3 border rounded-xl ${status === SUCCEEDED ? 'border-gray-300' : 'bg-gray-200 bg-opacity-5 border-gray-400'} ${status_trans === SUCCEEDED ? 'border-gray-300' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div>
