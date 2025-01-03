@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { HiCheckBadge } from "react-icons/hi2";
 
 import { SENDER, INTERNAL_BAND_NAME } from '../../util/config';
 import { formatTime } from '../../util/format';
+import { getCustomerContacts } from './../../redux/userThunk';
 
 
 export default function TransferStep4({ setIsAddModalOpen, transaction }) {
   const {fullname, contacts} = useSelector((state) => state.user)
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isExistingInContact, setIsExistingInContact] = useState(false)
   useEffect(()=>{
     if (transaction){
-      const result = contacts?.some((contact) => {
-        return contact.account_number === transaction.recipient_account_number
-      })
-      setIsExistingInContact(result);
+      if (contacts == null){
+        dispatch(getCustomerContacts())
+      } else{
+        const result = contacts?.some((contact) => {
+          return contact.account_number === transaction.recipient_account_number
+        })
+        setIsExistingInContact(result);
+      }
     }
   }, [transaction, contacts])
 
@@ -108,16 +114,16 @@ export default function TransferStep4({ setIsAddModalOpen, transaction }) {
             <div className="flex justify-center space-x-4">
             <button
               type="button"
-              onClick={() => navigate("/transfer")}
+              onClick={() => navigate("/customer/transfer-internal")}
               className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-xl hover:bg-red-100"
               >
                 Giao dịch khác
               </button>
               <button
-                onClick={() => navigate("/account")}
+                onClick={() => navigate("/customer/transfer")}
                 className="px-4 py-2 bg-red-800 text-white rounded-xl hover:bg-red-700"
               >
-                Về trang tài khoản
+                Xem lịch sử giao dịch
               </button>
             </div>
 
