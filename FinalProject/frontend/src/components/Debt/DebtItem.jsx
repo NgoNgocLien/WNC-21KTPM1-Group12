@@ -48,8 +48,7 @@ export default function DebtItem({ debt, type }) {
     setMessageIsOpen(false)
   }
   const handlePayment = () => {
-    console.log(debt)
-    navigate("/customers/transfer-internal", {
+    navigate("/customer/transfer-internal", {
       state:{
         debt: debt
       }

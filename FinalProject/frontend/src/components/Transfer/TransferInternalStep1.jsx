@@ -13,7 +13,7 @@ import ContactList from '../Account/ContactList';
 import CustomerService from '../../services/CustomerService';
 
 
-export default function TransferInternalStep1({ setCurrentStep, setValues }) {
+export default function TransferInternalStep1({ setCurrentStep, setValues, debt }) {
   const { account_number, balance, contacts, fullname } = useSelector((state) => state.user);
   const [displayContacts, setDisplayContacts] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
@@ -23,6 +23,16 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
   useEffect(() => {
     formik.setFieldValue('transaction_message', `${fullname.toUpperCase()} chuyen tien`);
   }, [fullname])
+
+  useEffect(() => {
+    if (debt){
+      formik.setFieldValue('recipient_account_number', debt.creditor.accounts[0].account_number);
+      formik.setFieldValue('transaction_message', `${fullname.toUpperCase()} thanh toan no`);
+      formik.setFieldValue('transaction_amount', Number(debt.debt_amount));
+      formik.setFieldValue('recipient_name', debt.creditor.fullname);
+    }
+    
+  }, [debt])
 
   const formik = useFormik({
     initialValues: {
@@ -67,7 +77,6 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
   };
 
   useEffect(() => {
-    console.log(selectedContact)
     if (selectedContact) {
       formik.setFieldValue("recipient_account_number", selectedContact.account_number)
       formik.setFieldValue("recipient_name", selectedContact.contact_fullname)
@@ -129,6 +138,10 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
         <div className="w-full mt-4 flex justify-between items-center">
           <div className="w-3/12 font-semibold">Số tiền</div>
           <div className="w-7/12 ">
+          {
+            debt ? (
+              `${Number(formik.values.transaction_amount).toLocaleString()} VNĐ`
+            ) : (
             <div className="flex items-center rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
               <input
                 type="number"
@@ -143,6 +156,9 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
               />
               <label for="transaction_amount" class="focus-within:relative pr-3 text-md text-gray-400">VNĐ</label>
             </div>
+            )
+          }
+            
           </div>
         </div>
 
@@ -194,7 +210,9 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
                   value={RECIPIENT}
                   checked={formik.values.fee_payment_method === RECIPIENT}
                   onChange={formik.handleChange}
-                  className="mr-2 peer appearance-none w-3 h-3 border-2 border-gray-400 rounded-full checked:border-red-800 checked:bg-red-800"
+                  disabled={true && debt}
+                  className="mr-2 peer appearance-none w-3 h-3 border-2 border-gray-400 rounded-full 
+                  checked:border-red-800 checked:bg-red-800 disabled:bg-gray-300 disabled:border-gray-300"
                 />
                 Người nhận
               </label>

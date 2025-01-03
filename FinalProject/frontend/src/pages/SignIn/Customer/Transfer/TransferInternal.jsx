@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { useLocation } from 'react-router-dom';
 import StepLabel from '../../../../components/Transfer/StepLabel'
 import TransferInternalStep1 from '../../../../components/Transfer/TransferInternalStep1';
 import TransferStep2 from '../../../../components/Transfer/TransferStep2';
@@ -9,6 +9,9 @@ import AddContactModal from '../../../../components/Account/AddContactModal';
 import { INTERNAL } from '../../../../util/config';
 
 export default function TransferInternal() {
+  const location = useLocation();
+  const { debt } = location.state || {};
+
   const [currentStep, setCurrentStep] = useState(1)
   const [values, setValues] = useState(null)
   const [transaction, setTransaction] = useState(null)
@@ -26,6 +29,7 @@ export default function TransferInternal() {
           <TransferInternalStep1
             setCurrentStep={setCurrentStep}
             setValues={setValues}
+            debt={debt}
           />
         )
       }
@@ -48,6 +52,8 @@ export default function TransferInternal() {
             setCurrentStep={setCurrentStep}
             values={values}
             setTransaction={setTransaction}
+            debt={debt}
+
           />
         )
       }

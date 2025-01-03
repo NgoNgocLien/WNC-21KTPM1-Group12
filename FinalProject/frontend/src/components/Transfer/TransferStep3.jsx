@@ -8,7 +8,7 @@ import { getAccessToken } from '../../util/cookie';
 
 
 
-export default function TransferStep3({ setCurrentStep, values, setTransaction }) {
+export default function TransferStep3({ setCurrentStep, values, setTransaction, debt }) {
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [invalidOtp, setInvalidOtp] = useState(false);
   const {email} = useSelector((state) => state.user)
@@ -61,6 +61,11 @@ export default function TransferStep3({ setCurrentStep, values, setTransaction }
     const result = await response.json();
     if (result.data){
       await makeTransaction();
+
+      //TODO: update debt
+      if (debt){
+        
+      }
     } else {
       setInvalidOtp(true);
     }
