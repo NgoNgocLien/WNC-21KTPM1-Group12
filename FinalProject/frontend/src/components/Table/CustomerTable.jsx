@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaEdit } from 'react-icons/fa';
+import { FaPen } from 'react-icons/fa';
 
 const CustomerTable = ({ customers }) => {
   return (
@@ -32,10 +32,9 @@ const CustomerTable = ({ customers }) => {
               </td>
               <td className="py-2 px-3 text-sm text-gray-700">
                 <button
-                  className="text-red-500 hover:text-red-700 focus:outline-none transition duration-200 ease-in-out"
-                  title="Edit"
-                >
-                  <FaEdit className="w-5 h-5" />
+                  // onClick={}
+                  className="h-fit p-2 text-red-800 border-[1px] border-red-800 rounded-full hover:bg-red-100 transition">
+                  <FaPen size={12} />
                 </button>
               </td>
             </tr>

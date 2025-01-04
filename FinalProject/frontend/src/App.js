@@ -20,7 +20,6 @@ import TransferExternal from './pages/SignIn/Customer/Transfer/TransferExternal'
 import DebtList from './pages/SignIn/Customer/Debt/DebtList';
 
 import CustomerMgmt from './pages/SignIn/Employee/CustomerMgmt';
-import CustomerTransferHistory from './pages/SignIn/Employee/CustomerTransferHistory';
 
 import EmployeeMgmt from './pages/SignIn/Admin/EmployeeMgmt';
 import BankTransferHistory from './pages/SignIn/Admin/BankTransferHistory';
@@ -149,7 +148,6 @@ function App() {
           <Route path="/employee" element={<EmployeeRoute element={<AuthenticatedLayout />} redirectTo="/" />}>
             <Route index element={<Navigate to="/employee/customer-mgmt" />} />
             <Route path="customer-mgmt" element={<CustomerMgmt />} />
-            <Route path="transfer-history" element={<CustomerTransferHistory />} />
           </Route>
 
           <Route path="/admin" element={<AdminRoute element={<AuthenticatedLayout />} redirectTo="/" />}>

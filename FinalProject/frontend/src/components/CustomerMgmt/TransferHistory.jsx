@@ -263,7 +263,7 @@ export default function TransferHistory() {
           <button
             onClick={handleSearch}
             className={`flex items-center gap-2 py-2 px-4 rounded-xl ${
-              error ? 'bg-gray-200 text-white cursor-not-allowed' : 'bg-red-600 text-white hover:bg-red-500'
+              error ? 'bg-gray-300 text-white cursor-not-allowed' : 'bg-red-800 text-white hover:bg-red-700'
             }`}
           >
             <MagnifyingGlassIcon className="w-5 h-5"/>
@@ -309,7 +309,7 @@ export default function TransferHistory() {
           </>
         )}
       </div>
-      <div className="my-4">{renderTransactions()}</div>
+      <div className="my-4 p-6 bg-white rounded-xl">{renderTransactions()}</div>
 
       <TransactionDetailModal
         isOpen={isModalOpen}
