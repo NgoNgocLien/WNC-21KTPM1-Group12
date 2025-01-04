@@ -31,14 +31,15 @@ const DebtService = {
     }
   },
 
-  // async payDebt(id, data) {
-  //   try {
-  //     return await BaseService.post(`debts/pay/${id}`, data);
-  //   } catch (error) {
-  //     console.error(`Error paying debt with ID ${id}:`, error);
-  //     throw error;
-  //   }
-  // },
+  async payDebt(id, data) {
+    try {
+      const jsonObject = await BaseService.post(`debts/pay/${id}`, data);
+      return jsonObject;
+    } catch (error) {
+      console.error(`Error paying debt with ID ${id}:`, error);
+      throw error;
+    }
+  },
 
   async cancelDebt(id, data) {
     try {

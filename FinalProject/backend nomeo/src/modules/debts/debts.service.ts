@@ -209,6 +209,20 @@ export class DebtsService {
                 },
               },
             },
+            debt_deletions: {
+              select: {
+                deletion_message: true,
+              },
+            },
+            debt_payments: {
+              select: {
+                transactions: {
+                  select: {
+                    transaction_message: true,
+                  },
+                },
+              },
+            },
           },
           orderBy: {
             created_at: 'desc',
@@ -241,6 +255,20 @@ export class DebtsService {
                 accounts: {
                   select: {
                     account_number: true,
+                  },
+                },
+              },
+            },
+            debt_deletions: {
+              select: {
+                deletion_message: true,
+              },
+            },
+            debt_payments: {
+              select: {
+                transactions: {
+                  select: {
+                    transaction_message: true,
                   },
                 },
               },

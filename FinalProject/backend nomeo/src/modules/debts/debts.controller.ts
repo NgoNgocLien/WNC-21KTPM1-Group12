@@ -76,7 +76,6 @@ export class DebtsController {
     return this.debtsService.declineDebt(id, deleteDebtDto);
   }
 
-  // CALL AFTER AN TRANSACTION IS CREATED FOR DEBT
   @Post('/pay/:id')
   payDebt(
     @Param('id', ParseIntPipe) id: number,

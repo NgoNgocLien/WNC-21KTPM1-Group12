@@ -49,7 +49,7 @@ export default function DebtItem({ debt, type }) {
   }
   const handlePayment = () => {
     navigate("/customer/transfer-internal", {
-      state:{
+      state: {
         debt: debt
       }
     })
@@ -75,7 +75,7 @@ export default function DebtItem({ debt, type }) {
           <div className="flex flex-col items-end justify-evenly cursor-default">
             <p className="text-sm text-gray-500">{formatTime(debt.created_at)}</p>
             {debt.status === 'PENDING' && <p className="text-md text-amber-600 font-semibold">Đang chờ</p>}
-            {debt.status === 'PAID' && <p className="text-md text-green-800 font-semibold">Đã thanh toán</p>}
+            {debt.status === 'PAID' && <p className="text-md text-green-700 font-semibold">Đã thanh toán</p>}
             {debt.status === 'DECLINED' && <p className="text-md text-red-800 font-semibold">Đã từ chối</p>}
             {debt.status === 'CANCELED' && <p className="text-md text-gray-500 font-semibold">Đã hủy</p>}
           </div>
@@ -89,7 +89,7 @@ export default function DebtItem({ debt, type }) {
             >
               Từ chối
             </button>
-            <button 
+            <button
               onClick={handlePayment}
               className="text-sm text-white bg-blue-700 hover:bg-blue-600 px-3 py-2 rounded-xl font-semibold">
               Thanh toán
