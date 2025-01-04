@@ -1,17 +1,17 @@
 import {
-    ConflictException,
+    forwardRef,
+    Inject,
     Injectable,
-    InternalServerErrorException,
-    NotFoundException,
   } from '@nestjs/common';
-  import { PrismaService } from 'src/common/prisma/prisma.service';
-  import axios from 'axios';
+import { PrismaService } from 'src/common/prisma/prisma.service';
+import axios from 'axios';
 import { AuthService } from '../auth/auth.service';
 
   @Injectable()
   export class BanksService {
     constructor(
       private readonly prisma: PrismaService,
+      @Inject(forwardRef(() => AuthService))
       private readonly authService: AuthService
     ) {}
   
@@ -37,7 +37,7 @@ import { AuthService } from '../auth/auth.service';
 
     async makeTransaction(data: string, external_bank: any, url: string){
       try {
-        const payload =  this.authService.encryptData(data, external_bank.public_key)
+        const payload =  this.authService.encryptData(data, external_bank.rsa_public_key)
         const integrity = this.authService.hashPayload(payload, external_bank.secret_key)
         const signature = this.authService.createSignature(payload, process.env.RSA_PRIVATE_KEY)
         const response = await axios.post(url, {
@@ -48,11 +48,32 @@ import { AuthService } from '../auth/auth.service';
           }
         });
 
-        return response;
+        return response.data.signature;
       } catch (error) {
         console.error('Error calling external API:', error.message);
         throw error; // Nếu cần xử lý lỗi ở nơi khác
       }
     }
+
+    async getExternalFullname(data: string, external_bank: any, url: string){
+        try {
+          const payload =  this.authService.encryptData(data, external_bank.rsa_public_key)
+          const integrity = this.authService.hashPayload(payload, external_bank.secret_key)
+          const response = await axios.post(url, {
+            body:{
+              payload,
+              integrity,
+            }
+          });
+
+
+          const fullname = this.authService.decryptData(response.data, process.env.RSA_PRIVATE_KEY)
+  
+          return fullname;
+        } catch (error) {
+          console.error('Error calling external API:', error.message);
+          throw error; // Nếu cần xử lý lỗi ở nơi khác
+        }
+      }
   }
   

@@ -15,7 +15,8 @@ import { OtpModule } from './modules/otp/otp.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { NotificationsModule } from './modules/notifications/notifications.module';
-import { BanksService } from './modules/banks/banks.service';
+import { AuthService } from './modules/auth/auth.service';
+import { BanksModule } from './modules/banks/banks.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { BanksService } from './modules/banks/banks.service';
     TransactionsModule,
     OtpModule,
     NotificationsModule,
+    BanksModule,
   ],
   controllers: [],
   providers: [
@@ -54,7 +56,6 @@ import { BanksService } from './modules/banks/banks.service';
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
-    BanksService,
   ],
 })
 export class AppModule {}

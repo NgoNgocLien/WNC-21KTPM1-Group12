@@ -9,6 +9,8 @@ import banks from '../../util/banks'
 import { getAccessToken } from '../../util/cookie';
 import { customSelectStyles } from '../../util/customStyle';
 import CustomerService from '../../services/CustomerService';
+import { FAILED, LOADING, SUCCEEDED } from '../../util/config';
+import { setUserStatus } from '../../redux/userSlice';
 
 const bankOptions = banks.map(bank => ({
   value: bank.bank_id,
@@ -59,16 +61,28 @@ const AddContactModal = ({ isOpen, closeModal, recipient }) => {
 
   const getFullname = async (account_number, bank_id) => {
     try {
+      dispatch(setUserStatus({
+        status: LOADING
+      }));
       if (bank_id === 1){
         const fullname = await CustomerService.getInternalRecipientInfo(account_number);
+        dispatch(setUserStatus({
+          status: SUCCEEDED
+        }));
         return fullname;
       }
 
       const fullname = await CustomerService.getExternalRecipientInfo(bank_id, account_number);
+      dispatch(setUserStatus({
+        status: SUCCEEDED
+      }));
       return fullname;
 
-    } catch (e){
-      console.log(e)
+    } catch (error){
+      dispatch(setUserStatus({
+        status: FAILED,
+        error: error.message
+      }));
     }
   }
 

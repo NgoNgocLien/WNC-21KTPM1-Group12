@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 
@@ -15,6 +15,8 @@ import { TransactionStrategy } from './strategies/transaction.strategy';
 import { BanksService } from '../banks/banks.service';
 import { CustomerInfoStrategy } from './strategies/customerInfo.strategy';
 import { EmployeesService } from '../employees/employees.service';
+import { CustomersService } from '../customers/customers.service';
+import { BanksModule } from '../banks/banks.module';
 
 @Module({
   imports: [
@@ -22,11 +24,11 @@ import { EmployeesService } from '../employees/employees.service';
     CustomersModule,
     EmployeesModule,
     AdminsModule,
+    forwardRef(() => BanksModule)
   ],
   controllers: [AuthController],
   providers: [
     AuthService,
-    BanksService,
     {
       provide: 'APP_GUARD',
       useClass: AccessTokenGuard,
@@ -35,7 +37,6 @@ import { EmployeesService } from '../employees/employees.service';
     RefreshTokenStrategy,
     TransactionStrategy,
     CustomerInfoStrategy,
-    EmployeesService,
     PrismaService
   ],
   exports: [AuthService],

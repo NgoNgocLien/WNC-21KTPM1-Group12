@@ -6,18 +6,18 @@ import { FaAddressBook } from "react-icons/fa";
 
 import TransferAccount from './TransferAccount';
 import { getCustomerContacts } from '../../redux/userThunk';
-import { SENDER, RECIPIENT, INTERNAL_BAND_ID } from '../../util/config';
+import { SENDER, RECIPIENT, INTERNAL_BAND_ID, LOADING, SUCCEEDED, FAILED } from '../../util/config';
 // import getFullname from '../../util/getFullname';
 import { getAccessToken } from '../../util/cookie';
 import ContactList from '../Account/ContactList';
 import CustomerService from '../../services/CustomerService';
+import { setUserStatus } from '../../redux/userSlice';
 
 
 export default function TransferInternalStep1({ setCurrentStep, setValues, debt }) {
   const { account_number, balance, contacts, fullname } = useSelector((state) => state.user);
   const [displayContacts, setDisplayContacts] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
-  const access_token = getAccessToken();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -68,11 +68,25 @@ export default function TransferInternalStep1({ setCurrentStep, setValues, debt 
   }
 
   const handleAccountNumberBlur = async (e) => {
-    formik.handleBlur(e);
-    const account_number = e.target.value;
-    if (account_number) {
-      const recipient_name = await CustomerService.getInternalRecipientInfo(account_number);
-      formik.setFieldValue('recipient_name', recipient_name);
+    try {
+      formik.handleBlur(e);
+      const account_number = e.target.value;
+      if (account_number) {
+        dispatch(setUserStatus({
+          status: LOADING
+        }));
+        const recipient_name = await CustomerService.getInternalRecipientInfo(account_number);
+        formik.setFieldValue('recipient_name', recipient_name);
+        dispatch(setUserStatus({
+          status: SUCCEEDED
+        }));
+      }
+    } catch (error){
+      console.log(error.message)
+      dispatch(setUserStatus({
+        status: FAILED,
+        error: error.message
+      }));
     }
   };
 

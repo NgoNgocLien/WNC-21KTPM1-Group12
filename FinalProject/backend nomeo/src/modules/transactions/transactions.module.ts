@@ -8,10 +8,12 @@ import { AuthService } from '../auth/auth.service';
 import { EmployeesService } from '../employees/employees.service';
 import { AdminsService } from '../admins/admins.service';
 import { JwtService } from '@nestjs/jwt';
+import { BanksModule } from '../banks/banks.module';
 
 @Module({
+  imports: [BanksModule],
   controllers: [TransactionsController],
-  providers: [TransactionsService, PrismaService, BanksService, CustomersService, 
+  providers: [TransactionsService, PrismaService, CustomersService, 
     AuthService, EmployeesService, AdminsService, JwtService
 
   ],

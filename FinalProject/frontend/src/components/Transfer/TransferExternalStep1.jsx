@@ -9,16 +9,16 @@ import ContactList from '../Account/ContactList';
 import ExternalBankSelect from './ExternalBankSelect';
 
 import { getCustomerContacts } from '../../redux/userThunk';
-import { SENDER, RECIPIENT } from '../../util/config';
+import { SENDER, RECIPIENT, LOADING, SUCCEEDED, FAILED } from '../../util/config';
 import { getAccessToken } from '../../util/cookie';
 import CustomerService from '../../services/CustomerService';
+import { setUserStatus } from '../../redux/userSlice';
 
 
 export default function TransferInternalStep1({ setCurrentStep, setValues }) {
   const { account_number, balance, contacts, fullname } = useSelector((state) => state.user);
   const [ displayContacts, setDisplayContacts ] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
-  const access_token = getAccessToken();
   const dispatch = useDispatch();
 
   const formik = useFormik({
@@ -55,12 +55,25 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
   }
 
   const handleAccountNumberBlur = async (e) => {
-    formik.handleBlur(e);
-    const account_number = e.target.value;
-    if (account_number) {
-      const bank_id = 1;
-      const recipient_name = await CustomerService.getExternalRecipientInfo(bank_id, account_number);
-      formik.setFieldValue('recipient_name', recipient_name);
+    try {
+      formik.handleBlur(e);
+      const account_number = e.target.value;
+      if (account_number) {
+        dispatch(setUserStatus({
+          status: LOADING
+        }));
+        const recipient_name = await CustomerService.getExternalRecipientInfo(Number(formik.id_recipient_bank), account_number);
+        formik.setFieldValue('recipient_name', recipient_name);
+        dispatch(setUserStatus({
+          status: SUCCEEDED
+        }));
+      }
+    } catch (error){
+      console.log(error.message)
+      dispatch(setUserStatus({
+        status: FAILED,
+        error: error.message
+      }));
     }
   };
 

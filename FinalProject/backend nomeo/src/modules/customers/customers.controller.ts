@@ -48,9 +48,9 @@ export class CustomersController {
   @Get('profile/external/:bank_id/:account_number')
     findExternalProfile(
       @Param('account_number') account_number: string,
-      @Param('bank_id') bank_id: string
+      @Param('bank_id') bank_id: number
     ) {
-      return this.customersService.findExternalProfile(account_number);
+      return this.customersService.findExternalProfile(bank_id, account_number);
   }
 
   @HttpCode(HttpStatus.OK)

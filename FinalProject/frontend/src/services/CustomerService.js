@@ -14,7 +14,7 @@ const CustomerService = {
   async getInternalRecipientInfo(account_number) {
     try {
       const jsonObject = await BaseService.get( `customers/profile/internal/${account_number}`);
-      return jsonObject.data.customers.fullname;
+      return jsonObject.data;
     } catch (error) {
       console.error(error);
       throw error; // Re-throw error để xử lý tại nơi gọi
@@ -24,7 +24,7 @@ const CustomerService = {
   async getExternalRecipientInfo(bank_id, account_number) {
     try {
       const jsonObject = await BaseService.get( `customers/profile/external/${bank_id}/${account_number}`);
-      return jsonObject.data.customers.fullname;
+      return jsonObject.data;
     } catch (error) {
       console.error(error);
       throw error; // Re-throw error để xử lý tại nơi gọi

@@ -4,6 +4,9 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import axios from 'axios';
+const bcrypt = require('bcrypt');
+
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { UpdateCustomerDto } from './dto/updateCustomer.dto';
 import { CreateContactDto } from './dto/createContact.dto';
@@ -11,11 +14,14 @@ import { UpdateContactDto } from './dto/updateContact.dto';
 import { DeleteContactDto } from './dto/deleteContact.dto';
 import { CreateCustomerDto } from './dto/createCustomer.dto';
 import { generateAccountNumber } from '../../common/utils/checksum.util';
-const bcrypt = require('bcrypt');
+import { BanksService } from '../banks/banks.service';
 
 @Injectable()
 export class CustomersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly banksService: BanksService,
+  ) {}
 
   async getAllCustomers() {
     try {
@@ -124,43 +130,49 @@ export class CustomersService {
         }
       })
 
+      if (!profile) {
+        throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
+      }
+
       return {
         message: "Profile fetched successfully",
-        data: profile
+        data: profile.customers.fullname
       }
     } catch(error){
-      // if (error instanceof NotFoundException || error instanceof ConflictException) {
-      //   throw error;
-      // }
+      if (error instanceof NotFoundException || error instanceof ConflictException) {
+        throw error;
+      }
       console.log(error.message)
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
-  async findExternalProfile(account_number: string){
+  async findExternalProfile(bank_id: number, account_number: string){
     try{
-      const profile = await this.prisma.accounts.findUnique({
-        where:{
-          account_number: account_number,
-        },
-        select:{
-          account_number: true,
-          customers: {
-            select:{
-              fullname: true
-            }
-          }
-        }
+      const external_bank = await this.banksService.getBankById(bank_id)
+
+      const external_bank_url = ''
+
+      const data = JSON.stringify({
+        accountNumber: "",
+        sendAt: "",
+        bankCode: external_bank.code
       })
+
+      const fulname = await this.banksService.getExternalFullname(data, bank_id, external_bank_url)
+
+      // if (!profile) {
+      //   throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
+      // }
 
       return {
         message: "Profile fetched successfully",
-        data: profile
+        data: fulname
       }
     } catch(error){
-      // if (error instanceof NotFoundException || error instanceof ConflictException) {
-      //   throw error;
-      // }
+      if (error instanceof NotFoundException || error instanceof ConflictException) {
+        throw error;
+      }
       console.log(error.message)
       throw new InternalServerErrorException('Lỗi hệ thống');
     }

@@ -165,7 +165,7 @@ export class TransactionsService {
       const bank = await this.banksService.getBankByCode(payload.bank_code);
 
       const customer = await this.customersService.findInternalProfile(payload.recipient_account_number)
-      const recipient_name = customer.data.customers.fullname;
+      const recipient_name = customer.data;
 
       const transaction = await this.prisma.transactions.create({
         data: {
