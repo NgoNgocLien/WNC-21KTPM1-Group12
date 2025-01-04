@@ -124,7 +124,7 @@ model employees {
 model notifications {
   id                 Int       @id @default(autoincrement())
   id_recipient       Int
-  recipient_type     String?   @db.VarChar(10)
+  recipient_type     String?   @default("CUSTOMER") @db.VarChar(10)
   notification_title String    @db.VarChar(100)
   notification_body  String
   notification_data  Json?
@@ -147,6 +147,7 @@ model transactions {
   recipient_name           String?         @db.VarChar(100)
   id                       String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   recipient_signature      String?
+  fee_amount               Decimal?        @default(1000) @db.Decimal(15, 2)
   debt_payments            debt_payments[]
   recipient_bank           banks           @relation("transactions_id_recipient_bankTobanks", fields: [id_recipient_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)
   sender_bank              banks           @relation("transactions_id_sender_bankTobanks", fields: [id_sender_bank], references: [id], onDelete: NoAction, onUpdate: NoAction)

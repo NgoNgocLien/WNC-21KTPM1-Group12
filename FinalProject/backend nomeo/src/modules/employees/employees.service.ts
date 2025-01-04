@@ -2,8 +2,9 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { CreateEmployeeDto } from './dto/createEmployee.dto';
 import { UpdateEmployeeDto } from './dto/updateEmployee.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import { employee_status } from '@prisma/client';
+import { employee_status, Prisma } from '@prisma/client';
 import { CreateDepositDto } from './dto/createDeposit.dto';
+import { ppid } from 'process';
 const bcrypt = require('bcrypt');
 
 @Injectable()
@@ -194,10 +195,22 @@ export class EmployeesService {
         data: {
           id_customer: createDepositDto.id_customer,
           id_employee: createDepositDto.id_employee,
-          deposit_amount: createDepositDto.deposit_amount,
+          deposit_amount: new Prisma.Decimal(createDepositDto.deposit_amount),
           deposit_message: createDepositDto.deposit_message,
         },
       });
+
+      await this.prisma.accounts.updateMany({
+        where:{
+          id_customer: deposit.id_customer
+        },
+        data:{
+          account_balance:{
+            increment: deposit.deposit_amount
+          }
+        }
+        
+      })
 
       return {
         message: 'Deposit created successfully',

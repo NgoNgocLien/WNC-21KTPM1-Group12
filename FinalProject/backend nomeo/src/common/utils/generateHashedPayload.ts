@@ -39,8 +39,8 @@ const hmacKey = 'TECHBANK_NOMEOBANK';
 
 // Function to generate the full request data
   function hashPayload(data: string, secret_key: string){
-    return crypto.createHmac('sha256', secret_key)
-      .update(data)  
+    return crypto.createHash('sha256')
+      .update(data + secret_key)  
       .digest('hex');
   }
 
@@ -68,7 +68,7 @@ const data1 = JSON.stringify({
 })
 const encryptData1 = encryptData(data1, publicKey);
 const hashData1 = hashPayload(encryptData1, hmacKey);
-const signature = createSignature(hashData1, privateKey)
+const signature = createSignature(encryptData1, privateKey)
 
 console.log('Request Data 1:', {
   hashData1,

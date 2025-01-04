@@ -5,6 +5,7 @@ type ExternalTransactionPayload = {
   recipient_account_number: string;
   transaction_amount: number | string;
   transaction_message: string;
+  fee_amount: number | string;
   fee_payment_method: FeePayment;
   timestamp: number | string;
 };

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import OtpInputs from '../OtpInputs';
 
-import { BASE_URL, SENDER } from '../../util/config';
+import { BASE_URL, INTERNAL_BAND_ID, SENDER } from '../../util/config';
 import { getAccessToken } from '../../util/cookie';
 
 

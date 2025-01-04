@@ -64,7 +64,7 @@ export default function TransferStep4({ setIsAddModalOpen, transaction }) {
             <div className="w-full flex justify-between">
               <div className="w-5/12 text-gray-500">Phí giao dịch</div>
               <div className="w-6/12 font-semibold">
-                1,000 VNĐ
+              {transaction.fee_amount}
               </div>
             </div>
 

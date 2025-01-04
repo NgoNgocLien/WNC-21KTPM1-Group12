@@ -200,9 +200,9 @@ export class AuthService {
   }
 
   hashPayload(data: string, secret_key: string){
-    return crypto.createHmac('sha256', secret_key)
-      .update(data)  
-      .digest('hex');
+    return crypto.createHash('sha256')
+          .update(data + secret_key)  
+          .digest('hex');
   }
 
   verifyHash(data: string, secret_key: string, hashData: string){
