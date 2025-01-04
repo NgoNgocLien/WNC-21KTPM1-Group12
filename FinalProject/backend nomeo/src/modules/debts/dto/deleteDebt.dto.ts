@@ -12,7 +12,7 @@ export class DeleteDebtDto {
   id_deleter: number;
 
   @IsString()
-  @IsDefined()
+  @IsOptional()
   deletion_message: string;
 
   @IsDateString() // ISO 8601 string: 2021-08-24T00:00:00.000Z

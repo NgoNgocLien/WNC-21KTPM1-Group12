@@ -27,10 +27,11 @@ import BankTransferHistory from './pages/SignIn/Admin/BankTransferHistory';
 import NotFound from './pages/NotFound';
 
 import { login } from './redux/authSlice';
-import { setNotification, clearNotification } from './redux/notificationSlice';
+import { addNotification, removeNotification } from './redux/notificationSlice';
 import { getAccessToken, getRoleFromToken } from './util/cookie';
 import { onMessageListener } from './util/fcm';
 import { SUCCEEDED } from './util/config'
+import PopupNoti from './components/PopupNoti';
 
 
 const GuestRoute = ({ element }) => {
@@ -83,30 +84,23 @@ function AuthenticatedLayout() {
       break;
   }
   const dispatch = useDispatch();
-  const { notification } = useSelector((state) => state.notification);
 
   onMessageListener().then((payload) => {
     console.log('Message received. ', payload);
-    dispatch(setNotification(payload.notification));
+    dispatch(addNotification(payload.notification));
     setTimeout(() => {
-      dispatch(clearNotification());
-    }, 10000);
+      dispatch(removeNotification());
+    }, 8000);
   });
 
   return (
     <>
       {sidebar}
       <ToastContainer />
+      <PopupNoti />
       <main className="ms-80 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
         <Outlet />
       </main>
-
-      {notification && (
-        <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg">
-          <p className="text-md font-semibold">{notification.title}</p>
-          <p className="text-md">{notification.body}</p>
-        </div>
-      )}
     </>
   );
 }

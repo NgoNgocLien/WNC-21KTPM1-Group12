@@ -410,12 +410,12 @@ export class DebtsService {
           include: {
             debtor: {
               select: {
-                username: true,
+                fullname: true,
               },
             },
             creditor: {
               select: {
-                username: true,
+                fullname: true,
               },
             },
           },
@@ -429,16 +429,16 @@ export class DebtsService {
       ]);
 
       // SEND NOTIFICATION TO DEBTOR AND CREDITOR
-      this.notificationService.sendNotification(
-        debt.id_creditor,
-        'Hủy nhắc nợ thành công',
-        `Bạ̣n vừa hủy yêu cầu trả số tiền ${debt.debt_amount}đ cho ${debt.debtor.username}`,
+      await this.notificationService.sendNotification(
+        debt.id_debtor,
+        `${debt.creditor.fullname} hủy yêu cầu trả tiền`,
+        `${debt.creditor.fullname} đã hủy yêu cầu trả số tiền ${debt.debt_amount}đ ${deleteDebtDto.deletion_message ? 'với lời nhắn \"' + deleteDebtDto.deletion_message + '\"' : ''}`,
       );
 
-      this.notificationService.sendNotification(
-        debt.id_debtor,
-        `${debt.creditor.username} hủy yêu cầu trả tiền`,
-        `${debt.creditor.username} đã hủy yêu cầu trả số tiền ${debt.debt_amount}đ ${debt.debt_message ? 'với lời nhắn \"' + debt.debt_message + '\"' : ''}`,
+      await this.notificationService.sendNotification(
+        debt.id_creditor,
+        'Hủy nhắc nợ thành công',
+        `Bạ̣n vừa hủy yêu cầu trả số tiền ${debt.debt_amount}đ cho ${debt.debtor.fullname}`,
       );
 
       return {
