@@ -1,5 +1,7 @@
 import {
   ConflictException,
+  forwardRef,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -20,6 +22,7 @@ import { BanksService } from '../banks/banks.service';
 export class CustomersService {
   constructor(
     private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => BanksService))
     private readonly banksService: BanksService,
   ) {}
 
@@ -149,17 +152,17 @@ export class CustomersService {
 
   async findExternalProfile(bank_id: number, account_number: string){
     try{
-      const external_bank = await this.banksService.getBankById(bank_id)
+      // const external_bank = await this.banksService.getBankById(bank_id)
 
-      const external_bank_url = ''
+      // const external_bank_url = ''
 
-      const data = JSON.stringify({
-        accountNumber: "",
-        sendAt: "",
-        bankCode: external_bank.code
-      })
+      // const data = JSON.stringify({
+      //   accountNumber: "",
+      //   sendAt: "",
+      //   bankCode: external_bank.code
+      // })
 
-      const fulname = await this.banksService.getExternalFullname(data, bank_id, external_bank_url)
+      // const fulname = await this.banksService.getExternalFullname(data, bank_id, external_bank_url)
 
       // if (!profile) {
       //   throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
@@ -167,7 +170,7 @@ export class CustomersService {
 
       return {
         message: "Profile fetched successfully",
-        data: fulname
+        // data: fulname
       }
     } catch(error){
       if (error instanceof NotFoundException || error instanceof ConflictException) {

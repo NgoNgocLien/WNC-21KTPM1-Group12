@@ -28,7 +28,7 @@ async function bootstrap() {
       stopAtFirstError: true,
     }),
   );
-
+  
   // Set the config options
   const adminConfig: ServiceAccount = {
     projectId: process.env.FCM_PROJECT_ID,

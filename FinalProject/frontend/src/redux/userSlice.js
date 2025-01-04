@@ -19,10 +19,6 @@ const initialState = {
   employees: null,
   status: IDLE,
   error: null,
-  status: IDLE,
-  error: null,
-  employeeStatus: IDLE,
-  employeeError: null,
 }
 
 const userSlice = createSlice({
