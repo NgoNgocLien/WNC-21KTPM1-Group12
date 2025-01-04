@@ -158,6 +158,7 @@ export class TransactionsService {
           id_recipient_bank: INTERNAL_BAND_ID,
           transaction_amount: new Prisma.Decimal(payload.transaction_amount),
           transaction_message: payload.transaction_message,
+          fee_amount: payload.fee_amount,
           fee_payment_method: payload.fee_payment_method,
           recipient_name: recipient_name,
         },
