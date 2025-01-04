@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ArrowsRightLeftIcon, BanknotesIcon, CreditCardIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { getCustomerTransactions, getBankName } from '../../redux/transactionThunk';
-import { IDLE, SUCCEEDED } from '../../util/config';
+import { SUCCEEDED } from '../../util/config';
 import DatePicker from 'react-datepicker';
 import { format } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -23,14 +23,31 @@ export default function TransferHistory() {
   const [error, setError] = useState('');
   const [inputAccountNumber, setInputAccountNumber] = useState(null);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
-  const [selectedTransaction, setSelectedTransaction] = useState(null); 
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
+    const applyFilters = () => {
+      const newFilteredTransactions = transactions.filter((t) => {
+        const typeMatch =
+          filters.includes('all') ||
+          (filters.includes('sender') && t.type === 'Sender') ||
+          (filters.includes('debt') && (t.type === 'Sender (Debt)' || t.type === 'Recipient (Debt)')) ||
+          (filters.includes('recipient') && (t.type === 'Recipient' || t.type === 'Deposit'));
+
+        const startDateMatch = !startDate || new Date(t.transaction_time) >= startDate;
+        const endDateMatch = !endDate || new Date(t.transaction_time) <= endDate;
+
+        return typeMatch && startDateMatch && endDateMatch;
+      });
+
+      setFilteredTransactions(newFilteredTransactions);
+    };
+
     if (status === SUCCEEDED && transactions.length > 0) {
       applyFilters();
     }
-  }, [transactions, filters, startDate, endDate]);
+  }, [transactions, filters, startDate, endDate, status]);
 
   useEffect(() => {
     filteredTransactions.forEach((transaction) => {
@@ -60,23 +77,6 @@ export default function TransferHistory() {
     } else {
       setError('Vui lòng nhập số tài khoản');
     }
-  };
-
-  const applyFilters = () => {
-    const newFilteredTransactions = transactions.filter((t) => {
-      const typeMatch =
-        filters.includes('all') ||
-        (filters.includes('sender') && t.type === 'Sender') ||
-        (filters.includes('debt') && (t.type === 'Sender (Debt)' || t.type === 'Recipient (Debt)')) ||
-        (filters.includes('recipient') && (t.type === 'Recipient' || t.type === 'Deposit'));
-
-      const startDateMatch = !startDate || new Date(t.transaction_time) >= startDate;
-      const endDateMatch = !endDate || new Date(t.transaction_time) <= endDate;
-
-      return typeMatch && startDateMatch && endDateMatch;
-    });
-
-    setFilteredTransactions(newFilteredTransactions);
   };
 
   const renderTransactions = () => {
@@ -262,11 +262,10 @@ export default function TransferHistory() {
         <div className="flex justify-end mt-4">
           <button
             onClick={handleSearch}
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${
-              error ? 'bg-gray-300 text-white cursor-not-allowed' : 'bg-red-800 text-white hover:bg-red-700'
-            }`}
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${error ? 'bg-gray-300 text-white cursor-not-allowed' : 'bg-red-800 text-white hover:bg-red-700'
+              }`}
           >
-            <MagnifyingGlassIcon className="w-5 h-5"/>
+            <MagnifyingGlassIcon className="w-5 h-5" />
             Tra cứu
           </button>
         </div>
@@ -321,8 +320,8 @@ export default function TransferHistory() {
             ? selectedTransaction.type === 'Deposit'
               ? null
               : selectedTransaction.type === 'Sender' || selectedTransaction?.type === 'Sender (Debt)'
-              ? banks[selectedTransaction?.id_recipient_bank]?.name
-              : banks[selectedTransaction?.id_sender_bank]?.name
+                ? banks[selectedTransaction?.id_recipient_bank]?.name
+                : banks[selectedTransaction?.id_sender_bank]?.name
             : null
         }
       />

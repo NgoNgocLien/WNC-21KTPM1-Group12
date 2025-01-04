@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import OtpInputs from '../OtpInputs';
 
-import { BASE_URL, INTERNAL_BAND_ID, SENDER } from '../../util/config';
+import { BASE_URL, SENDER } from '../../util/config';
 import { getAccessToken } from '../../util/cookie';
 import { payDebt } from '../../redux/debtThunk';
 
@@ -67,11 +67,8 @@ export default function TransferStep3({ setCurrentStep, values, setTransaction, 
     if (result.data) {
       const transaction = await makeTransaction();
 
-      //TODO: update debt
       if (debt) {
         dispatch(payDebt({ id_debt: debt.id, data: { id_transaction: transaction.id } }))
-        console.log("Debt:", debt)
-        console.log("Transaction:", transaction)
       }
     } else {
       setInvalidOtp(true);

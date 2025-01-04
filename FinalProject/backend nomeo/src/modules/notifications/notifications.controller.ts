@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/createNotification.dto';
@@ -45,13 +46,13 @@ export class NotificationsController {
 
   @Post('send/:id')
   async sendNotification(
-    @Param('id') id: string,
-    @Body() body: { title: string; body: string; token: string },
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { title: string; body: string },
   ) {
     return this.notificationsService.sendNotification(
+      id,
       body.title,
       body.body,
-      body.token,
     );
   }
 }
