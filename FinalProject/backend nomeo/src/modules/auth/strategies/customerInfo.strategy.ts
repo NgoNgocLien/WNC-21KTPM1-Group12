@@ -35,7 +35,7 @@ export class CustomerInfoStrategy extends PassportStrategy(Strategy, 'customer-i
       throw new UnauthorizedException('Request has expired');
     }
 
-    if (this.authService.verifyHash(accountNumber + timestamp, bank.secret_key, payloadHash)){
+    if (!this.authService.verifyHash(accountNumber + timestamp, bank.secret_key, payloadHash)){
       throw new UnauthorizedException('Invalid payload hash');
     }
 

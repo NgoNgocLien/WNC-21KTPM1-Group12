@@ -208,10 +208,9 @@ export class AuthService {
   }
 
   verifyHash(data: string, secret_key: string, hashData: string) {
-    const expected = crypto
-      .createHmac('sha256', secret_key)
-      .update(data) // Concatenate encryptedPayload, timestamp, and iv
-      .digest('hex');
+    const expected = crypto.createHash('sha256')
+    .update(data + secret_key)  
+    .digest('hex');
 
     return expected === hashData;
   }

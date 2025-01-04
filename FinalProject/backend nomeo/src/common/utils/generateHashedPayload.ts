@@ -79,11 +79,11 @@ console.log('Request Data 1:', {
 
 // POST /transactions/recipient_profile
 
-const data2 = JSON.stringify({
+const data2 = {
   accountNumber: "ACC123456789",
   timestamp: Math.floor(Date.now() / 1000).toString()
-})
-const hashData2 = hashPayload(data2, hmacKey);
+}
+const hashData2 = hashPayload(data2.accountNumber + data2.timestamp, hmacKey);
 console.log('Request Data 2:', {
   data2,
   hashData2

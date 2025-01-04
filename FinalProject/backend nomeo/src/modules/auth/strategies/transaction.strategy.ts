@@ -36,7 +36,7 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
       throw new UnauthorizedException('Invalid payload hash');
     }
 
-    if (!this.authService.verifySignature(hashPayload, bank.rsa_public_key, signature)) {
+    if (!this.authService.verifySignature(encryptedPayload, bank.rsa_public_key, signature)) {
       throw new UnauthorizedException('Invalid signature');
     }
 
