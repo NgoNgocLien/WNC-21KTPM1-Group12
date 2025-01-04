@@ -1,7 +1,7 @@
 import React from 'react';
-import { FaPen } from 'react-icons/fa';
+import { BanknotesIcon } from '@heroicons/react/24/solid';
 
-const CustomerTable = ({ customers }) => {
+const CustomerTable = ({ customers, openDialog, setSelectedCustomerId }) => {
   return (
     <div className="overflow-x-auto shadow-md">
       <table className="min-w-full divide-y divide-gray-200 bg-white">
@@ -34,7 +34,13 @@ const CustomerTable = ({ customers }) => {
                 <button
                   // onClick={}
                   className="h-fit p-2 text-red-800 border-[1px] border-red-800 rounded-full hover:bg-red-100 transition">
-                  <FaPen size={12} />
+                  <div className="flex size-4 flex-none items-center justify-center rounded-3xl" 
+                    onClick={() => {
+                      setSelectedCustomerId(customer.id)
+                      openDialog(); 
+                    }}>
+                    <BanknotesIcon className="size-5 text-red-800 " />
+                  </div>
                 </button>
               </td>
             </tr>

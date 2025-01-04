@@ -79,8 +79,8 @@ export default function TransferStep2({ setCurrentStep, values }) {
           <div className="w-5/12 text-gray-500">Tổng tiền</div>
           <div className="w-6/12 font-semibold text-red-800">
             {values.fee_payment_method === SENDER 
-              ? Number(values.transaction_amount + 1000).toLocaleString() 
-              : Number(values.transaction_amount - 1000).toLocaleString() 
+              ? Number(Number(values.transaction_amount) + 1000).toLocaleString() 
+              : Number(Number(values.transaction_amount) - 1000).toLocaleString() 
             } VNĐ
             
           </div>

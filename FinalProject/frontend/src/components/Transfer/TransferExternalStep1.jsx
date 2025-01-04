@@ -35,7 +35,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
     validationSchema: Yup.object({
       transaction_amount: Yup.number()
         .required('Số tiền giao dịch là bắt buộc')
-        .min(5000, 'Số tiền giao dịch tối thiểu là 5000')
+        .min(5000, 'Số tiền giao dịch tối thiểu là 5,000 VNĐ')
         .max(balance, `Số tiền giao dịch không được vượt quá số dư ${balance}`),
       recipient_account_number: Yup.string().required('Tài khoản thụ hưởng là bắt buộc'),
     }),
