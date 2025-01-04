@@ -19,8 +19,8 @@ const initialState = {
   employees: null,
   status: IDLE,
   error: null,
-  customerStatus: IDLE,
-  customerError: null,
+  status: IDLE,
+  error: null,
   employeeStatus: IDLE,
   employeeError: null,
 }
@@ -152,17 +152,17 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(createCustomer.pending, (state) => {
-        state.customerStatus = LOADING;
-        state.customerError = null;
+        state.status = LOADING;
+        state.error = null;
       })
       .addCase(createCustomer.fulfilled, (state, action) => {
-        state.customerStatus = SUCCEEDED;
+        state.status = SUCCEEDED;
         state.customers.push(action.payload.data);
         notify(action.payload.message);
       })
       .addCase(createCustomer.rejected, (state, action) => {
-        state.customerStatus = FAILED;
-        state.customerError = action.payload;
+        state.status = FAILED;
+        state.error = action.payload;
       })
       .addCase(getEmployees.pending, (state) => {
         state.status = LOADING;
