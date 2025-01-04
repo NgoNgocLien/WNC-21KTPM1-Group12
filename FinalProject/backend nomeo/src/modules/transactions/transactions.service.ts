@@ -3,7 +3,6 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 
 import { CreateTransactionDto } from './dto/createTransaction.dto';
 import { Prisma } from '@prisma/client';
-import * as crypto from 'crypto';
 
 import { INTERNAL_BAND_ID } from 'src/common/utils/config';
 import { BanksService } from '../banks/banks.service';
@@ -12,6 +11,7 @@ import { ExternalTransactionPayload } from '../auth/types/ExternalTransactionPay
 import { time } from 'console';
 import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionResponse';
 import { AuthService } from '../auth/auth.service';
+import { timestamp } from 'rxjs';
 
 @Injectable()
 export class TransactionsService {
@@ -110,42 +110,59 @@ export class TransactionsService {
   }
 
 
-  // async createExternalTransaction(createTransactionDto: CreateTransactionDto) {
-  //   try {
-  //   const transaction = await this.prisma.transactions.create({
-  //     data: {
-  //       sender_account_number: createTransactionDto.sender_account_number,
-  //       id_sender_bank: createTransactionDto.id_sender_bank,
-  //       recipient_account_number: createTransactionDto.recipient_account_number,
-  //       id_recipient_bank: createTransactionDto.id_recipient_bank,
-  //       transaction_amount: new Prisma.Decimal(createTransactionDto.transaction_amount),
-  //       transaction_message: createTransactionDto.transaction_message,
-  //       fee_payment_method: createTransactionDto.fee_payment_method,
-  //       digital_signature: createTransactionDto.digital_signature,
-  //       recipient_name: createTransactionDto.recipient_name,
-  //     },
-  //   });
-  //   return {
-  //     message: 'Transaction created successfully',
-  //     data: transaction,
-  //   };
-  // } catch (error) {
-  //   throw new Error('Error creating transaction: ' + error.message);
-  // }
-  // }
+  async sendExternalTransaction(createTransactionDto: CreateTransactionDto) {
+    try {
+      const transformedTransasction = {
+        fromBankCode: "",
+        fromAccountNumber: createTransactionDto.sender_account_number,
+        amount: createTransactionDto.transaction_amount,
+        message: createTransactionDto.transaction_message,
+        feePayer: createTransactionDto.fee_payment_method,
+        feeAmount: createTransactionDto.fee_amount,
+        timestamp: Math.floor(Date.now() / 1000).toString()
+      }
+      
+      const external_bank = await this.banksService.getBankById(createTransactionDto.id_sender_bank);
+
+      const external_bank_base_url = "";
+
+      await this.banksService.makeTransaction(JSON.stringify(transformedTransasction), external_bank, external_bank_base_url)
+
+      // const transaction = await this.prisma.transactions.create({
+      //   data: {
+      //     sender_account_number: createTransactionDto.sender_account_number,
+      //     id_sender_bank: createTransactionDto.id_sender_bank,
+      //     recipient_account_number: createTransactionDto.recipient_account_number,
+      //     id_recipient_bank: createTransactionDto.id_recipient_bank,
+      //     transaction_amount: new Prisma.Decimal(createTransactionDto.transaction_amount),
+      //     transaction_message: createTransactionDto.transaction_message,
+      //     fee_payment_method: createTransactionDto.fee_payment_method,
+      //     // digital_signature: createTransactionDto.digital_signature,
+      //     recipient_name: createTransactionDto.recipient_name,
+      //   },
+      // });
+    return {
+      message: 'Transaction created successfully',
+      // data: transaction,
+    };
+  } catch (error) {
+    throw new Error('Error creating transaction: ' + error.message);
+  }
+  }
 
   generateExternalResponseData(data: string, public_key: string, private_key: string, secret_key: string): ExternalTransactionResponse{
-    const encryptData = this.authService.encryptData(data, public_key);
-    const hashData = this.authService.hashPayload(encryptData, secret_key);
-    const signature = this.authService.createSignature(hashData, private_key)
+    const encryptedData = this.authService.encryptData(data, public_key);
+    const hashData = this.authService.hashPayload(encryptedData, secret_key);
+    const signature = this.authService.createSignature(encryptedData, private_key)
     return {
-      recipient_signature: signature
+      encryptedData,
+      signature
     }
   }
 
-  async receiveExternalTransaction(bank_code: string, sender_signature: string, payload: ExternalTransactionPayload) {
+  async receiveExternalTransaction(sender_signature: string, payload: ExternalTransactionPayload) {
     try {
-      const bank = await this.banksService.getBank(bank_code);
+      const bank = await this.banksService.getBankByCode(payload.bank_code);
 
       const customer = await this.customersService.findInternalProfile(payload.recipient_account_number)
       const recipient_name = customer.data.customers.fullname;
@@ -186,7 +203,7 @@ export class TransactionsService {
         where: { id: transaction.id }, // Assuming transaction.id is the primary key
         data: { 
           sender_signature: sender_signature,
-          recipient_signature: responseData.recipient_signature 
+          recipient_signature: responseData.signature 
         },
       });
 

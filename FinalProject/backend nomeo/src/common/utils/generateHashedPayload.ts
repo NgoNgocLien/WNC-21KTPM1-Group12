@@ -64,15 +64,16 @@ const hmacKey = 'TECHBANK_NOMEOBANK';
 
 const data1 = JSON.stringify({
   ...payload,
-  timestamp: Math.floor(Date.now() / 1000).toString()
+  timestamp: Math.floor(Date.now() / 1000).toString(),
+  bank_code: "B001"
 })
 const encryptData1 = encryptData(data1, publicKey);
 const hashData1 = hashPayload(encryptData1, hmacKey);
 const signature = createSignature(encryptData1, privateKey)
 
 console.log('Request Data 1:', {
-  hashData1,
-  encryptData1,
+  hashedPayload: hashData1,
+  encryptedPayload: encryptData1,
   signature
 });
 
@@ -80,12 +81,14 @@ console.log('Request Data 1:', {
 // POST /transactions/recipient_profile
 
 const data2 = {
-  accountNumber: "ACC123456789",
+  bank_code: "B001",
+  account_number: "ACC123456789",
   timestamp: Math.floor(Date.now() / 1000).toString()
 }
-const hashData2 = hashPayload(data2.accountNumber + data2.timestamp, hmacKey);
+const encryptData2 = encryptData(JSON.stringify(data2), publicKey);
+const hashData2 = hashPayload(encryptData2, hmacKey);
 console.log('Request Data 2:', {
-  data2,
-  hashData2
+  encryptedPayload: encryptData2,
+  hashedPayload: hashData2
 });
 

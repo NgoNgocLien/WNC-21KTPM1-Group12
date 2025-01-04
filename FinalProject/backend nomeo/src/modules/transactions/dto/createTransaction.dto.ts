@@ -36,6 +36,9 @@ export class CreateTransactionDto {
   fee_payment_method?: FeePayment;
 
   @IsOptional()
+  fee_amount: string;
+
+  @IsOptional()
   @IsString()
   @MaxLength(255, { message: 'Digital signature is too long.' })
   digital_signature?: string;

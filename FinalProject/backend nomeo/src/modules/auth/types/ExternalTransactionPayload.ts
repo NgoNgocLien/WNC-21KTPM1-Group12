@@ -1,6 +1,7 @@
 import { FeePayment } from "src/modules/transactions/types/FeePayment.type";
 
 type ExternalTransactionPayload = {
+  bank_code: string;
   sender_account_number: string;
   recipient_account_number: string;
   transaction_amount: number | string;

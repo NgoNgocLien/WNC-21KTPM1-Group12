@@ -18,26 +18,12 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
 
   // Validate incoming request
   async validate(req: Request) {
-    const bankCode = req.body['bankCode'] as string;
     const encryptedPayload = req.body['encryptedPayload'] as string;
-    const hashPayload = req.body['hashPayload'] as string;
+    const hashedPayload = req.body['hashedPayload'] as string;
     const signature = req.body['signature'] as string;
   
-    if (!encryptedPayload ||!hashPayload || !signature || !bankCode) {
+    if (!encryptedPayload ||!hashedPayload || !signature) {
       throw new UnauthorizedException('Missing required headers');
-    }
-
-    const bank = await this.banksService.getBank(bankCode);
-    if (!bank) {
-      throw new UnauthorizedException('Invalid bank');
-    }
-
-    if (!this.authService.verifyHash(encryptedPayload, bank.secret_key, hashPayload)){
-      throw new UnauthorizedException('Invalid payload hash');
-    }
-
-    if (!this.authService.verifySignature(encryptedPayload, bank.rsa_public_key, signature)) {
-      throw new UnauthorizedException('Invalid signature');
     }
 
     const privateKey = process.env.RSA_PRIVATE_KEY;
@@ -51,17 +37,27 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
     } catch (error) {
       throw new UnauthorizedException('Error decrypting payload');
     }
-    
-    console.log(payload)
+
+    const bank = await this.banksService.getBankByCode(payload.bank_code);
+    if (!bank) {
+      throw new UnauthorizedException('Invalid bank');
+    }
 
     if (!this.authService.verifyTimestamp(payload.timestamp as string)){
       throw new UnauthorizedException('Request has expired');
     }
 
-    
+    if (!this.authService.verifyHash(encryptedPayload, bank.secret_key, hashedPayload)){
+      throw new UnauthorizedException('Invalid payload hash');
+    }
+
+    if (!this.authService.verifySignature(encryptedPayload, bank.rsa_public_key, signature)) {
+      throw new UnauthorizedException('Invalid signature');
+    }
+
+    console.log(payload)
 
     return {
-      bank_code: bankCode,
       signature,
       payload,
     };

@@ -33,17 +33,16 @@ export class TransactionsController {
     return this.transactionsService.createInternalTransaction(createTransactionDto);
   }
 
-  // @Post('external/send')
-  // sendExternalTransaction(@Body() createTransactionDto: CreateTransactionDto) {
-  //   return this.transactionsService.sendExternalTransaction(createTransactionDto);
-  // }
+  @Post('external/send')
+  sendExternalTransaction(@Body() createTransactionDto: CreateTransactionDto) {
+    return this.transactionsService.sendExternalTransaction(createTransactionDto);
+  }
 
   @Public()
   @UseGuards(TransactionGuard)
   @Post('external/receive')
   receiveExternalTransaction(@Req() req: Request) {
     return this.transactionsService.receiveExternalTransaction(
-      req.user["bank_code"], 
       req.user["signature"], 
       req.user["payload"] 
     );
