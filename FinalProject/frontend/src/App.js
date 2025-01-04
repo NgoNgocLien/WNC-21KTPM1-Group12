@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Outlet, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
@@ -102,12 +102,10 @@ function AuthenticatedLayout() {
       </main>
 
       {notification && (
-        // <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg">
-        //   <p className="text-lg font-semibold">{notification.title}</p>
-        //   <p className="text-md">{notification.body}</p>
-        // </div>
-
-        <Dialog type="info" isOpen={true} message="This is a message" />
+        <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg">
+          <p className="text-md font-semibold">{notification.title}</p>
+          <p className="text-md">{notification.body}</p>
+        </div>
       )}
     </>
   );
@@ -124,7 +122,7 @@ function App() {
         error: null
       }));
     }
-  }, [])
+  }, [dispatch]);
 
   return (
     <>

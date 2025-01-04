@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCustomers } from '../../../redux/userThunk';
-import { MdOutlineArrowBackIosNew, MdOutlineArrowForwardIos  } from "react-icons/md";
+import { MdOutlineArrowBackIosNew, MdOutlineArrowForwardIos } from "react-icons/md";
 import { PlusIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 import CustomerTable from '../../../components/Table/CustomerTable';
 import AddCustomerModal from '../../../components/CustomerMgmt/AddCustomerModal';
 
 import TransferHistory from '../../../components/CustomerMgmt/TransferHistory';
-import { IDLE, SUCCEEDED } from '../../../util/config';
+import { SUCCEEDED } from '../../../util/config';
 
 export default function CustomerMgmt() {
   const dispatch = useDispatch();
@@ -40,7 +40,7 @@ export default function CustomerMgmt() {
 
   const handleSearch = () => {
     if (!sortedCustomers) return [];
-    
+
     const filteredCustomers = sortedCustomers.filter((customer) =>
       customer.fullname.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -56,7 +56,7 @@ export default function CustomerMgmt() {
   return (
     <div className="max-w-screen-xl mx-auto px-4 py-2 w-full">
       <p className="text-xl font-semibold text-gray-800 mb-2">Quản lý khách hàng</p>
-      
+
       <div className="flex justify-end mb-5">
         <button
           onClick={openModal}
@@ -77,9 +77,9 @@ export default function CustomerMgmt() {
               placeholder="Tìm kiếm theo họ tên"
               className={`w-full p-1.5 px-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 ${status === SUCCEEDED ? '' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
             />
-            <button className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none" 
-            onClick={handleSearch}
-            
+            <button className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+              onClick={handleSearch}
+
             >
               <MagnifyingGlassIcon className="w-5 h-5" />
             </button>
@@ -103,7 +103,7 @@ export default function CustomerMgmt() {
               disabled={currentPage === 1}
               className="py-1 px-3 bg-red-800 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-300"
             >
-              <MdOutlineArrowBackIosNew/>
+              <MdOutlineArrowBackIosNew />
             </button>
             <span className="py-1 px-3 text-gray-700">
               Trang {currentPage} của {totalPages}
@@ -114,7 +114,7 @@ export default function CustomerMgmt() {
               className="py-1 px-3 bg-red-800 text-white rounded-lg hover:bg-red-700 
                 disabled:bg-gray-300"
             >
-              <MdOutlineArrowForwardIos/>
+              <MdOutlineArrowForwardIos />
             </button>
           </div>
         </div>
@@ -122,7 +122,7 @@ export default function CustomerMgmt() {
       </div>
 
       <p className="text-xl font-semibold mt-6 mb-6">Lịch sử giao dịch</p>
-      <TransferHistory/>
+      <TransferHistory />
     </div>
   );
 }

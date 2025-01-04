@@ -59,13 +59,8 @@ export class DebtsController {
   cancelDebt(
     @Param('id', ParseIntPipe) id: number,
     @Body() deleteDebtDto: DeleteDebtDto,
-    @Req() req: Request,
   ) {
-    return this.debtsService.cancelDebt(
-      id,
-      req.user['fcm_token'],
-      deleteDebtDto,
-    );
+    return this.debtsService.cancelDebt(id, deleteDebtDto);
   }
 
   @Post('/decline/:id')

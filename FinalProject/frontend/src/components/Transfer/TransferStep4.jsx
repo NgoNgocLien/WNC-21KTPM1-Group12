@@ -9,27 +9,27 @@ import { getCustomerContacts } from './../../redux/userThunk';
 
 
 export default function TransferStep4({ setIsAddModalOpen, transaction }) {
-  const {fullname, contacts} = useSelector((state) => state.user)
+  const { fullname, contacts } = useSelector((state) => state.user)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isExistingInContact, setIsExistingInContact] = useState(false)
-  useEffect(()=>{
-    if (transaction){
-      if (contacts == null){
+  useEffect(() => {
+    if (transaction) {
+      if (contacts == null) {
         dispatch(getCustomerContacts())
-      } else{
+      } else {
         const result = contacts?.some((contact) => {
           return contact.account_number === transaction.recipient_account_number
         })
         setIsExistingInContact(result);
       }
     }
-  }, [transaction, contacts])
+  }, [transaction, contacts, dispatch])
 
   return (
     <>
       <div className="relative w-8/12 h-fit mx-auto flex flex-col rounded-xl bg-white">
-      
+
         <div className="relative w-full h-full top-0 p-6 pt-8 z-10">
           <div className="self-center flex flex-col items-center text-green-400">
             <HiCheckBadge size={80} />
@@ -64,7 +64,7 @@ export default function TransferStep4({ setIsAddModalOpen, transaction }) {
             <div className="w-full flex justify-between">
               <div className="w-5/12 text-gray-500">Phí giao dịch</div>
               <div className="w-6/12 font-semibold">
-              {transaction.fee_amount}
+                {transaction.fee_amount}
               </div>
             </div>
 
@@ -96,26 +96,26 @@ export default function TransferStep4({ setIsAddModalOpen, transaction }) {
           </div>
 
           <div className={`flex ${isExistingInContact ? 'justify-center' : 'justify-between'} space-x-4 pt-4`}>
-            
-              {
-                !isExistingInContact && (
-                  <div>
-                <button
-                  type="button"
-                  onClick={() => setIsAddModalOpen(true) }
-                  className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-xl hover:bg-red-100"
-                >
-                  Lưu người nhận
-                </button>
+
+            {
+              !isExistingInContact && (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-xl hover:bg-red-100"
+                  >
+                    Lưu người nhận
+                  </button>
                 </div>
-                )
-              }
-            
+              )
+            }
+
             <div className="flex justify-center space-x-4">
-            <button
-              type="button"
-              onClick={() => navigate("/customer/transfer-internal")}
-              className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-xl hover:bg-red-100"
+              <button
+                type="button"
+                onClick={() => navigate("/customer/transfer-internal")}
+                className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-xl hover:bg-red-100"
               >
                 Giao dịch khác
               </button>
@@ -131,9 +131,9 @@ export default function TransferStep4({ setIsAddModalOpen, transaction }) {
         </div>
 
         <div className="absolute w-full h-full top-0 z-0">
-          <img 
+          <img
             src={`${process.env.PUBLIC_URL}/bg-bill.png`}
-            alt="background" 
+            alt="background"
             className=" w-full h-full object-cover"
             style={{
               maskImage: 'linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)',

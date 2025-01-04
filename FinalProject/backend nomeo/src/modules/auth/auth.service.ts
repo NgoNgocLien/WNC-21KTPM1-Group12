@@ -109,8 +109,6 @@ export class AuthService {
     }
 
     if (!user || !user.data.refresh_token) {
-      console.log(user);
-      console.log(user.data);
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -201,16 +199,18 @@ export class AuthService {
     }
   }
 
-  hashPayload(data: string, secret_key: string){
-    return crypto.createHash('sha256')
-          .update(data + secret_key)  
-          .digest('hex');
+  hashPayload(data: string, secret_key: string) {
+    return crypto
+      .createHash('sha256')
+      .update(data + secret_key)
+      .digest('hex');
   }
 
   verifyHash(data: string, secret_key: string, hashData: string) {
-    const expected = crypto.createHash('sha256')
-    .update(data + secret_key)  
-    .digest('hex');
+    const expected = crypto
+      .createHash('sha256')
+      .update(data + secret_key)
+      .digest('hex');
 
     return expected === hashData;
   }
