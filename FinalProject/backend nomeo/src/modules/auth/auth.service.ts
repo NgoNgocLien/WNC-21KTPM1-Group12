@@ -17,7 +17,7 @@ export class AuthService {
     private employeesService: EmployeesService,
     private adminsService: AdminsService,
     private jwtService: JwtService,
-    private prisma: PrismaService
+    private prisma: PrismaService,
   ) {}
 
   async login(
@@ -69,7 +69,9 @@ export class AuthService {
     const refresh_token = await this.getRefreshToken(payload);
 
     await this.updateRefreshToken(user.data.id, refresh_token, role);
-    await this.updateFcmToken(user.data.id, fcm_token);
+    if (role === Role.CUSTOMER) {
+      await this.updateFcmToken(user.data.id, fcm_token);
+    }
 
     return { access_token, refresh_token };
   }
@@ -205,27 +207,30 @@ export class AuthService {
           .digest('hex');
   }
 
-  verifyHash(data: string, secret_key: string, hashData: string){
-    const expected = crypto.createHmac('sha256', secret_key)
-      .update(data)  // Concatenate encryptedPayload, timestamp, and iv
+  verifyHash(data: string, secret_key: string, hashData: string) {
+    const expected = crypto
+      .createHmac('sha256', secret_key)
+      .update(data) // Concatenate encryptedPayload, timestamp, and iv
       .digest('hex');
 
     return expected === hashData;
   }
 
-  encryptData(data: string, public_key: string){
+  encryptData(data: string, public_key: string) {
     const dataBuffer = Buffer.from(data);
-    const encryptedPayload = crypto.publicEncrypt(public_key, dataBuffer).toString('base64');
+    const encryptedPayload = crypto
+      .publicEncrypt(public_key, dataBuffer)
+      .toString('base64');
     return encryptedPayload;
   }
 
-  decryptData(data: string, private_key: string){
+  decryptData(data: string, private_key: string) {
     const encryptedBuffer = Buffer.from(data, 'base64');
     const decryptedBuffer = crypto.privateDecrypt(private_key, encryptedBuffer);
-    return JSON.parse(decryptedBuffer.toString())
+    return JSON.parse(decryptedBuffer.toString());
   }
 
-  createSignature(data: string, private_key: string){
+  createSignature(data: string, private_key: string) {
     const sign = crypto.createSign('SHA256');
     sign.update(data);
     sign.end();
@@ -233,18 +238,17 @@ export class AuthService {
     return sign.sign(private_key, 'base64');
   }
 
-  verifySignature(data: string, public_key: string, signature: string){
+  verifySignature(data: string, public_key: string, signature: string) {
     const verify = crypto.createVerify('SHA256');
     verify.update(data);
     verify.end();
-    
+
     return verify.verify(public_key, signature, 'base64');
   }
 
-  verifyTimestamp(timestamp: string){
+  verifyTimestamp(timestamp: string) {
     const currentTime = Math.floor(Date.now() / 1000);
     const requestTime = parseInt(timestamp, 10);
-    return !(isNaN(requestTime) || (currentTime - requestTime) > 300000) 
+    return !(isNaN(requestTime) || currentTime - requestTime > 300000);
   }
-
 }

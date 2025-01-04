@@ -1,18 +1,21 @@
-import React, { useState} from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import OtpInputs from '../OtpInputs';
 
 import { BASE_URL, INTERNAL_BAND_ID, SENDER } from '../../util/config';
 import { getAccessToken } from '../../util/cookie';
+import { payDebt } from '../../redux/debtThunk';
 
 
 
 export default function TransferStep3({ setCurrentStep, values, setTransaction, debt }) {
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [invalidOtp, setInvalidOtp] = useState(false);
-  const {email} = useSelector((state) => state.user)
+  const { email } = useSelector((state) => state.user)
   const access_token = getAccessToken();
+
+  const dispatch = useDispatch();
 
   const makeTransaction = async () => {
     const newValues = {
@@ -20,51 +23,55 @@ export default function TransferStep3({ setCurrentStep, values, setTransaction, 
       transaction_amount: values.fee_payment_method === SENDER ? values.transaction_amount + 1000 : values.transaction_amount - 1000
     }
 
-    const transaction = await fetch (`${BASE_URL}/transactions/internal`,{
+    const transaction = await fetch(`${BASE_URL}/transactions/internal`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${access_token}`, 
+        'Authorization': `Bearer ${access_token}`,
       },
       body: JSON.stringify(newValues)
     })
 
-    if (!transaction.ok){
+    if (!transaction.ok) {
       throw new Error('Failed to fetch user account info');
     } else {
       const result = await transaction.json();
       setTransaction(result.data)
       setCurrentStep(4)
+
+      return result.data;
     }
   }
 
   const handleConfirm = async () => {
     const otpValue = otp.join("");
     console.log("OTP Value:", otpValue);
-    
-    const response = await fetch(`${BASE_URL}/otp/verify`,{
+
+    const response = await fetch(`${BASE_URL}/otp/verify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${access_token}`, 
+        'Authorization': `Bearer ${access_token}`,
       },
       body: JSON.stringify({
-          email,
-          otp: otpValue
+        email,
+        otp: otpValue
       })
     })
 
-    if (!response.ok){
+    if (!response.ok) {
       throw new Error('Failed to fetch user account info');
     }
 
     const result = await response.json();
-    if (result.data){
-      await makeTransaction();
+    if (result.data) {
+      const transaction = await makeTransaction();
 
       //TODO: update debt
-      if (debt){
-        
+      if (debt) {
+        dispatch(payDebt({ id_debt: debt.id, data: { id_transaction: transaction.id } }))
+        console.log("Debt:", debt)
+        console.log("Transaction:", transaction)
       }
     } else {
       setInvalidOtp(true);

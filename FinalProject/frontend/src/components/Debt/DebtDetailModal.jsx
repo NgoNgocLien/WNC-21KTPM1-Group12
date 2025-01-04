@@ -33,7 +33,7 @@ export default function DebtDetailModal({ type, debt, isOpen = false, handleClos
               </div>
             </div>
             <h5 className="mt-2 text-md font-medium">Nội dung nhắc nợ</h5>
-            <p className="w-full truncate text-md text-gray-500 bg-gray-100 p-2 rounded-xl flex-1">{(debt.debt_message === '' || debt.debt_message === null) ? '(Không có nội dung)' : debt.debt_message}</p>
+            <p className="w-full truncate text-md text-gray-500 bg-gray-100 p-2 rounded-xl flex-1">{(debt.debt_message === '' || debt.debt_message === null || debt.debt_message === undefined) ? '(Không có nội dung)' : debt.debt_message}</p>
             {debt.status === 'CANCELED' && (
               <>
                 <h5 className="text-md font-medium">Nội dung hủy</h5>
@@ -62,20 +62,18 @@ export default function DebtDetailModal({ type, debt, isOpen = false, handleClos
             {debt.status === 'DECLINED' && (
               <>
                 <h5 className="mt-2 text-md font-medium">Nội dung từ chối</h5>
-                <p className="w-full truncate text-md text-gray-600 bg-gray-100 p-2 rounded-xl flex-1">{(debt.debt_deletions.debt_message === '' || debt.debt_deletions.debt_message === null) ? '(Không có nội dung)' : debt.debt_deletions.debt_message}</p>
+                <p className="w-full truncate text-md text-gray-600 bg-gray-100 p-2 rounded-xl flex-1">{(debt.debt_deletions.debt_message === '' || debt.debt_deletions.debt_message === null || debt.debt_deletions.debt_message === undefined) ? '(Không có nội dung)' : debt.debt_deletions.debt_message}</p>
               </>
             )}
             {debt.status === 'PAID' && (
               <>
                 <h5 className="mt-2 text-md font-medium">Nội dung thanh toán</h5>
-                <p className="w-full truncate text-md text-gray-600 bg-gray-100 p-2 rounded-xl flex-1">{(debt.debt_payments[0].transactions.transactions_message === '' || debt.debt_payments[0].transactions.transactions_message === null) ? '(Không có nội dung)' : debt.debt_payments[0].transactions.transactions_message}</p>
+                <p className="w-full truncate text-md text-gray-600 bg-gray-100 p-2 rounded-xl flex-1">{(debt.debt_payments[0].transactions.transactions_message === '' || debt.debt_payments[0].transactions.transactions_message === null || debt.debt_payments[0].transactions.transactions_message === undefined) ? '(Không có nội dung)' : debt.debt_payments[0].transactions.transactions_message}</p>
               </>
             )}
 
           </div>
         </div>
-
-
       </div>
     </div>
   )

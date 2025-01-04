@@ -40,17 +40,18 @@ export const createDebt = createAsyncThunk(
   }
 );
 
-// export const payDebt = createAsyncThunk(
-//   'debt/payDebt',
-//   async (data, { rejectWithValue, getState }) => {
-//     try {
-//       const response = await payDebt(data);
-//       return response;
-//     } catch (error) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
+export const payDebt = createAsyncThunk(
+  'debt/payDebt',
+  async ({ id_debt, data }, { rejectWithValue, getState }) => {
+    try {
+      await DebtService.payDebt(id_debt, data);
+      const response = await DebtService.getIncomingDebts();
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 export const cancelDebt = createAsyncThunk(
   'debt/cancelDebt',

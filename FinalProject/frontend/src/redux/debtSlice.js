@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
-import { fetchIncomingDebts, fetchOutgoingDebts, createDebt, cancelDebt, declineDebt } from './debtThunk';
+import { fetchIncomingDebts, fetchOutgoingDebts, createDebt, cancelDebt, declineDebt, payDebt } from './debtThunk';
 
 const initialState = {
   incomingDebts: {
@@ -24,7 +24,7 @@ const debtSlice = createSlice({
     reset: (state) => {
       return { ...initialState }
     },
-    setDebtStatus: (state,action) => {
+    setDebtStatus: (state, action) => {
       return {
         ...state,
         status: action.payload.status,
@@ -98,6 +98,18 @@ const debtSlice = createSlice({
         state.incomingDebts = action.payload.data;
       })
       .addCase(declineDebt.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
+      })
+      .addCase(payDebt.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(payDebt.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+        state.incomingDebts = action.payload.data;
+      })
+      .addCase(payDebt.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
       })

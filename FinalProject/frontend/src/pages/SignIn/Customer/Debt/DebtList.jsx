@@ -20,6 +20,9 @@ export default function DebtList() {
   const [displayContacts, setDisplayContacts] = useState(false)
   const [selectedContact, setSelectedContact] = useState(null);
   const [recipientName, setRecipientName] = useState(null);
+  const [accountNumber, setAccountNumber] = useState(null);
+  const [amount, setAmount] = useState(null);
+  const [message, setMessage] = useState(null);
 
   const { id, fullname, contacts } = useSelector((state) => state.user);
   const { incomingDebts, outgoingDebts, status } = useSelector((state) => state.debt);
@@ -31,6 +34,12 @@ export default function DebtList() {
     }
   }, [dispatch, status]);
 
+  useEffect(() => {
+    if (fullname) {
+      setMessage(fullname.toUpperCase() + " nhắc trả tiền");
+    }
+  }, [fullname])
+
   const handleClickContactBook = () => {
     if (contacts === null) {
       dispatch(getCustomerContacts());
@@ -40,13 +49,13 @@ export default function DebtList() {
 
   const formik = useFormik({
     initialValues: {
-      account_number: null,
-      amount: null,
-      message: null
+      account_number: accountNumber,
+      amount: amount,
+      message: fullname?.toUpperCase() + " nhắc trả tiền" || ''
     },
     validationSchema: Yup.object({
       account_number: Yup.string().required('Số tài khoản là bắt buộc'),
-      amount: Yup.number().required('Số tiền là bắt buộc'),
+      amount: Yup.number().required('Số tiền là bắt buộc').min(5000, 'Số tiền giao dịch tối thiểu là 5.000'),
     }),
     onSubmit: (values, { resetForm }) => {
       dispatch(createDebt({
@@ -57,34 +66,45 @@ export default function DebtList() {
       }));
       resetForm();
     },
+    onChange: (values) => {
+      formik.setValues({
+        ...values,
+        account_number: accountNumber,
+        amount: amount,
+        message: message
+      });
+    },
+    onReset: () => {
+      setRecipientName(null);
+      setSelectedContact(null);
+      setAccountNumber(null);
+      setAmount(null);
+      setMessage(fullname.toUpperCase() + " nhắc trả tiền");
+    },
   })
 
   const handleAccountNumberBlur = async (e) => {
-    formik.handleBlur(e);
-    const account_number = e.target.value;
-    if (account_number) {
-      try {
-        formik.handleBlur(e);
-        const account_number = e.target.value;
-        if (account_number) {
-          const recipient_name = await CustomerService.getInternalRecipientInfo(account_number);
-          setRecipientName(recipient_name);
-        }
-      } catch (error) {
-        setRecipientName("");
+    if (e.target.value === '') {
+      setRecipientName(null);
+      return;
+    }
+    try {
+      formik.handleBlur(e);
+      if (accountNumber !== '') {
+        const recipient_name = await CustomerService.getInternalRecipientInfo(accountNumber);
+        setRecipientName(recipient_name);
       }
+    } catch (error) {
+      setRecipientName(undefined);
     }
   };
 
   useEffect(() => {
     if (selectedContact) {
-      formik.setFieldValue("account_number", selectedContact.account_number)
+      setAccountNumber(selectedContact.account_number);
+      setRecipientName(selectedContact.fullname);
     }
   }, [selectedContact])
-
-  useEffect(() => {
-    formik.setFieldValue('message', `${fullname.toUpperCase()} nhắc trả tiền`);
-  }, [fullname])
 
   return (
     <>
@@ -108,8 +128,11 @@ export default function DebtList() {
                 <input
                   id="account_number"
                   name="account_number"
-                  onChange={formik.handleChange}
-                  value={formik.values.account_number}
+                  onChange={(e) => {
+                    setAccountNumber(e.target.value)
+                    formik.handleChange(e);
+                  }}
+                  value={accountNumber || ''}
                   onBlur={handleAccountNumberBlur}
                   type="text"
                   required
@@ -122,8 +145,8 @@ export default function DebtList() {
             {formik.touched.account_number && formik.errors.account_number && (
               <div className="w-7/12 ms-auto text-red-500 text-sm mt-1">{formik.errors.account_number}</div>
             )}
-            {recipientName === "" ? (
-              <div className="w-7/12 ms-auto text-red-500 font-sm text-md mt-1">Không tìm thấy số tài khoản</div>
+            {recipientName === undefined ? (
+              <div className="w-7/12 ms-auto text-red-500 text-sm mt-1">Không tìm thấy số tài khoản</div>
             ) :
               (
                 <div className="w-7/12 ms-auto text-gray-500 font-medium text-md mt-1">{recipientName?.toUpperCase()}</div>
@@ -139,8 +162,11 @@ export default function DebtList() {
                   id="amount"
                   name="amount"
                   type="number"
-                  value={formik.values.amount}
-                  onChange={formik.handleChange}
+                  value={amount || ''}
+                  onChange={(e) => {
+                    setAmount(e.target.value)
+                    formik.handleChange(e);
+                  }}
                   onBlur={formik.handleBlur}
                   required
                   placeholder="Nhập số tiền"
@@ -150,9 +176,7 @@ export default function DebtList() {
               </div>
             </div>
             {formik.touched.amount && formik.errors.amount &&
-              <div className="w-7/12 ms-auto text-red-500 text-sm mt-1">
-                {formik.errors.amount}
-              </div>
+              <div className="w-7/12 ms-auto text-red-500 text-sm mt-1">{formik.errors.amount}</div>
             }
             <div className="w-full flex justify-between items-center mt-4">
               <label htmlFor="message" className="w-3/12 font-medium text-gray-900">
@@ -163,8 +187,11 @@ export default function DebtList() {
                   id="message"
                   name="message"
                   type="text"
-                  value={formik.values.message}
-                  onChange={formik.handleChange}
+                  value={message}
+                  onChange={(e) => {
+                    setMessage(e.target.value)
+                    formik.handleChange(e);
+                  }}
                   onBlur={formik.handleBlur}
                   placeholder="Nhập nội dung nhắc nợ"
                   className="w-full rounded-xl bg-white px-3 py-3 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-red-800 text-md"
