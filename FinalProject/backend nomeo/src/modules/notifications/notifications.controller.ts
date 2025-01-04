@@ -43,8 +43,9 @@ export class NotificationsController {
   //   return this.notificationsService.remove(+id);
   // }
 
-  @Post('send')
+  @Post('send/:id')
   async sendNotification(
+    @Param('id') id: string,
     @Body() body: { title: string; body: string; token: string },
   ) {
     return this.notificationsService.sendNotification(
