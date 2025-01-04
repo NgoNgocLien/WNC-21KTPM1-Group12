@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { logout } from '../../redux/authSlice';
 import { ArrowRightStartOnRectangleIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { logout } from '../../redux/authSlice';
 import { clearToken } from '../../util/cookie';
-import EmployeeService from './../../services/EmployeeService'
+import { getUserInfo } from '../../redux/userThunk';
+
 
 const EmployeeSidebar = () => {
-  const [employeeInfo, setEmployeeInfo] = useState(null)
+  const dispatch = useDispatch();
+  const {id, fullname, email} = useSelector((state) => state.user)
 
   useEffect( () => {
-    const getEmployeeInfo = async () => {
-      try {
-        const response = await EmployeeService.getEmployeeInfo();
-        setEmployeeInfo(response.data);
-      } catch (error) {
-        console.error('Error fetching employee profile:', error);
-      }
-    };
-
-    getEmployeeInfo();
-
+    if (id == 0){
+      dispatch(getUserInfo("employee"))
+    }
   }, []);
 
   const handleLogout = () => {
@@ -27,8 +23,6 @@ const EmployeeSidebar = () => {
     logout();
     window.location.href = "/"
   };
-
-  console.log(employeeInfo);
 
   return (
     <div className="fixed h-screen w-80 p-3">
@@ -44,8 +38,8 @@ const EmployeeSidebar = () => {
                   className="w-24 h-24 rounded-full border-2 border-white"
                 />
               </div>
-              <p className="text-xl">{employeeInfo?.fullname}</p>
-              <p className="text-slate-300">Email: {employeeInfo?.email}</p>
+              <p className="text-xl">{fullname}</p>
+              <p className="text-slate-300">Email: {email}</p>
             </div>
           </div>
 

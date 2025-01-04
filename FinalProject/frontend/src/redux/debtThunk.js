@@ -1,6 +1,4 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { BASE_URL } from './../util/config'
-import { getAccessToken } from './../util/cookie'
 import DebtService from '../services/DebtService';
 
 export const fetchIncomingDebts = createAsyncThunk(

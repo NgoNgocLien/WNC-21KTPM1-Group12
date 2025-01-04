@@ -2,19 +2,19 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/authSlice';
-import { getCustomerInfo } from '../../redux/userThunk';
+import { getUserInfo } from '../../redux/userThunk';
 import { ArrowRightStartOnRectangleIcon, ArrowsRightLeftIcon, ArrowUpTrayIcon, BanknotesIcon, BuildingLibraryIcon, CreditCardIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { clearToken } from '../../util/cookie';
 
 const CustomerSidebar = () => {
   const dispatch = useDispatch();
 
-  const { account_number, fullname, status, error } = useSelector((state) => state.user);
+  const { account_number, fullname } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (account_number === '' )
-      dispatch(getCustomerInfo());
-  }, [status, dispatch]);
+      dispatch(getUserInfo("customer"));
+  }, [dispatch]);
 
   const handleLogout = () => {
     clearToken();

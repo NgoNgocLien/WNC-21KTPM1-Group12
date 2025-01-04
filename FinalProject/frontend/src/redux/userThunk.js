@@ -3,12 +3,24 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import CustomerService from '../services/CustomerService';
 import EmployeeService from '../services/EmployeeService';
 
-export const getCustomerInfo = createAsyncThunk(
+export const getUserInfo = createAsyncThunk(
     'user/getCustomerInfo',
-    async (_, { rejectWithValue, }) => {  
+    async (role, { rejectWithValue, }) => {  
         try {
-            const response = await CustomerService.getCustomerInfo();
-            return response;
+          let response = null;
+          switch (role){
+            case "customer":
+              response = await CustomerService.getCustomerInfo();
+              return response;
+            case "employee":
+              response = await EmployeeService.getEmployeeInfo();
+              return response;
+            case "admin":
+              // response = await CustomerService.getCustomerInfo();
+              // return response;
+            default:
+          }
+            
         } catch (error) {
         return rejectWithValue(error.message);
         }

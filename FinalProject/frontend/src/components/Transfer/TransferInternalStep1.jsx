@@ -48,7 +48,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues, debt 
     validationSchema: Yup.object({
       transaction_amount: Yup.number()
         .required('Số tiền giao dịch là bắt buộc')
-        .min(5000, 'Số tiền giao dịch tối thiểu là 5000')
+        .min(5000, 'Số tiền giao dịch tối thiểu là 5,000 VNĐ')
         .max(balance, `Số tiền giao dịch không được vượt quá số dư ${balance}`),
       recipient_account_number: Yup.string().required('Tài khoản thụ hưởng là bắt buộc'),
     }),
@@ -144,13 +144,24 @@ export default function TransferInternalStep1({ setCurrentStep, setValues, debt 
             ) : (
             <div className="flex items-center rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
               <input
-                type="number"
+                type="text"
                 id="transaction_amount"
                 name="transaction_amount"
                 required
                 placeholder="Nhập số tiền"
-                value={formik.values.transaction_amount}
-                onChange={formik.handleChange}
+                value={
+                  formik.values.transaction_amount
+                    ? Number(formik.values.transaction_amount).toLocaleString('en-US') // Format with commas
+                    : ''
+                }
+                onChange={(e) => {
+                  const rawValue = e.target.value.replace(/,/g, '');
+                  if (!isNaN(rawValue) && rawValue !== '') {
+                    formik.setFieldValue('transaction_amount', rawValue);
+                  } else if (rawValue === '') {
+                    formik.setFieldValue('transaction_amount', ''); 
+                  }
+                }}
                 onBlur={formik.handleBlur}
                 className="w-full flex-1 bg-white p-3 text-base rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
               />

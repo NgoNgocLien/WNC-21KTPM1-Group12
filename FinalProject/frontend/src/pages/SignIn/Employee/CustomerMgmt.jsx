@@ -9,11 +9,15 @@ import AddCustomerModal from '../../../components/CustomerMgmt/AddCustomerModal'
 
 import TransferHistory from '../../../components/CustomerMgmt/TransferHistory';
 import { IDLE, SUCCEEDED } from '../../../util/config';
+import DepositModal from '../../../components/CustomerMgmt/DepositModal';
 
 export default function CustomerMgmt() {
   const dispatch = useDispatch();
   const { customers, status } = useSelector((state) => state.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -87,14 +91,17 @@ export default function CustomerMgmt() {
         </div>
 
         {customers ? (
-          <CustomerTable customers={currentData} />
+          <CustomerTable 
+            customers={currentData} 
+            openDialog={() => {setIsDepositModalOpen(true)}}
+            setSelectedCustomerId={setSelectedCustomerId}/>
         ) : (
           <p className="text-gray-600 text-center"></p>
         )}
 
-        {isModalOpen && (
-          <AddCustomerModal isOpen={isModalOpen} closeModal={closeModal} />
-        )}
+
+        
+
 
         <div className="flex justify-center my-4">
           <div className="flex space-x-2 text-sm">
@@ -123,6 +130,10 @@ export default function CustomerMgmt() {
 
       <p className="text-xl font-semibold mt-6 mb-6">Lịch sử giao dịch</p>
       <TransferHistory/>
+
+      <AddCustomerModal isOpen={isModalOpen} closeModal={closeModal} />
+
+      <DepositModal isOpen={isDepositModalOpen} closeModal={()=>{setIsDepositModalOpen(false)}} id_customer={selectedCustomerId} />
     </div>
   );
 }

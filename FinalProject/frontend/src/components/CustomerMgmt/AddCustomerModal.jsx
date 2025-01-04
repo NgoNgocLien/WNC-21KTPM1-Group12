@@ -2,6 +2,8 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
+import { IoIosClose } from 'react-icons/io';
+
 import { createCustomer, getCustomers } from '../../redux/userThunk';
 
 const AddCustomerModal = ({ isOpen, closeModal }) => {
@@ -36,12 +38,20 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-20">
       <div className="bg-white p-6 rounded-xl w-96 flex flex-col items-center">
-        <h3 className="text-xl font-semibold">Thêm Mới Khách Hàng</h3>
+        <div className="flex w-full justify-between items-center">
+          <h3 className="text-xl font-semibold">Thêm Mới Khách Hàng</h3>
+          <IoIosClose className="text-gray-500 text-3xl cursor-pointer hover:text-gray-700" 
+            onClick={() => {
+              closeModal();
+              formik.resetForm();
+            }} 
+          />
+        </div>
 
-        <form onSubmit={formik.handleSubmit} className="w-full my-4">
+        <form onSubmit={formik.handleSubmit} className="w-full mt-4">
           {/* Login Information */}
           <div className="my-2">
-            <label htmlFor="username" className="block text-sm font-semibold">Tên đăng nhập
+            <label htmlFor="username" className="block text-sm font-semibold pb-2">Tên đăng nhập
               <span className="text-red-500"> *</span>
             </label>
             <input
@@ -59,7 +69,7 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
           </div>
 
           <div className="my-2">
-            <label htmlFor="password" className="block text-sm font-semibold">Mật khẩu
+            <label htmlFor="password" className="block text-sm font-semibold pb-2">Mật khẩu
               <span className="text-red-500"> *</span>
             </label>
             <input
@@ -78,7 +88,7 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
 
           {/* Personal Information */}
           <div className="my-2">
-            <label htmlFor="fullname" className="block text-sm font-semibold">Họ tên
+            <label htmlFor="fullname" className="block text-sm font-semibold pb-2">Họ tên
               <span className="text-red-500"> *</span>
             </label>
             <input
@@ -96,7 +106,7 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
           </div>
 
           <div className="my-2">
-            <label htmlFor="email" className="block text-sm font-semibold">Email
+            <label htmlFor="email" className="block text-sm font-semibold pb-2">Email
               <span className="text-red-500"> *</span>
             </label>
             <input
@@ -114,7 +124,7 @@ const AddCustomerModal = ({ isOpen, closeModal }) => {
           </div>
 
           <div className="my-2">
-            <label htmlFor="phone" className="block text-sm font-semibold">Số điện thoại
+            <label htmlFor="phone" className="block text-sm font-semibold pb-2">Số điện thoại
               <span className="text-red-500"> *</span>
             </label>
             <input

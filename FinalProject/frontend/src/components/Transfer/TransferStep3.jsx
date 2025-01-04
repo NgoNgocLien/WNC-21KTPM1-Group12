@@ -20,7 +20,7 @@ export default function TransferStep3({ setCurrentStep, values, setTransaction, 
   const makeTransaction = async () => {
     const newValues = {
       ...values,
-      transaction_amount: values.fee_payment_method === SENDER ? values.transaction_amount + 1000 : values.transaction_amount - 1000
+      transaction_amount: values.fee_payment_method === SENDER ? Number(values.transaction_amount) + 1000 : Number(values.transaction_amount) - 1000
     }
 
     const transaction = await fetch(`${BASE_URL}/transactions/internal`, {

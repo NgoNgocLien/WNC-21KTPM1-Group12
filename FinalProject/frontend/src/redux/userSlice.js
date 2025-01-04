@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { 
-  getCustomerInfo, 
+  getUserInfo, 
   getCustomerContacts, createOneContact, deleteOneContact, updateOneContact, getCustomers, createCustomer, 
   getEmployees, createEmployee, updateEmployee} from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
@@ -45,17 +45,17 @@ const userSlice = createSlice({
       return {
         ...state,
         status: action.payload.status,
-        error: action.payload.eror
+        error: action.payload.error
       }
     }
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getCustomerInfo.pending, (state) => {
+      .addCase(getUserInfo.pending, (state) => {
         state.status = LOADING;
         state.error = null;
       })
-      .addCase(getCustomerInfo.fulfilled, (state, action) => {
+      .addCase(getUserInfo.fulfilled, (state, action) => {
         // console.log(action)
         state.status = SUCCEEDED;
         state.id = action.payload.data.id;
@@ -63,10 +63,12 @@ const userSlice = createSlice({
         state.email = action.payload.data.email;
         state.username = action.payload.data.username;
         state.phone = action.payload.data.phone;
-        state.account_number = action.payload.data.accounts[0].account_number;
-        state.balance = action.payload.data.accounts[0].account_balance;
+        if (action.payload.data?.accounts?.length > 0){
+          state.account_number = action.payload.data.accounts[0].account_number;
+          state.balance = action.payload.data?.accounts[0].account_balance;
+        }
       })
-      .addCase(getCustomerInfo.rejected, (state, action) => {
+      .addCase(getUserInfo.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
       })

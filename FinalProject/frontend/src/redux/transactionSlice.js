@@ -18,18 +18,11 @@ const transactionSlice = createSlice({
     reset: () => {
       return { ...initialState }
     },
-    resetTransactionStatus: (state) => {
-      return {
-        ...state,
-        status: IDLE,
-        error: null
-      }
-    },
     setTransactionStatus: (state,action) => {
       return {
         ...state,
         status: action.payload.status,
-        error: action.payload.eror
+        error: action.payload.error
       }
     },
     resetTransactionStatus: (state) => {

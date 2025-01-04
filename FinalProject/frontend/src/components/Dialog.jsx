@@ -69,7 +69,7 @@ const Dialog = () => {
             <h3 className={`text-xl font-semibold`}>{config?.title}</h3>
             <IoIosClose className="text-gray-500 text-3xl cursor-pointer hover:text-gray-700" onClick={handleCloseBtn} />
           </div>
-          <p className={`mt-2`}>{message.replace(/^'|'$/g, '')}</p>
+          <p className={`mt-2`}>{message?.replace(/^'|'$/g, '')}</p>
         </div>
 
         <div className="flex justify-center p-4">
