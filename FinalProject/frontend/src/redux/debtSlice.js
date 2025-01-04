@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 import { fetchIncomingDebts, fetchOutgoingDebts, createDebt, cancelDebt, declineDebt, payDebt } from './debtThunk';
+import notify  from '../util/notification'
 
 const initialState = {
   incomingDebts: {
@@ -72,6 +73,7 @@ const debtSlice = createSlice({
       .addCase(createDebt.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
         state.outgoingDebts = action.payload.data;
+        notify(action.payload.message);
       })
       .addCase(createDebt.rejected, (state, action) => {
         state.status = FAILED;
@@ -84,6 +86,7 @@ const debtSlice = createSlice({
       .addCase(cancelDebt.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
         state.outgoingDebts = action.payload.data;
+        notify(action.payload.message);
       })
       .addCase(cancelDebt.rejected, (state, action) => {
         state.status = FAILED;
@@ -96,6 +99,7 @@ const debtSlice = createSlice({
       .addCase(declineDebt.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
         state.incomingDebts = action.payload.data;
+        notify(action.payload.message);
       })
       .addCase(declineDebt.rejected, (state, action) => {
         state.status = FAILED;
@@ -108,6 +112,7 @@ const debtSlice = createSlice({
       .addCase(payDebt.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
         state.incomingDebts = action.payload.data;
+        notify(action.payload.message);
       })
       .addCase(payDebt.rejected, (state, action) => {
         state.status = FAILED;
