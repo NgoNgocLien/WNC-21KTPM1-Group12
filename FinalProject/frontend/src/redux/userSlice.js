@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import { 
   getUserInfo, 
   getCustomerContacts, createOneContact, deleteOneContact, updateOneContact, getCustomers, createCustomer, 
-  getEmployees, createEmployee, updateEmployee} from './userThunk';
+  getEmployees, createEmployee, updateEmployee,
+  deleteEmployee} from './userThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 import notify from '../util/notification';
 
@@ -174,7 +175,7 @@ const userSlice = createSlice({
       })
       .addCase(createEmployee.pending, (state) => {
         state.status = LOADING;
-        state.employeeError = null;
+        state.error = null;
       })
       .addCase(createEmployee.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
@@ -183,11 +184,11 @@ const userSlice = createSlice({
       })
       .addCase(createEmployee.rejected, (state, action) => {
         state.status = FAILED;
-        state.employeeError = action.payload;
+        state.error = action.payload;
       })
       .addCase(updateEmployee.pending, (state) => {
         state.status = LOADING;
-        state.employeeError = null;
+        state.error = null;
       })
       .addCase(updateEmployee.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
@@ -203,7 +204,27 @@ const userSlice = createSlice({
       })
       .addCase(updateEmployee.rejected, (state, action) => {
         state.status = FAILED;
-        state.employeeError = action.payload;
+        state.error = action.payload;
+      })
+      .addCase(deleteEmployee.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(deleteEmployee.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+        const deletedEmployeeIndex = state.employees.findIndex(
+          (employee) => employee.id === action.payload.data.id
+        );
+        if (deletedEmployeeIndex !== -1) {
+          const deletedEmployees = [...state.employees];
+          deletedEmployees[deletedEmployeeIndex] = action.payload.data;  
+          state.employees = deletedEmployees; 
+        }
+        notify(action.payload.message);
+      })
+      .addCase(deleteEmployee.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
       });
     }
 });

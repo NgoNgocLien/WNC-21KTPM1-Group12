@@ -151,3 +151,15 @@ export const updateEmployee = createAsyncThunk(
       }
   }
 );
+
+export const deleteEmployee = createAsyncThunk(
+  'user/deleteEmployee',
+  async (id, { rejectWithValue }) => {  
+    try {
+      const response = await EmployeeService.deleteEmployee(id);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+}
+);

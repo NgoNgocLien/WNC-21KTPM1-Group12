@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
 import { HiEye, HiPencil, HiTrash } from 'react-icons/hi';
 import EditEmployeeModal from '../EmployeeMgmt/EditEmployeeModal';
+import { useDispatch } from 'react-redux';
+import { deleteEmployee } from '../../redux/userThunk';
 
 const EmployeeTable = ({ employees }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [employeeToDelete, setEmployeeToDelete] = useState(null); 
+  const dispatch = useDispatch();
 
   const handleEdit = (employee) => {
     setSelectedEmployee(employee);
     setIsModalOpen(true);
+  };
+
+  const handleDelete = (employee) => {
+    setEmployeeToDelete(employee);
+    setIsDeleteModalOpen(true);
   };
 
   const handleCloseModal = () => {
@@ -58,12 +68,25 @@ const EmployeeTable = ({ employees }) => {
                     <HiPencil className="size-5 text-green-800" />
                   </div>
                 </button>
-                <button className="h-fit p-2 text-red-800 border-[1px] border-red-800 rounded-full hover:bg-red-100 transition">
+                <button className={`h-fit p-2 text-red-800 border-[1px] border-red-800 rounded-full hover:bg-red-100 transition ${employee.status === 'DELETED' ? 'cursor-not-allowed' : ''}`}
+                  onClick={() => handleDelete(employee)}
+                  disabled={employee.status === 'DELETED'}>
                   <div className="flex size-4 flex-none items-center justify-center rounded-3xl">
                     <HiTrash className="size-5 text-red-800" />
                   </div>
                 </button>
-                
+                {/* <button
+                  disabled={employee.status === 'DELETED'}
+                  className={`h-fit p-2 ${employee.status === 'DELETED' ? 'text-gray-300 border-gray-300 cursor-not-allowed'
+                      : 'text-red-800 border-red-800 hover:bg-red-100'
+                  } border-[1px] rounded-full transition`}
+                  onClick={() => handleDelete(employee)}
+                >
+                  <div className="flex size-4 flex-none items-center justify-center rounded-3xl">
+                    <HiTrash className={`size-5 ${employee.status === 'DELETED'? 'text-gray-300' : 'text-red-800'}`}
+                    />
+                  </div>
+                </button> */}
               </td>
             </tr>
           ))}
@@ -76,6 +99,31 @@ const EmployeeTable = ({ employees }) => {
         employee={selectedEmployee}
       />
 
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-30 z-50">
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <h2 className="text-lg font-semibold mb-4">Xác nhận xóa</h2>
+            <p>Bạn có chắc chắn muốn xóa nhân viên {employeeToDelete.fullname} không?</p>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-xl hover:bg-red-100"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={() => {
+                  dispatch(deleteEmployee(employeeToDelete.id));
+                  setIsDeleteModalOpen(false);
+                }}
+                className="px-4 py-2 bg-red-800 text-white rounded-xl hover:bg-red-700"
+              >
+                Xóa
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
