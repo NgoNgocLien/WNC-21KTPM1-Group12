@@ -48,6 +48,10 @@ export class TransactionsController {
     );
   }
 
+  @Get('external')
+  findExternalTransactions() {
+    return this.transactionsService.getExternalTransactions();
+  }
 
   @Get('account')
   findAccountTransactions(@Req() req: Request) {
