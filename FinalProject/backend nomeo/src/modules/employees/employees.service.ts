@@ -168,7 +168,7 @@ export class EmployeesService {
         throw new NotFoundException(`Nhân viên không tồn tại`);
       }
 
-      await this.prisma.employees.update({
+      const employee = await this.prisma.employees.update({
         where: {
           id,
         },
@@ -178,7 +178,8 @@ export class EmployeesService {
       });
 
       return {
-        message: 'Employee deleted successfully'
+        message: 'Xóa nhân viên thành công',
+        data: employee
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
