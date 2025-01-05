@@ -8,7 +8,7 @@ import TransactionTable from '../../../components/Table/TransactionTable';
 
 const BankTransferHistory = () => {
   const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
-  const [endDate, setEndDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
   const [selectedBank, setSelectedBank] = useState('');
   const [totalAmount, setTotalAmount] = useState(0);
 
@@ -31,6 +31,8 @@ const BankTransferHistory = () => {
       });
     }, [transactions, banks, dispatch]);
 
+  const sortedTransactions = [...transactions].sort((a, b) => new Date(b.transaction_time) - new Date(a.transaction_time));
+  
   return (
     <div className="mx-auto w-full max-w-4xl flex flex-col gap-6">
       <h2 className="text-xl font-bold">Lịch sử giao dịch với ngân hàng khác</h2>
@@ -77,7 +79,7 @@ const BankTransferHistory = () => {
       </div>
 
       <div className="bg-white shadow-lg p-4 rounded-xl w-full">
-        <TransactionTable transactions={transactions} banks={banks}/>
+        <TransactionTable transactions={sortedTransactions} banks={banks}/>
       </div>
 
       <div className="mt-4 text-lg font-semibold">Tổng số tiền giao dịch: {totalAmount} VNĐ</div>

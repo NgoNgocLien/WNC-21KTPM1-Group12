@@ -25,7 +25,7 @@ const TransactionTable = ({ transactions, banks }) => {
             </td>
             <td className="py-3 px-4 text-left text-sm text-gray-700">{transaction.sender_account_number}</td>
             <td className="py-3 px-4 text-left text-sm text-gray-700">{transaction.recipient_account_number}</td>
-            <td className="py-3 px-4 text-left text-sm text-gray-700">{banks[transaction.id_sender_bank === 1 ? transaction.id_recipient_bank : transaction.id_sender_bank].name}</td>
+            <td className="py-3 px-4 text-left text-sm text-gray-700">{banks[transaction.id_sender_bank === 1 ? transaction.id_recipient_bank : transaction.id_sender_bank]?.name}</td>
             <td className="py-3 px-4 text-left text-sm text-gray-700">{new Intl.NumberFormat().format(transaction.transaction_amount)} VNĐ</td>
             {/* <td className="py-3 px-4 text-left text-sm text-gray-700">{transaction.transaction_message}</td> */}
           </tr>
