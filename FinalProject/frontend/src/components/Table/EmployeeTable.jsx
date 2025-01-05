@@ -3,13 +3,20 @@ import { HiEye, HiPencil, HiTrash } from 'react-icons/hi';
 import EditEmployeeModal from '../EmployeeMgmt/EditEmployeeModal';
 import { useDispatch } from 'react-redux';
 import { deleteEmployee } from '../../redux/userThunk';
+import ViewEmployeeModal from '../EmployeeMgmt/ViewEmployeeModal';
 
 const EmployeeTable = ({ employees }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState(null); 
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false); 
   const dispatch = useDispatch();
+
+  const handleView = (employee) => {
+    setSelectedEmployee(employee);
+    setIsViewModalOpen(true);
+  };
 
   const handleEdit = (employee) => {
     setSelectedEmployee(employee);
@@ -23,6 +30,7 @@ const EmployeeTable = ({ employees }) => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setIsViewModalOpen(false);
     setSelectedEmployee(null);
   };
 
@@ -57,7 +65,8 @@ const EmployeeTable = ({ employees }) => {
                 </span>
               </td>
               <td className="py-2 px-2 text-sm text-gray-700 flex justify-center space-x-2">
-                <button className="h-fit p-2 text-blue-800 border-[1px] border-blue-800 rounded-full hover:bg-blue-100 transition">
+                <button className="h-fit p-2 text-blue-800 border-[1px] border-blue-800 rounded-full hover:bg-blue-100 transition"
+                  onClick={() => handleView(employee)}>
                   <div className="flex size-4 flex-none items-center justify-center rounded-3xl">
                     <HiEye className="size-5 text-blue-800" />
                   </div>
@@ -75,18 +84,6 @@ const EmployeeTable = ({ employees }) => {
                     <HiTrash className="size-5 text-red-800" />
                   </div>
                 </button>
-                {/* <button
-                  disabled={employee.status === 'DELETED'}
-                  className={`h-fit p-2 ${employee.status === 'DELETED' ? 'text-gray-300 border-gray-300 cursor-not-allowed'
-                      : 'text-red-800 border-red-800 hover:bg-red-100'
-                  } border-[1px] rounded-full transition`}
-                  onClick={() => handleDelete(employee)}
-                >
-                  <div className="flex size-4 flex-none items-center justify-center rounded-3xl">
-                    <HiTrash className={`size-5 ${employee.status === 'DELETED'? 'text-gray-300' : 'text-red-800'}`}
-                    />
-                  </div>
-                </button> */}
               </td>
             </tr>
           ))}
@@ -97,6 +94,12 @@ const EmployeeTable = ({ employees }) => {
         isOpen={isModalOpen}
         closeModal={handleCloseModal}
         employee={selectedEmployee}
+      />
+
+      <ViewEmployeeModal 
+        isOpen={isViewModalOpen} 
+        closeModal={handleCloseModal} 
+        employee={selectedEmployee} 
       />
 
       {isDeleteModalOpen && (
