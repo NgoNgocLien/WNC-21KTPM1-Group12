@@ -44,10 +44,10 @@ export default function TransferHistory() {
       setFilteredTransactions(newFilteredTransactions);
     };
 
-    if (status === SUCCEEDED && transactions.length > 0) {
+    if (status_trans === SUCCEEDED && transactions.length > 0) {
       applyFilters();
     }
-  }, [transactions, filters, startDate, endDate, status]);
+  }, [transactions, filters, startDate, endDate, status_trans]);
 
   useEffect(() => {
     filteredTransactions.forEach((transaction) => {
@@ -80,7 +80,7 @@ export default function TransferHistory() {
   };
 
   const renderTransactions = () => {
-    if (status === SUCCEEDED) {
+    if (status_trans === SUCCEEDED) {
       if (filteredTransactions.length === 0) {
         return <p className="text-center text-gray-500">Không có giao dịch nào trong khoảng thời gian này</p>;
       }
@@ -240,7 +240,7 @@ export default function TransferHistory() {
                 selected={startDate}
                 onChange={handleStartDateChange}
                 dateFormat="dd/MM/yyyy"
-                className={`w-full p-3 border rounded-xl ${status === SUCCEEDED ? '' : 'bg-gray-200 bg-opacity-5 border-gray-400'} ${status_trans === SUCCEEDED ? 'border-gray-300' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
+                className={`w-full p-3 border rounded-xl `}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div>
@@ -251,7 +251,7 @@ export default function TransferHistory() {
                 selected={endDate}
                 onChange={handleEndDateChange}
                 dateFormat="dd/MM/yyyy"
-                className={`w-full p-3 border rounded-xl ${status === SUCCEEDED ? '' : 'bg-gray-200 bg-opacity-5 border-gray-400'} ${status_trans === SUCCEEDED ? 'border-gray-300' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
+                className={`w-full p-3 border rounded-xl`}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div>
@@ -271,44 +271,41 @@ export default function TransferHistory() {
         </div>
       </div>
 
-      <div className="flex justify-end mt-4 gap-2">
-        {transactions.length > 0 && (
-          <>
-            <button
-              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('recipient') ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-200'
-                } text-white`}
-              onClick={() => handleFilterButtonClick('recipient')}
-            >
-              <BanknotesIcon className="w-6 h-6" />
-              Nhận tiền
-            </button>
-            <button
-              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('sender') ? 'bg-yellow-500 hover:bg-yellow-400' : 'bg-gray-200'
-                } text-white`}
-              onClick={() => handleFilterButtonClick('sender')}
-            >
-              <ArrowsRightLeftIcon className="w-6 h-6" />
-              Chuyển tiền
-            </button>
-            <button
-              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('debt') ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-200'
-                } text-white`}
-              onClick={() => handleFilterButtonClick('debt')}
-            >
-              <CreditCardIcon className="w-6 h-6" />
-              Thanh toán nợ
-            </button>
-            <button
-              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('all') ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-200'
-                } text-white`}
-              onClick={() => setFilters(['all'])}
-            >
-              Tất cả
-            </button>
-          </>
-        )}
-      </div>
-      <div className="my-4 p-6 bg-white rounded-xl">{renderTransactions()}</div>
+      {transactions.length > 0 && (
+      <>
+        <div className="flex justify-end mt-4 gap-2">
+          <button
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('recipient') ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-200'} text-white`}
+            onClick={() => handleFilterButtonClick('recipient')}
+          >
+            <BanknotesIcon className="w-6 h-6" />
+            Nhận tiền
+          </button>
+          <button
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('sender') ? 'bg-yellow-500 hover:bg-yellow-400' : 'bg-gray-200'} text-white`}
+            onClick={() => handleFilterButtonClick('sender')}
+          >
+            <ArrowsRightLeftIcon className="w-6 h-6" />
+            Chuyển tiền
+          </button>
+          <button
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('debt') ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-200'} text-white`}
+            onClick={() => handleFilterButtonClick('debt')}
+          >
+            <CreditCardIcon className="w-6 h-6" />
+            Thanh toán nợ
+          </button>
+          <button
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('all') ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-200'} text-white`}
+            onClick={() => setFilters(['all'])}
+          >
+            Tất cả
+          </button>
+        </div>
+        <div className="my-4 p-6 bg-white rounded-xl">{renderTransactions()}</div>
+      </>
+      )}
+
 
       <TransactionDetailModal
         isOpen={isModalOpen}

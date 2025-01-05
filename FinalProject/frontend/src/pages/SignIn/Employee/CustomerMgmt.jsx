@@ -99,10 +99,6 @@ export default function CustomerMgmt() {
           <p className="text-gray-600 text-center"></p>
         )}
 
-
-
-
-
         <div className="flex justify-center my-4">
           <div className="flex space-x-2 text-sm">
             <button

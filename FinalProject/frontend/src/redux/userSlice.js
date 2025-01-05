@@ -173,24 +173,24 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(createEmployee.pending, (state) => {
-        state.employeeStatus = LOADING;
+        state.status = LOADING;
         state.employeeError = null;
       })
       .addCase(createEmployee.fulfilled, (state, action) => {
-        state.employeeStatus = SUCCEEDED;
+        state.status = SUCCEEDED;
         state.employees.push(action.payload.data);
         notify(action.payload.message);
       })
       .addCase(createEmployee.rejected, (state, action) => {
-        state.employeeStatus = FAILED;
+        state.status = FAILED;
         state.employeeError = action.payload;
       })
       .addCase(updateEmployee.pending, (state) => {
-        state.employeeStatus = LOADING;
+        state.status = LOADING;
         state.employeeError = null;
       })
       .addCase(updateEmployee.fulfilled, (state, action) => {
-        state.employeeStatus = SUCCEEDED;
+        state.status = SUCCEEDED;
         const updatedEmployeeIndex = state.employees.findIndex(
           (employee) => employee.id === action.payload.data.id
         );
@@ -202,7 +202,7 @@ const userSlice = createSlice({
         notify(action.payload.message);
       })
       .addCase(updateEmployee.rejected, (state, action) => {
-        state.employeeStatus = FAILED;
+        state.status = FAILED;
         state.employeeError = action.payload;
       });
     }

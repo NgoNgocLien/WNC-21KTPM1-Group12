@@ -222,7 +222,7 @@ export default function TransferHistory() {
                 selected={startDate}
                 onChange={handleStartDateChange}
                 dateFormat="dd/MM/yyyy"
-                className={`w-full p-3 border border-gray-300 rounded-xl ${status === SUCCEEDED ? '' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
+                className={`w-full p-3 border border-gray-300 rounded-xl`}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div>
@@ -233,7 +233,7 @@ export default function TransferHistory() {
                 selected={endDate}
                 onChange={handleEndDateChange}
                 dateFormat="dd/MM/yyyy"
-                className={`w-full p-3 border border-gray-300 rounded-xl ${status === SUCCEEDED ? '' : 'bg-gray-200 bg-opacity-5 border-gray-400'}`}
+                className={`w-full p-3 border border-gray-300 rounded-xl`}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div>
