@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/createEmployee.dto';
 import { UpdateEmployeeDto } from './dto/updateEmployee.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
@@ -126,10 +126,18 @@ export class EmployeesService {
         fullname: updateEmployeeDto.fullname,
         email: updateEmployeeDto.email,
         phone: updateEmployeeDto.phone,
+        status: updateEmployeeDto.status,
       };
   
       if (updateEmployeeDto.password && updateEmployeeDto.password !== undefined) {
         updatedData.password = bcrypt.hashSync(updateEmployeeDto.password, 10);
+      }
+
+      const existingEmployee = await this.prisma.employees.findUnique({
+        where: { phone: updateEmployeeDto.phone },
+      });
+      if (existingEmployee && existingEmployee.id !== id) {
+        throw new ConflictException('Số điện thoại đã được sử dụng');
       }
   
       const employee = await this.prisma.employees.update({
@@ -153,6 +161,10 @@ export class EmployeesService {
       };
     } catch (error) {
       console.log(error.message)
+      if (error instanceof ConflictException) {
+        throw error; 
+      }
+      
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
