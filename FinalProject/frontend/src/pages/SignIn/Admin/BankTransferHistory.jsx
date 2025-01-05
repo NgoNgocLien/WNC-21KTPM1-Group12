@@ -4,7 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBankName, getExternalTransactions } from '../../../redux/transactionThunk';
 import { IDLE, SUCCEEDED } from '../../../util/config';
-import { format } from 'date-fns';
+import TransactionTable from '../../../components/Table/TransactionTable';
 
 const BankTransferHistory = () => {
   const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
@@ -76,42 +76,8 @@ const BankTransferHistory = () => {
         </div>
       </div>
 
-      <div className="bg-white shadow p-4 rounded-lg">
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 p-2">Mã giao dịch</th>
-              <th className="border border-gray-300 p-2">Ngày giao dịch</th>
-              <th className="border border-gray-300 p-2">Tài khoản gửi</th>
-              <th className="border border-gray-300 p-2">Tài khoản nhận</th>
-              <th className="border border-gray-300 p-2">Ngân hàng</th>
-              <th className="border border-gray-300 p-2">Số tiền</th>
-              <th className="border border-gray-300 p-2">Nội dung</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.length > 0 ? transactions.map((transaction, index) => (
-              <tr key={index}>
-                <td className="border border-gray-300 p-2">{transaction.id}</td> 
-                <td className="border border-gray-300 p-2">
-                  {transaction.transaction_time ? format(new Date(transaction.transaction_time), 'dd/MM/yyyy') : 'N/A'}
-                </td>
-                <td className="border border-gray-300 p-2">{transaction.sender_account_number}</td>
-                <td className="border border-gray-300 p-2">{transaction.recipient_account_number}</td>
-                <td className="border border-gray-300 p-2"></td>
-                <td className="border border-gray-300 p-2">
-                  {new Intl.NumberFormat().format(transaction.transaction_amount)} VNĐ
-                </td>
-                <td className="border border-gray-300 p-2">{transaction.transaction_message}</td>
-              </tr>
-            )) : (
-              <tr>
-                <td colSpan="6" className="text-center p-4">Không có giao dịch nào</td>
-              </tr>
-            )}
-          </tbody>
-
-        </table>
+      <div className="bg-white shadow-lg p-4 rounded-xl w-full">
+        <TransactionTable transactions={transactions} banks={banks}/>
       </div>
 
       <div className="mt-4 text-lg font-semibold">Tổng số tiền giao dịch: {totalAmount} VNĐ</div>
