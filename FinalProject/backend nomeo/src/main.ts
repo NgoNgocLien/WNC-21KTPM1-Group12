@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from 'src/common/filters/all-exceptions.filter';
 import * as admin from 'firebase-admin';
 import { ServiceAccount } from 'firebase-admin';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -28,7 +29,15 @@ async function bootstrap() {
       stopAtFirstError: true,
     }),
   );
-  
+
+  const config = new DocumentBuilder()
+    .setTitle('NoMeoBank API')
+    .setDescription('The NoMeoBank API description')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('swagger', app, document);
+
   // Set the config options
   const adminConfig: ServiceAccount = {
     projectId: process.env.FCM_PROJECT_ID,
