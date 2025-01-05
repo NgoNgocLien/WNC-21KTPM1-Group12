@@ -141,9 +141,7 @@ export default function TransferHistory() {
                       <span className="w-2 h-2 bg-white rounded-full mt-0.5"></span>
                       <span className="text-xs text-white">Giao dịch liên ngân hàng</span>
                     </div>
-                  )
-                }
-                  
+                  )}
                 </div>
               </div>
             );
