@@ -4,6 +4,7 @@ import { getEmployees } from '../../../redux/userThunk';
 import EmployeeTable from '../../../components/Table/EmployeeTable';
 import AddEmployeeModal from '../../../components/EmployeeMgmt/AddEmployeeModal';
 import { PlusIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { MdOutlineArrowBackIosNew, MdOutlineArrowForwardIos } from "react-icons/md";
 
 export default function EmployeeMgmt() {
   const dispatch = useDispatch();
@@ -55,7 +56,7 @@ export default function EmployeeMgmt() {
       <div className="flex justify-end mb-5">
         <button
           onClick={openModal}
-          className="py-2 px-3 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 focus:outline-none flex items-center space-x-2 transition duration-300 ease-in-out"
+          className="py-2 px-3 bg-red-800 text-white rounded-lg shadow-lg hover:bg-red-700 focus:outline-none flex items-center space-x-2 transition duration-300 ease-in-out"
         >
           <PlusIcon className="w-5 h-5" />
           <span className="font-normal">Thêm nhân viên</span>
@@ -93,9 +94,9 @@ export default function EmployeeMgmt() {
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="py-1 px-3 bg-red-300 text-gray-900 rounded-lg hover:bg-red-500 disabled:opacity-50"
+              className="py-1 px-3 bg-red-800 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-300"
             >
-              Trước
+              <MdOutlineArrowBackIosNew />
             </button>
             <span className="py-1 px-3 text-gray-700">
               Trang {currentPage} của {totalPages}
@@ -103,9 +104,9 @@ export default function EmployeeMgmt() {
             <button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="py-1 px-3 bg-red-300 text-gray-900 rounded-lg hover:bg-red-500 disabled:opacity-50"
+              className="py-1 px-3 bg-red-800 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-300"
             >
-              Tiếp theo
+              <MdOutlineArrowForwardIos />
             </button>
           </div>
         </div>

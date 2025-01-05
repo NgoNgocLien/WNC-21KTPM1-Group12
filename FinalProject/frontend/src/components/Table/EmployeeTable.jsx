@@ -42,30 +42,28 @@ const EmployeeTable = ({ employees }) => {
               <td className="py-3 px-4 text-sm text-gray-700">{employee.email}</td>
               {/* <td className="py-3 px-4 text-center text-sm text-gray-700">{employee.phone}</td> */}
               <td className="py-1 px-2 text-center text-sm text-gray-700">
-                <span className={`px-3 py-1 rounded-lg ${employee.status === 'ACTIVE' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+                <span className={`px-3 py-1 rounded-lg ${employee.status === 'ACTIVE' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
                   {employee.status}
                 </span>
               </td>
-              <td className="py-2 px-2 text-sm text-gray-700 flex justify-center space-x-2.5">
-                <button
-                  className="text-black-500 hover:text-black focus:outline-none transition duration-200 ease-in-out"
-                  title="View"
-                >
-                  <HiEye className="w-5 h-5" />
+              <td className="py-2 px-2 text-sm text-gray-700 flex justify-center space-x-2">
+                <button className="h-fit p-2 text-blue-800 border-[1px] border-blue-800 rounded-full hover:bg-blue-100 transition">
+                  <div className="flex size-4 flex-none items-center justify-center rounded-3xl">
+                    <HiEye className="size-5 text-blue-800" />
+                  </div>
                 </button>
-                <button
-                  className="text-green-500 hover:text-green-700 focus:outline-none transition duration-200 ease-in-out"
-                  title="Edit"
-                  onClick={() => handleEdit(employee)}
-                >
-                  <HiPencil className="w-5 h-5" />
+                <button className="h-fit p-2 text-green-800 border-[1px] border-green-800 rounded-full hover:bg-green-100 transition" 
+                  onClick={() => handleEdit(employee)}>
+                  <div className="flex size-4 flex-none items-center justify-center rounded-3xl">
+                    <HiPencil className="size-5 text-green-800" />
+                  </div>
                 </button>
-                <button
-                  className="text-red-500 hover:text-red-700 focus:outline-none transition duration-200 ease-in-out"
-                  title="Delete"
-                >
-                  <HiTrash className="w-5 h-5" />
+                <button className="h-fit p-2 text-red-800 border-[1px] border-red-800 rounded-full hover:bg-red-100 transition">
+                  <div className="flex size-4 flex-none items-center justify-center rounded-3xl">
+                    <HiTrash className="size-5 text-red-800" />
+                  </div>
                 </button>
+                
               </td>
             </tr>
           ))}
