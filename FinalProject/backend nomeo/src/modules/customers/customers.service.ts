@@ -32,7 +32,7 @@ export class CustomersService {
         include: {
           accounts: {
             select: {
-              account_number: true
+              account_number: true,
             },
           },
         },
@@ -43,7 +43,7 @@ export class CustomersService {
         data: customers,
       };
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
@@ -61,7 +61,7 @@ export class CustomersService {
         data: customer,
       };
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
@@ -79,7 +79,7 @@ export class CustomersService {
         data: customer,
       };
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
@@ -111,47 +111,49 @@ export class CustomersService {
         data: customer,
       };
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
-  
-  async findInternalProfile(account_number: string){
-    try{
+  async findInternalProfile(account_number: string) {
+    try {
       const profile = await this.prisma.accounts.findUnique({
-        where:{
+        where: {
           account_number: account_number,
         },
-        select:{
+        select: {
           account_number: true,
           customers: {
-            select:{
-              fullname: true
-            }
-          }
-        }
-      })
+            select: {
+              fullname: true,
+            },
+          },
+        },
+      });
 
       if (!profile) {
         throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
       }
 
       return {
-        message: "Profile fetched successfully",
-        data: profile.customers.fullname
-      }
-    } catch(error){
-      if (error instanceof NotFoundException || error instanceof ConflictException) {
+        message: 'Profile fetched successfully',
+        data: profile.customers.fullname,
+      };
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ConflictException
+      ) {
         throw error;
       }
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
 
-  async findExternalProfile(bank_id: number, account_number: string){
-    try{
+  async findExternalProfile(bank_id: number, account_number: string) {
+    try {
       // const external_bank = await this.banksService.getBankById(bank_id)
 
       // const external_bank_url = ''
@@ -169,14 +171,17 @@ export class CustomersService {
       // }
 
       return {
-        message: "Profile fetched successfully",
+        message: 'Profile fetched successfully',
         // data: fulname
-      }
-    } catch(error){
-      if (error instanceof NotFoundException || error instanceof ConflictException) {
+      };
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ConflictException
+      ) {
         throw error;
       }
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
@@ -196,6 +201,13 @@ export class CustomersService {
           id: id,
         },
         data: updateCustomerDto,
+        select: {
+          username: true,
+          fullname: true,
+          password: false,
+          refresh_token: false,
+          fcm_token: false,
+        },
       });
 
       return {
@@ -206,7 +218,7 @@ export class CustomersService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
@@ -244,13 +256,11 @@ export class CustomersService {
           phone: customer.phone,
           refresh_token: customer.refresh_token || null,
           fcm_token: customer.fcm_token || null,
-          accounts: [
-            { account_number: account.account_number }
-          ],
+          accounts: [{ account_number: account.account_number }],
         },
       };
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
@@ -278,7 +288,7 @@ export class CustomersService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
@@ -311,15 +321,15 @@ export class CustomersService {
       });
 
       const transformedContacts = contacts
-      .map((contact) => ({
-        id: contact.id,
-        nickname: contact.nickname,
-        account_number: contact.contact_account_number,
-        contact_fullname: contact.contact_fullname,
-        bank_name: contact.banks.name,
-        bank_logo: contact.banks.logo,
-      }))
-      .sort((a, b) => a.nickname.localeCompare(b.nickname));
+        .map((contact) => ({
+          id: contact.id,
+          nickname: contact.nickname,
+          account_number: contact.contact_account_number,
+          contact_fullname: contact.contact_fullname,
+          bank_name: contact.banks.name,
+          bank_logo: contact.banks.logo,
+        }))
+        .sort((a, b) => a.nickname.localeCompare(b.nickname));
 
       return {
         message: 'Contacts found successfully',
@@ -329,7 +339,7 @@ export class CustomersService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
@@ -341,7 +351,6 @@ export class CustomersService {
       });
       if (!customerExists) {
         throw new NotFoundException(`Khách hàng không tồn tại`);
-
       }
 
       const contactExists = await this.prisma.contacts.findFirst({
@@ -380,10 +389,13 @@ export class CustomersService {
         data: transformedContact,
       };
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof ConflictException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ConflictException
+      ) {
         throw error;
       }
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
@@ -412,13 +424,16 @@ export class CustomersService {
 
       return {
         message: 'Chỉnh sửa tên gợi nhớ thành công',
-        data: data
+        data: data,
       };
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof ConflictException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ConflictException
+      ) {
         throw error;
       }
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }
@@ -444,13 +459,13 @@ export class CustomersService {
         message: 'Xóa người nhận thành công',
         data: {
           id: data.id,
-        }
+        },
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      console.log(error.message)
+      console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }

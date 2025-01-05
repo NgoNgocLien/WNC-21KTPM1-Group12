@@ -32,6 +32,7 @@ import { getAccessToken, getRoleFromToken } from './util/cookie';
 import { onMessageListener } from './util/fcm';
 import { SUCCEEDED } from './util/config'
 import PopupNoti from './components/PopupNoti';
+import notify from './util/notification';
 
 
 const GuestRoute = ({ element }) => {
@@ -87,17 +88,18 @@ function AuthenticatedLayout() {
 
   onMessageListener().then((payload) => {
     console.log('Message received. ', payload);
-    dispatch(addNotification(payload.notification));
-    setTimeout(() => {
-      dispatch(removeNotification());
-    }, 8000);
+    notify(payload.notification.title);
+    // dispatch(addNotification(payload.notification));
+    // setTimeout(() => {
+    //   dispatch(removeNotification());
+    // }, 8000);
   });
 
   return (
     <>
       {sidebar}
       <ToastContainer />
-      <PopupNoti />
+      {/* <PopupNoti /> */}
       <main className="ms-80 p-8 flex flex-col gap-4 bg-red-50 overflow-auto">
         <Outlet />
       </main>

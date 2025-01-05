@@ -1,12 +1,22 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Inject,
+  LoggerService,
+} from '@nestjs/common';
 import { CreateNotificationDto } from './dto/createNotification.dto';
 import { UpdateNotificationDto } from './dto/updateNotification.dto';
 import * as admin from 'firebase-admin';
 import { PrismaService } from 'src/common/prisma/prisma.service';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class NotificationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   // create(createNotificationDto: CreateNotificationDto) {
   //   return 'This action adds a new notification';
@@ -49,7 +59,7 @@ export class NotificationsService {
         token: fcm_token,
       });
     } catch (error) {
-      console.log(error.message);
+      this.logger.error(error);
       throw new InternalServerErrorException('Lỗi hệ thống');
     }
   }

@@ -5,6 +5,7 @@ import { logout } from '../../redux/authSlice';
 import { getUserInfo } from '../../redux/userThunk';
 import { ArrowRightStartOnRectangleIcon, ArrowsRightLeftIcon, ArrowUpTrayIcon, BanknotesIcon, BuildingLibraryIcon, CreditCardIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { clearToken } from '../../util/cookie';
+import AuthService from '../../services/AuthService';
 
 const CustomerSidebar = () => {
   const dispatch = useDispatch();
@@ -12,14 +13,20 @@ const CustomerSidebar = () => {
   const { account_number, fullname } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (account_number === '' )
+    if (account_number === '')
       dispatch(getUserInfo("customer"));
   }, [dispatch]);
 
-  const handleLogout = () => {
-    clearToken();
-    dispatch(logout());
-    window.location.href = "/";
+  const handleLogout = async () => {
+    try {
+      await AuthService.logout();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      clearToken();
+      dispatch(logout());
+      window.location.href = "/";
+    }
   };
   return (
     <div className="fixed inset-0 h-screen w-80 p-3">
