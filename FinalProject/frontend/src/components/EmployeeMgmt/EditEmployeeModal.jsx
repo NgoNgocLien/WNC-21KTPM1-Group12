@@ -15,6 +15,7 @@ const EditEmployeeModal = ({ isOpen, closeModal, employee }) => {
         fullname: employee.fullname,
         email: employee.email,
         phone: employee.phone,
+        status: employee.status,
       });
     }
   }, [employee]);
@@ -26,6 +27,7 @@ const EditEmployeeModal = ({ isOpen, closeModal, employee }) => {
       fullname: '',
       email: '',
       phone: '',
+      status: '',
     },
     validationSchema: Yup.object({
       username: Yup.string().required('Tên đăng nhập là bắt buộc'),
@@ -35,6 +37,7 @@ const EditEmployeeModal = ({ isOpen, closeModal, employee }) => {
       phone: Yup.string()
         .matches(/^[0-9]+$/, 'Số điện thoại chỉ chứa các chữ số')
         .required('Số điện thoại là bắt buộc'),
+      status: Yup.string().oneOf(['ACTIVE', 'DELETED']).required('Trạng thái là bắt buộc'),
     }),
     onSubmit: (values, { resetForm }) => {
       const updatedValues = {
@@ -54,113 +57,62 @@ const EditEmployeeModal = ({ isOpen, closeModal, employee }) => {
       <div className="bg-white p-6 rounded-xl w-96 flex flex-col items-center">
         <h3 className="text-xl font-semibold">Chỉnh Sửa Nhân Viên</h3>
 
-        <form onSubmit={formik.handleSubmit} className="w-full my-4">
-          {/* Login Information */}
-          <div className="my-2">
-            <label htmlFor="username" className="block text-sm font-semibold">Tên đăng nhập
-              <span className="text-red-500"> *</span>
+        <form onSubmit={formik.handleSubmit} className="w-full my-2 space-y-4">
+          {['username', 'password', 'fullname', 'email', 'phone'].map((field, idx) => (
+            <div key={idx}>
+              <label htmlFor={field} className="block text-sm font-medium text-gray-700">
+                {field === 'username' ? 'Tên đăng nhập' : field === 'password' ? 'Mật khẩu' : field === 'fullname' ? 'Họ tên' : field === 'email' ? 'Email' : 'Số điện thoại'}
+                <span className="text-red-500"> *</span>
+              </label>
+              <input
+                id={field}
+                type={field === 'password' ? 'password' : 'text'}
+                name={field}
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values[field]}
+              />
+              {formik.touched[field] && formik.errors[field] && (
+                <div className="text-red-500 text-sm mt-1">{formik.errors[field]}</div>
+              )}
+            </div>
+          ))}
+
+          <div>
+            <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+              Trạng thái<span className="text-red-500"> *</span>
             </label>
-            <input
-              id="username"
-              type="text"
-              name="username"
-              className="w-full px-4 py-2 border border-gray-300 rounded-xl"
+            <select
+              id="status"
+              name="status"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.username}
-            />
-            {formik.touched.username && formik.errors.username && (
-              <div className="text-red-500 text-sm">{formik.errors.username}</div>
+              value={formik.values.status}
+            >
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="DELETED">DELETED</option>
+            </select>
+            {formik.touched.status && formik.errors.status && (
+              <div className="text-red-500 text-sm mt-1">{formik.errors.status}</div>
             )}
           </div>
 
-          <div className="my-2">
-            <label htmlFor="password" className="block text-sm font-semibold">Mật khẩu
-              <span className="text-red-500"> *</span>
-            </label>
-            <input
-              id="password"
-              type="password"
-              name="password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-xl"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.password}
-            />
-            {formik.touched.password && formik.errors.password && (
-              <div className="text-red-500 text-sm">{formik.errors.password}</div>
-            )}
-          </div>
-
-          {/* Personal Information */}
-          <div className="my-2">
-            <label htmlFor="fullname" className="block text-sm font-semibold">Họ tên
-              <span className="text-red-500"> *</span>
-            </label>
-            <input
-              id="fullname"
-              type="text"
-              name="fullname"
-              className="w-full px-4 py-2 border border-gray-300 rounded-xl"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.fullname}
-            />
-            {formik.touched.fullname && formik.errors.fullname && (
-              <div className="text-red-500 text-sm">{formik.errors.fullname}</div>
-            )}
-          </div>
-
-          <div className="my-2">
-            <label htmlFor="email" className="block text-sm font-semibold">Email
-              <span className="text-red-500"> *</span>
-            </label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              className="w-full px-4 py-2 border border-gray-300 rounded-xl"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.email}
-            />
-            {formik.touched.email && formik.errors.email && (
-              <div className="text-red-500 text-sm">{formik.errors.email}</div>
-            )}
-          </div>
-
-          <div className="my-2">
-            <label htmlFor="phone" className="block text-sm font-semibold">Số điện thoại
-              <span className="text-red-500"> *</span>
-            </label>
-            <input
-              id="phone"
-              type="text"
-              name="phone"
-              className="w-full px-4 py-2 border border-gray-300 rounded-xl"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.phone}
-            />
-            {formik.touched.phone && formik.errors.phone && (
-              <div className="text-red-500 text-sm">{formik.errors.phone}</div>
-            )}
-          </div>
-
-          <div className="flex justify-center space-x-4 mt-6">
+          <div className="flex justify-center space-x-4">
             <button
               type="button"
               onClick={() => {
                 closeModal();
                 formik.resetForm();
               }}
-              className="px-4 py-2 bg-white text-red-800 border-2 border-red-800 rounded-xl hover:bg-red-100"
+              className="px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded-lg shadow-sm hover:bg-gray-200 focus:outline-none"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-red-800 text-white rounded-xl hover:bg-red-700"
+              className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-sm hover:bg-red-500 focus:outline-none"
             >
               Cập nhật nhân viên
             </button>
