@@ -36,3 +36,15 @@ export const getCustomerTransactions = createAsyncThunk(
         }
     }
 );
+
+export const getExternalTransactions = createAsyncThunk(
+    'transaction/getExternalTransactions',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await TransactionService.getExternalTransactions();
+            return response;
+        } catch (error) {
+        return rejectWithValue(error.message);
+        }
+    }
+);
