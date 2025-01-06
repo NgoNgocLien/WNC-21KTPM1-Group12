@@ -79,7 +79,7 @@ export class AuthService {
   async logout(id: number, role: Role) {
     switch (role) {
       case Role.CUSTOMER:
-        return this.customersService.update(id, {
+        return await this.customersService.update(id, {
           refresh_token: null,
           fcm_token: null,
         });

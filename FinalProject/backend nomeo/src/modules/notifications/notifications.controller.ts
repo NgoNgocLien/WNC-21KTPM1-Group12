@@ -7,11 +7,17 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  HttpStatus,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/createNotification.dto';
 import { UpdateNotificationDto } from './dto/updateNotification.dto';
+import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SendNotificationDto } from './dto/sendNotification.dto';
+import { Public } from 'src/common/decorators/public.decorator';
 
+@ApiTags('Notifications')
+@ApiResponse({ status: 400, description: 'Yêu cầu không hợp lệ' })
 @Controller('notifications')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
@@ -44,10 +50,21 @@ export class NotificationsController {
   //   return this.notificationsService.remove(+id);
   // }
 
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Gửi thông báo thành công',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID của khách hàng',
+    example: 1,
+    required: true,
+  })
+  @Public()
   @Post('send/:id')
   async sendNotification(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: { title: string; body: string },
+    @Body() body: SendNotificationDto,
   ) {
     return this.notificationsService.sendNotification(
       id,

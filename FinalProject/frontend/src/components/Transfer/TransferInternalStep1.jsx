@@ -25,13 +25,13 @@ export default function TransferInternalStep1({ setCurrentStep, setValues, debt 
   }, [fullname])
 
   useEffect(() => {
-    if (debt){
+    if (debt) {
       formik.setFieldValue('recipient_account_number', debt.creditor.accounts[0].account_number);
       formik.setFieldValue('transaction_message', `${fullname.toUpperCase()} thanh toan no`);
       formik.setFieldValue('transaction_amount', Number(debt.debt_amount));
       formik.setFieldValue('recipient_name', debt.creditor.fullname);
     }
-    
+
   }, [debt])
 
   const formik = useFormik({
@@ -81,7 +81,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues, debt 
           status: SUCCEEDED
         }));
       }
-    } catch (error){
+    } catch (error) {
       console.log(error.message)
       dispatch(setUserStatus({
         status: FAILED,
@@ -152,38 +152,38 @@ export default function TransferInternalStep1({ setCurrentStep, setValues, debt 
         <div className="w-full mt-4 flex justify-between items-center">
           <div className="w-3/12 font-semibold">Số tiền</div>
           <div className="w-7/12 ">
-          {
-            debt ? (
-              `${Number(formik.values.transaction_amount).toLocaleString()} VNĐ`
-            ) : (
-            <div className="flex items-center rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
-              <input
-                type="text"
-                id="transaction_amount"
-                name="transaction_amount"
-                required
-                placeholder="Nhập số tiền"
-                value={
-                  formik.values.transaction_amount
-                    ? Number(formik.values.transaction_amount).toLocaleString('en-US') // Format with commas
-                    : ''
-                }
-                onChange={(e) => {
-                  const rawValue = e.target.value.replace(/,/g, '');
-                  if (!isNaN(rawValue) && rawValue !== '') {
-                    formik.setFieldValue('transaction_amount', rawValue);
-                  } else if (rawValue === '') {
-                    formik.setFieldValue('transaction_amount', ''); 
-                  }
-                }}
-                onBlur={formik.handleBlur}
-                className="w-full flex-1 bg-white p-3 text-base rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
-              />
-              <label for="transaction_amount" class="focus-within:relative pr-3 text-md text-gray-400">VNĐ</label>
-            </div>
-            )
-          }
-            
+            {
+              debt ? (
+                `${Number(formik.values.transaction_amount).toLocaleString()} VNĐ`
+              ) : (
+                <div className="flex items-center rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
+                  <input
+                    type="text"
+                    id="transaction_amount"
+                    name="transaction_amount"
+                    required
+                    placeholder="Nhập số tiền"
+                    value={
+                      formik.values.transaction_amount
+                        ? Number(formik.values.transaction_amount).toLocaleString('en-US') // Format with commas
+                        : ''
+                    }
+                    onChange={(e) => {
+                      const rawValue = e.target.value.replace(/,/g, '');
+                      if (!isNaN(rawValue) && rawValue !== '') {
+                        formik.setFieldValue('transaction_amount', rawValue);
+                      } else if (rawValue === '') {
+                        formik.setFieldValue('transaction_amount', '');
+                      }
+                    }}
+                    onBlur={formik.handleBlur}
+                    className="w-full flex-1 bg-white p-3 text-base rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
+                  />
+                  <label for="transaction_amount" class="focus-within:relative pr-3 text-md text-gray-400">VNĐ</label>
+                </div>
+              )
+            }
+
           </div>
         </div>
 

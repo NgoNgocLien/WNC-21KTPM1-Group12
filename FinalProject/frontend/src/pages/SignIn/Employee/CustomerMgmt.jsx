@@ -99,10 +99,6 @@ export default function CustomerMgmt() {
           <p className="text-gray-600 text-center"></p>
         )}
 
-
-
-
-
         <div className="flex justify-center my-4">
           <div className="flex space-x-2 text-sm">
             <button
@@ -118,8 +114,7 @@ export default function CustomerMgmt() {
             <button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="py-1 px-3 bg-red-800 text-white rounded-lg hover:bg-red-700 
-                disabled:bg-gray-300"
+              className="py-1 px-3 bg-red-800 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-300"
             >
               <MdOutlineArrowForwardIos />
             </button>

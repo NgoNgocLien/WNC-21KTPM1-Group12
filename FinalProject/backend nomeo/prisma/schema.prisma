@@ -128,8 +128,8 @@ model notifications {
   notification_title String    @db.VarChar(100)
   notification_body  String
   notification_data  Json?
-  is_read            Boolean?  @default(false)
-  created_at         DateTime? @default(now()) @db.Timestamp(6)
+  is_read            Boolean   @default(false)
+  created_at         DateTime  @default(now()) @db.Timestamp(6)
   customers          customers @relation(fields: [id_recipient], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 

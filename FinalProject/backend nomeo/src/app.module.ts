@@ -15,7 +15,6 @@ import { OtpModule } from './modules/otp/otp.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { NotificationsModule } from './modules/notifications/notifications.module';
-import { AuthService } from './modules/auth/auth.service';
 import { BanksModule } from './modules/banks/banks.module';
 
 @Module({
@@ -43,8 +42,8 @@ import { BanksModule } from './modules/banks/banks.module';
     CustomersModule,
     EmployeesModule,
     AdminsModule,
-    DebtsModule,
     TransactionsModule,
+    DebtsModule,
     OtpModule,
     NotificationsModule,
     BanksModule,

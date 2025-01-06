@@ -4,7 +4,6 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { CreateDebtDto } from './dto/createDebt.dto';
-import { UpdateDebtDto } from './dto/updateDebt.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { DeleteDebtDto } from './dto/deleteDebt.dto';
 import { PayDebtDto } from './dto/payDebt.dto';
@@ -37,7 +36,32 @@ export class DebtsService {
           debt_amount: createDebtDto.debt_amount,
           debt_message: createDebtDto.debt_message,
         },
+        include: {
+          debtor: {
+            select: {
+              fullname: true,
+            },
+          },
+          creditor: {
+            select: {
+              fullname: true,
+            },
+          },
+        },
       });
+
+      // SEND NOTIFICATION TO DEBTOR AND CREDITOR
+      await this.notificationService.sendNotification(
+        debt.id_debtor,
+        `${debt.creditor.fullname} nhắc bạn trả tiền`,
+        `${debt.creditor.fullname} đã nhắc bạn trả số tiền ${debt.debt_amount}đ ${createDebtDto.debt_message ? 'với lời nhắn \"' + createDebtDto.debt_message + '\"' : ''}`,
+      );
+
+      await this.notificationService.sendNotification(
+        debt.id_creditor,
+        `Gửi nhắc nợ thành công`,
+        `Bạ̣n vừa nhắc ${debt.debtor.fullname} trả số tiền ${debt.debt_amount}đ`,
+      );
 
       return {
         message: 'Debt created successfully',
@@ -484,6 +508,18 @@ export class DebtsService {
             id,
           },
           data: { status: debt_status.DECLINED },
+          include: {
+            debtor: {
+              select: {
+                fullname: true,
+              },
+            },
+            creditor: {
+              select: {
+                fullname: true,
+              },
+            },
+          },
         }),
         this.prisma.debt_deletions.create({
           data: {
@@ -494,6 +530,18 @@ export class DebtsService {
       ]);
 
       // SEND NOTIFICATION TO DEBTOR AND CREDITOR
+      await this.notificationService.sendNotification(
+        debt.id_creditor,
+        `${debt.debtor.fullname} từ chối yêu cầu trả tiền`,
+        `${debt.debtor.fullname} đã từ chối trả số tiền ${debt.debt_amount}đ ${deleteDebtDto.deletion_message ? 'với lời nhắn \"' + deleteDebtDto.deletion_message + '\"' : ''}`,
+      );
+
+      await this.notificationService.sendNotification(
+        debt.id_debtor,
+        `Từ chối nợ thành công`,
+        `Bạ̣n vừa từ chối yêu cầu trả số tiền ${debt.debt_amount}đ từ ${debt.creditor.fullname}`,
+      );
+
       return {
         message: 'Debt canceled successfully',
         data: {
@@ -537,14 +585,46 @@ export class DebtsService {
             id,
           },
           data: { status: 'PAID' },
+          include: {
+            debtor: {
+              select: {
+                fullname: true,
+              },
+            },
+            creditor: {
+              select: {
+                fullname: true,
+              },
+            },
+          },
         }),
         this.prisma.debt_payments.create({
           data: {
             id_debt: id,
             id_transaction: payDebtDto.id_transaction,
           },
+          include: {
+            transactions: {
+              select: {
+                transaction_message: true,
+              },
+            },
+          },
         }),
       ]);
+
+      // SEND NOTIFICATION TO DEBTOR AND CREDITOR
+      await this.notificationService.sendNotification(
+        debt.id_creditor,
+        `${debt.debtor.fullname} thanh toán nợ cho bạn`,
+        `${debt.debtor.fullname} đã trả bạn ${debt.debt_amount}đ ${debtPayment.transactions.transaction_message ? 'với lời nhắn \"' + debtPayment.transactions.transaction_message + '\"' : ''}`,
+      );
+
+      await this.notificationService.sendNotification(
+        debt.id_debtor,
+        `Trả nợ thành công`,
+        `Bạ̣n vừa thanh toán cho ${debt.creditor.fullname} số tiền ${debt.debt_amount}đ`,
+      );
 
       return {
         message: 'Debt paid successfully',
