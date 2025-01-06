@@ -115,35 +115,36 @@ export class TransactionsService {
       const transformedTransasction = {
         fromBankCode: "",
         fromAccountNumber: createTransactionDto.sender_account_number,
+        toBankAccountNumber: "A12345",
         amount: createTransactionDto.transaction_amount,
         message: createTransactionDto.transaction_message,
         feePayer: createTransactionDto.fee_payment_method,
         feeAmount: createTransactionDto.fee_amount,
-        timestamp: Math.floor(Date.now() / 1000).toString()
       }
       
       const external_bank = await this.banksService.getBankById(createTransactionDto.id_sender_bank);
 
       const external_bank_base_url = "";
 
-      await this.banksService.makeTransaction(JSON.stringify(transformedTransasction), external_bank, external_bank_base_url)
+      const {sender_signature, recipient_signature } = await this.banksService.makeTransaction(JSON.stringify(transformedTransasction), external_bank, external_bank_base_url)
 
-      // const transaction = await this.prisma.transactions.create({
-      //   data: {
-      //     sender_account_number: createTransactionDto.sender_account_number,
-      //     id_sender_bank: createTransactionDto.id_sender_bank,
-      //     recipient_account_number: createTransactionDto.recipient_account_number,
-      //     id_recipient_bank: createTransactionDto.id_recipient_bank,
-      //     transaction_amount: new Prisma.Decimal(createTransactionDto.transaction_amount),
-      //     transaction_message: createTransactionDto.transaction_message,
-      //     fee_payment_method: createTransactionDto.fee_payment_method,
-      //     // digital_signature: createTransactionDto.digital_signature,
-      //     recipient_name: createTransactionDto.recipient_name,
-      //   },
-      // });
+      const transaction = await this.prisma.transactions.create({
+        data: {
+          sender_account_number: createTransactionDto.sender_account_number,
+          id_sender_bank: createTransactionDto.id_sender_bank,
+          recipient_account_number: createTransactionDto.recipient_account_number,
+          id_recipient_bank: createTransactionDto.id_recipient_bank,
+          transaction_amount: new Prisma.Decimal(createTransactionDto.transaction_amount),
+          transaction_message: createTransactionDto.transaction_message,
+          fee_payment_method: createTransactionDto.fee_payment_method,
+          sender_signature, 
+          recipient_signature,
+          recipient_name: createTransactionDto.recipient_name,
+        },
+      });
     return {
       message: 'Transaction created successfully',
-      // data: transaction,
+      data: transaction,
     };
   } catch (error) {
     throw new Error('Error creating transaction: ' + error.message);
@@ -152,7 +153,7 @@ export class TransactionsService {
 
   generateExternalResponseData(data: string, public_key: string, private_key: string, secret_key: string): ExternalTransactionResponse{
     const encryptedData = this.authService.encryptData(data, public_key);
-    const hashData = this.authService.hashPayload(encryptedData, secret_key);
+    // const hashData = this.authService.hashPayload(encryptedData, secret_key);
     const signature = this.authService.createSignature(encryptedData, private_key)
     return {
       encryptedData,

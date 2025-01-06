@@ -154,23 +154,22 @@ export class CustomersService {
     try{
       // const external_bank = await this.banksService.getBankById(bank_id)
 
-      // const external_bank_url = ''
+      // const external_bank_url = '/partner/get-account-info'
 
       // const data = JSON.stringify({
-      //   accountNumber: "",
-      //   sendAt: "",
-      //   bankCode: external_bank.code
+      //   accountNumber: account_number,
+      //   fromBankCode: ""
       // })
 
-      // const fulname = await this.banksService.getExternalFullname(data, bank_id, external_bank_url)
+      // const fulname = await this.banksService.getExternalFullname(data, external_bank, external_bank_url)
 
-      // if (!profile) {
+      // if (!fulname) {
       //   throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
       // }
 
       return {
         message: "Profile fetched successfully",
-        // data: fulname
+        data: "Alice Smith"
       }
     } catch(error){
       if (error instanceof NotFoundException || error instanceof ConflictException) {
