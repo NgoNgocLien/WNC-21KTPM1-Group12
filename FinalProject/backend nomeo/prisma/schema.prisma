@@ -25,7 +25,7 @@ model admins {
 model banks {
   id                                                 Int            @id @default(autoincrement())
   name                                               String         @db.VarChar(100)
-  rsa_public_key                                     String
+  rsa_public_key                                     String?
   logo                                               String?
   secret_key                                         String?
   code                                               String?
