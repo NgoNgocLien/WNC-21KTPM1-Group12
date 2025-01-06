@@ -15,15 +15,18 @@ import { CreateDebtDto } from './dto/createDebt.dto';
 import { UpdateDebtDto } from './dto/updateDebt.dto';
 import { DeleteDebtDto } from './dto/deleteDebt.dto';
 import { PayDebtDto } from './dto/payDebt.dto';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiHeader,
+  ApiHeaders,
+  ApiParam,
+} from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('debts')
 export class DebtsController {
   constructor(private readonly debtsService: DebtsService) {}
-
-  @Post()
-  create(@Body() createDebtDto: CreateDebtDto) {
-    return this.debtsService.create(createDebtDto);
-  }
 
   @Get()
   findAll() {
@@ -50,9 +53,20 @@ export class DebtsController {
     return this.debtsService.findCompleted(req.user['sub']);
   }
 
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      description: 'Bearer token',
+    },
+  ])
   @Get('/:id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.debtsService.findOne(id);
+  }
+
+  @Post()
+  create(@Body() createDebtDto: CreateDebtDto) {
+    return this.debtsService.create(createDebtDto);
   }
 
   @Post('/cancel/:id')
