@@ -22,8 +22,9 @@ export class TransactionsService {
     private readonly authService: AuthService
   ) {}
 
-  async findRecipientProfile(account_number: string){
+  async findRecipientProfile(account_number: string, external_bank: any, encryptMethod: string){
     try{
+
       const profile = await this.prisma.accounts.findUnique({
         where:{
           account_number: account_number,
@@ -38,14 +39,20 @@ export class TransactionsService {
         }
       })
 
-      const data = {
+      const transformedProfile = {
         account_number: profile.account_number,
         fullname: profile.customers.fullname
       }
 
+      const public_key = (encryptMethod == "PGP" || !encryptMethod) ? external_bank.pgp_public_key :  external_bank.pgp_public_key;
+
+      const encryptedPayload = await this.authService.encryptData(JSON.stringify(transformedProfile), public_key, encryptMethod)
+
       return {
         message: "Profile fetched successfully",
-        data: data
+        data: {
+          encryptedPayload
+        }
       }
     } catch(error){
       throw new Error('Error fetching profile: ' + error.message);
@@ -151,8 +158,8 @@ export class TransactionsService {
   }
   }
 
-  generateExternalResponseData(data: string, public_key: string, private_key: string, secret_key: string): ExternalTransactionResponse{
-    const encryptedData = this.authService.encryptData(data, public_key);
+  async generateExternalResponseData(data: string, public_key: string, private_key: string, secret_key: string): Promise<ExternalTransactionResponse>{
+    const encryptedData = await this.authService.encryptData(data, public_key);
     // const hashData = this.authService.hashPayload(encryptedData, secret_key);
     const signature = this.authService.createSignature(encryptedData, private_key)
     return {
@@ -161,7 +168,7 @@ export class TransactionsService {
     }
   }
 
-  async receiveExternalTransaction(sender_signature: string, payload: ExternalTransactionPayload) {
+  async receiveExternalTransaction(sender_signature: string, payload: ExternalTransactionPayload, encryptMethod: string) {
     try {
       const bank = await this.banksService.getBankByCode(payload.bank_code);
 
@@ -193,7 +200,7 @@ export class TransactionsService {
         }
       })
 
-      const responseData: ExternalTransactionResponse = this.generateExternalResponseData(
+      const responseData: ExternalTransactionResponse = await this.generateExternalResponseData(
         JSON.stringify(transaction),
         bank.rsa_public_key,
         process.env.RSA_PRIVATE_KEY,

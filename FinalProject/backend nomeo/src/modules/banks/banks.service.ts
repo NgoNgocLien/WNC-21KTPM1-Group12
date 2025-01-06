@@ -39,7 +39,7 @@ import { AuthService } from '../auth/auth.service';
     async makeTransaction(data: string, external_bank: any, url: string){
       try {
         const timestamp = Math.floor(Date.now() / 1000).toString()
-        const payload =  this.authService.encryptData(data + timestamp, external_bank.rsa_public_key)
+        const payload = await this.authService.encryptData(data + timestamp, external_bank.rsa_public_key)
         const integrity = this.authService.hashPayload(payload, external_bank.secret_key)
         const signature = this.authService.createSignature(payload, process.env.RSA_PRIVATE_KEY)
         const response = await axios.post(url, {
@@ -55,7 +55,7 @@ import { AuthService } from '../auth/auth.service';
 
         let decryptedPayload = null;
         try {
-          decryptedPayload = this.authService.decryptData(response.data.encryptedPayload, process.env.RSA_PRIVATE_KEY);
+          decryptedPayload = await this.authService.decryptData(response.data.encryptedPayload, process.env.RSA_PRIVATE_KEY);
         } catch (error) {
           throw new UnauthorizedException('Error decrypting payload');
         }
@@ -83,9 +83,12 @@ import { AuthService } from '../auth/auth.service';
         try {
 
           const timestamp = Math.floor(Date.now() / 1000).toString()
-          const payload =  this.authService.encryptData(data + timestamp, external_bank.rsa_public_key)
+          const encryptMethod = (external_bank.rsa_public_key) ? "RSA" : "PGP"
+          const private_key = (external_bank.rsa_public_key) ? process.env.RSA_PRIVATE_KEY : process.env.PGP_PRIVATE_KEY
+          const public_key = external_bank.rsa_public_key || external_bank.pgp_public_key
+          const payload = await this.authService.encryptData(data + timestamp, public_key,encryptMethod)
           const integrity = this.authService.hashPayload(payload, external_bank.secret_key)
-          const signature = this.authService.createSignature(payload, process.env.RSA_PRIVATE_KEY)
+          const signature = this.authService.createSignature(payload, private_key)
 
           const response = await axios.post(url, {
             body:{
@@ -100,7 +103,7 @@ import { AuthService } from '../auth/auth.service';
 
           let decryptedPayload = null;
           try {
-            decryptedPayload = this.authService.decryptData(response.data.encryptedPayload, process.env.RSA_PRIVATE_KEY);
+            decryptedPayload = await this.authService.decryptData(response.data.encryptedPayload, private_key);
           } catch (error) {
             throw new UnauthorizedException('Error decrypting payload');
           }

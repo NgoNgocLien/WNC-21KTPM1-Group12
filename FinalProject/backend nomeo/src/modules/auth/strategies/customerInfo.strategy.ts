@@ -17,6 +17,7 @@ export class CustomerInfoStrategy extends PassportStrategy(Strategy, 'customer-i
   }
 
   async validate(req: Request) {
+    const encryptMethod = req.body['encryptMethod'] as string;
     const hashedPayload = req.body['hashedPayload'] as string;
     const encryptedPayload = req.body['encryptedPayload'] as string;
 
@@ -24,14 +25,14 @@ export class CustomerInfoStrategy extends PassportStrategy(Strategy, 'customer-i
       throw new UnauthorizedException('Missing required info');
     }
 
-    const privateKey = process.env.RSA_PRIVATE_KEY;
+    const privateKey = (encryptMethod == "PGP" || !encryptMethod) ? process.env.PGP_PRIVATE_KEY :  process.env.RSA_PRIVATE_KEY;
     if (!privateKey) {
       throw new UnauthorizedException('Server private key not found');
     }
 
     let payload: CustomerInfoPayload;
     try {
-      payload = this.authService.decryptData(encryptedPayload, privateKey);
+      payload = await this.authService.decryptData(encryptedPayload, privateKey);
     } catch (error) {
       throw new UnauthorizedException('Error decrypting payload');
     }
@@ -51,7 +52,9 @@ export class CustomerInfoStrategy extends PassportStrategy(Strategy, 'customer-i
     }
 
     return { 
-      account_number: payload.account_number 
+      account_number: payload.account_number,
+      bank,
+      encryptMethod
     };
   }
 }

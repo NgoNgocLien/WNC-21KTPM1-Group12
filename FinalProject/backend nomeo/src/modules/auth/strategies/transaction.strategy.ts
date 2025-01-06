@@ -18,6 +18,7 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
 
   // Validate incoming request
   async validate(req: Request) {
+    const encryptMethod = req.body['encryptMethod'] as string;
     const encryptedPayload = req.body['encryptedPayload'] as string;
     const hashedPayload = req.body['hashedPayload'] as string;
     const signature = req.body['signature'] as string;
@@ -26,14 +27,14 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
       throw new UnauthorizedException('Missing required headers');
     }
 
-    const privateKey = process.env.RSA_PRIVATE_KEY;
+    const privateKey = (encryptMethod == "PGP" || !encryptMethod) ? process.env.PGP_PRIVATE_KEY :  process.env.RSA_PRIVATE_KEY;
     if (!privateKey) {
       throw new UnauthorizedException('Server private key not found');
     }
 
     let payload: ExternalTransactionPayload;
     try {
-      payload = this.authService.decryptData(encryptedPayload, privateKey);
+      payload = await this.authService.decryptData(encryptedPayload, privateKey)
     } catch (error) {
       throw new UnauthorizedException('Error decrypting payload');
     }
@@ -60,6 +61,7 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
     return {
       signature,
       payload,
+      encryptMethod
     };
   }
 }

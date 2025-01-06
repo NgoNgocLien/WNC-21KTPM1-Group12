@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import * as openpgp from 'openpgp';
 
 import { CustomersService } from 'src/modules/customers/customers.service';
 import { EmployeesService } from 'src/modules/employees/employees.service';
@@ -215,7 +216,18 @@ export class AuthService {
     return expected === hashData;
   }
 
-  encryptData(data: string, public_key: string) {
+  async encryptData(data: string, public_key: string, encryptMethod: string = "RSA") {
+    if (encryptMethod == "PGP"){
+      const publicKeyObj = await openpgp.readKey({ armoredKey: public_key });
+
+      const encryptedPayload = await openpgp.encrypt({
+          message: await openpgp.createMessage({ text: data }),
+          encryptionKeys: publicKeyObj,
+      });
+  
+      return encryptedPayload;
+    }
+
     const dataBuffer = Buffer.from(data);
     const encryptedPayload = crypto
       .publicEncrypt(public_key, dataBuffer)
@@ -223,7 +235,21 @@ export class AuthService {
     return encryptedPayload;
   }
 
-  decryptData(data: string, private_key: string) {
+  async decryptData(data: string, private_key: string, encryptMethod: string = "PGP") {
+    if (encryptMethod == "PGP"){
+      const privateKeyObj = await openpgp.decryptKey({
+        privateKey: await openpgp.readPrivateKey({ armoredKey: private_key }),
+        passphrase: process.env.PASSPHRASES,
+    });
+
+    const decrypted = await openpgp.decrypt({
+        message: await openpgp.readMessage({ armoredMessage: data }),
+        decryptionKeys: privateKeyObj,
+    });
+
+    return decrypted.data;
+    }
+
     const encryptedBuffer = Buffer.from(data, 'base64');
     const decryptedBuffer = crypto.privateDecrypt(private_key, encryptedBuffer);
     return JSON.parse(decryptedBuffer.toString());

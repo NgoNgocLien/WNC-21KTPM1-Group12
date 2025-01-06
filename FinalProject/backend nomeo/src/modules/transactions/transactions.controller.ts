@@ -38,7 +38,7 @@ export class TransactionsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Tìm kiếm thông tin người nhận thành công',
+    description: 'Cho phép ngân hàng khác truy vấn họ và tên của khách hàng',
   })
   @Public()
   @UseGuards(CustomerInfoGuard)
@@ -47,6 +47,8 @@ export class TransactionsController {
   findRecipientProfile(@Req() req: Request) {
     return this.transactionsService.findRecipientProfile(
       req.user['account_number'],
+      req.user['bank'],
+      req.user['encryptMethod']
     );
   }
 
@@ -86,6 +88,7 @@ export class TransactionsController {
     return this.transactionsService.receiveExternalTransaction(
       req.user['signature'],
       req.user['payload'],
+      req.user['encryptMethod']
     );
   }
 
