@@ -28,6 +28,10 @@ import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
   status: HttpStatus.UNAUTHORIZED,
   description: 'Không có quyền truy cập',
 })
+@ApiResponse({
+  status: HttpStatus.INTERNAL_SERVER_ERROR,
+  description: 'Lỗi server',
+})
 @Controller('transactions')
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
@@ -70,6 +74,7 @@ export class TransactionsController {
     );
   }
 
+  // TODO: update swagger
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Nhận giao dịch từ ngân hàng khác thành công',
@@ -110,7 +115,7 @@ export class TransactionsController {
   @ApiParam({
     name: 'account_number',
     description: 'Số tài khoản của khách hàng',
-    example: 'ACC1000000001',
+    example: 'ACC123456789',
     required: true,
   })
   @Get('account/:account_number')
