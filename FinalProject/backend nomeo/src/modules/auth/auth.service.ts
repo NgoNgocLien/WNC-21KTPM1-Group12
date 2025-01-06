@@ -235,7 +235,7 @@ export class AuthService {
     return encryptedPayload;
   }
 
-  async decryptData(data: string, private_key: string, encryptMethod: string = "PGP") {
+  async decryptData(data: string, private_key: string, encryptMethod: string = "RSA") {
     if (encryptMethod == "PGP"){
       const privateKeyObj = await openpgp.decryptKey({
         privateKey: await openpgp.readPrivateKey({ armoredKey: private_key }),
@@ -255,7 +255,22 @@ export class AuthService {
     return JSON.parse(decryptedBuffer.toString());
   }
 
-  createSignature(data: string, private_key: string) {
+  async createSignature(data: string, private_key: string, encryptMethod: string = "RSA") {
+    if (encryptMethod == "PGP"){
+      const privateKeyObj = await openpgp.decryptKey({
+        privateKey: await openpgp.readPrivateKey({ armoredKey: private_key }),
+        passphrase: process.env.PASSPHRASES,
+      });
+
+      // Sign the data
+      const signedMessage = await openpgp.sign({
+          message: await openpgp.createMessage({ text: data }), // Message to be signed
+          signingKeys: privateKeyObj, // Private key for signing
+      });
+
+      return signedMessage;
+    }
+
     const sign = crypto.createSign('SHA256');
     sign.update(data);
     sign.end();
@@ -263,7 +278,25 @@ export class AuthService {
     return sign.sign(private_key, 'base64');
   }
 
-  verifySignature(data: string, public_key: string, signature: string) {
+  async verifySignature(data: string, public_key: string, signature: string, encryptMethod: string = "RSA") {
+    if (encryptMethod == "PGP"){
+      const publicKeyObj = await openpgp.readKey({ armoredKey: public_key });
+
+      const signatureObj = await openpgp.readSignature({ armoredSignature: signature });
+
+      const messageObj = await openpgp.createMessage({ text: data });
+
+      const verificationResult = await openpgp.verify({
+          message: messageObj,          // Original data
+          signature: signatureObj,      // Signature object
+          verificationKeys: publicKeyObj, // Public key
+      });
+
+      const { verified } = verificationResult.signatures[0];
+      await verified; 
+      return true;
+    }
+
     const verify = crypto.createVerify('SHA256');
     verify.update(data);
     verify.end();

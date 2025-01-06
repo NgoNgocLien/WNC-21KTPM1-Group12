@@ -27,14 +27,15 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
       throw new UnauthorizedException('Missing required headers');
     }
 
-    const privateKey = (encryptMethod == "PGP" || !encryptMethod) ? process.env.PGP_PRIVATE_KEY :  process.env.RSA_PRIVATE_KEY;
+    const privateKey = (encryptMethod == "PGP") ? process.env.PGP_PRIVATE_KEY :  process.env.RSA_PRIVATE_KEY;
+
     if (!privateKey) {
       throw new UnauthorizedException('Server private key not found');
     }
 
     let payload: ExternalTransactionPayload;
     try {
-      payload = await this.authService.decryptData(encryptedPayload, privateKey)
+      payload = await this.authService.decryptData(encryptedPayload, privateKey, encryptMethod)
     } catch (error) {
       throw new UnauthorizedException('Error decrypting payload');
     }
@@ -52,7 +53,9 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
       throw new UnauthorizedException('Invalid payload hash');
     }
 
-    if (!this.authService.verifySignature(encryptedPayload, bank.rsa_public_key, signature)) {
+    const publicKey = (encryptMethod == "PGP") ? bank.pgp_public_key :  bank.rsa_public_key;
+    const validSignature = await this.authService.verifySignature(encryptedPayload, publicKey, signature, encryptMethod)
+    if (!validSignature) {
       throw new UnauthorizedException('Invalid signature');
     }
 

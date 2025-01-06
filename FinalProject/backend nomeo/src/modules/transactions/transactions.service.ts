@@ -44,7 +44,7 @@ export class TransactionsService {
         fullname: profile.customers.fullname
       }
 
-      const public_key = (encryptMethod == "PGP" || !encryptMethod) ? external_bank.pgp_public_key :  external_bank.pgp_public_key;
+      const public_key = (encryptMethod == "PGP") ? external_bank.pgp_public_key :  external_bank.rsa_public_key;
 
       const encryptedPayload = await this.authService.encryptData(JSON.stringify(transformedProfile), public_key, encryptMethod)
 
@@ -149,6 +149,18 @@ export class TransactionsService {
           recipient_name: createTransactionDto.recipient_name,
         },
       });
+
+      await this.prisma.accounts.update({
+        where: {
+          account_number: transaction.sender_account_number
+        },
+        data: {
+          account_balance: {
+            decrement: transaction.transaction_amount,
+          }
+        }
+      })
+
     return {
       message: 'Transaction created successfully',
       data: transaction,
@@ -156,16 +168,6 @@ export class TransactionsService {
   } catch (error) {
     throw new Error('Error creating transaction: ' + error.message);
   }
-  }
-
-  async generateExternalResponseData(data: string, public_key: string, private_key: string, secret_key: string): Promise<ExternalTransactionResponse>{
-    const encryptedData = await this.authService.encryptData(data, public_key);
-    // const hashData = this.authService.hashPayload(encryptedData, secret_key);
-    const signature = this.authService.createSignature(encryptedData, private_key)
-    return {
-      encryptedData,
-      signature
-    }
   }
 
   async receiveExternalTransaction(sender_signature: string, payload: ExternalTransactionPayload, encryptMethod: string) {
@@ -200,11 +202,10 @@ export class TransactionsService {
         }
       })
 
-      const responseData: ExternalTransactionResponse = await this.generateExternalResponseData(
+      const responseData: ExternalTransactionResponse = await this.banksService.generateExternalResponseData(
         JSON.stringify(transaction),
-        bank.rsa_public_key,
-        process.env.RSA_PRIVATE_KEY,
-        bank.secret_key,
+        bank,
+        encryptMethod
       )
 
       await this.prisma.transactions.update({

@@ -25,14 +25,14 @@ export class CustomerInfoStrategy extends PassportStrategy(Strategy, 'customer-i
       throw new UnauthorizedException('Missing required info');
     }
 
-    const privateKey = (encryptMethod == "PGP" || !encryptMethod) ? process.env.PGP_PRIVATE_KEY :  process.env.RSA_PRIVATE_KEY;
+    const privateKey = (encryptMethod == "PGP") ? process.env.PGP_PRIVATE_KEY :  process.env.RSA_PRIVATE_KEY;
     if (!privateKey) {
       throw new UnauthorizedException('Server private key not found');
     }
 
     let payload: CustomerInfoPayload;
     try {
-      payload = await this.authService.decryptData(encryptedPayload, privateKey);
+      payload = await this.authService.decryptData(encryptedPayload, privateKey, encryptMethod);
     } catch (error) {
       throw new UnauthorizedException('Error decrypting payload');
     }

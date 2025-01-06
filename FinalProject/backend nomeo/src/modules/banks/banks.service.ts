@@ -7,6 +7,7 @@ import {
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import axios from 'axios';
 import { AuthService } from '../auth/auth.service';
+import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionResponse';
 
   @Injectable()
   export class BanksService {
@@ -39,9 +40,13 @@ import { AuthService } from '../auth/auth.service';
     async makeTransaction(data: string, external_bank: any, url: string){
       try {
         const timestamp = Math.floor(Date.now() / 1000).toString()
-        const payload = await this.authService.encryptData(data + timestamp, external_bank.rsa_public_key)
+        const encryptMethod = (external_bank.rsa_public_key) ? "RSA" : "PGP"
+        const private_key = (external_bank.rsa_public_key) ? process.env.RSA_PRIVATE_KEY : process.env.PGP_PRIVATE_KEY
+        const public_key = external_bank.rsa_public_key || external_bank.pgp_public_key
+
+        const payload = await this.authService.encryptData(data + timestamp, public_key, encryptMethod)
         const integrity = this.authService.hashPayload(payload, external_bank.secret_key)
-        const signature = this.authService.createSignature(payload, process.env.RSA_PRIVATE_KEY)
+        const signature = await this.authService.createSignature(payload, private_key, encryptMethod)
         const response = await axios.post(url, {
           body:{
             header:{
@@ -55,7 +60,7 @@ import { AuthService } from '../auth/auth.service';
 
         let decryptedPayload = null;
         try {
-          decryptedPayload = await this.authService.decryptData(response.data.encryptedPayload, process.env.RSA_PRIVATE_KEY);
+          decryptedPayload = await this.authService.decryptData(response.data.encryptedPayload, private_key, encryptMethod);
         } catch (error) {
           throw new UnauthorizedException('Error decrypting payload');
         }
@@ -64,8 +69,9 @@ import { AuthService } from '../auth/auth.service';
           if (!this.authService.verifyHash(response.data.encryptedPayload, external_bank.secret_key, decryptedPayload.integrity)){
             throw new UnauthorizedException('Invalid payload hash');
           }
-      
-          if (!this.authService.verifySignature(response.data.encryptedPayload, external_bank.rsa_public_key, response.data.signature)) {
+          
+          const validSignature = await this.authService.verifySignature(response.data.encryptedPayload, public_key, response.data.signature, encryptMethod)
+          if (!validSignature) {
             throw new UnauthorizedException('Invalid signature');
           }
         } else {
@@ -80,41 +86,54 @@ import { AuthService } from '../auth/auth.service';
     }
 
     async getExternalFullname(data: string, external_bank: any, url: string){
-        try {
+      try {
 
-          const timestamp = Math.floor(Date.now() / 1000).toString()
-          const encryptMethod = (external_bank.rsa_public_key) ? "RSA" : "PGP"
-          const private_key = (external_bank.rsa_public_key) ? process.env.RSA_PRIVATE_KEY : process.env.PGP_PRIVATE_KEY
-          const public_key = external_bank.rsa_public_key || external_bank.pgp_public_key
-          const payload = await this.authService.encryptData(data + timestamp, public_key,encryptMethod)
-          const integrity = this.authService.hashPayload(payload, external_bank.secret_key)
-          const signature = this.authService.createSignature(payload, private_key)
+        const timestamp = Math.floor(Date.now() / 1000).toString()
+        const encryptMethod = (external_bank.rsa_public_key) ? "RSA" : "PGP"
+        const private_key = (external_bank.rsa_public_key) ? process.env.RSA_PRIVATE_KEY : process.env.PGP_PRIVATE_KEY
+        const public_key = external_bank.rsa_public_key || external_bank.pgp_public_key
 
-          const response = await axios.post(url, {
-            body:{
-              header:{
-                timestamp
-              },
-              encryptedPayload: payload,
-              integrity,
-              signature
-            }
-          });
+        const payload = await this.authService.encryptData(data + timestamp, public_key,encryptMethod)
+        const integrity = this.authService.hashPayload(payload, external_bank.secret_key)
+        const signature = await this.authService.createSignature(payload, private_key, encryptMethod)
 
-          let decryptedPayload = null;
-          try {
-            decryptedPayload = await this.authService.decryptData(response.data.encryptedPayload, private_key);
-          } catch (error) {
-            throw new UnauthorizedException('Error decrypting payload');
+        const response = await axios.post(url, {
+          body:{
+            header:{
+              timestamp
+            },
+            encryptedPayload: payload,
+            integrity,
+            signature
           }
+        });
 
-          const fullname = decryptedPayload.data.customer.fullname;
-  
-          return fullname;
+        let decryptedPayload = null;
+        try {
+          decryptedPayload = await this.authService.decryptData(response.data.encryptedPayload, private_key, encryptMethod);
         } catch (error) {
-          console.error('Error calling external API:', error.message);
-          throw error; // Nếu cần xử lý lỗi ở nơi khác
+          throw new UnauthorizedException('Error decrypting payload');
         }
+
+        const fullname = decryptedPayload.data.customer.fullname;
+
+        return fullname;
+      } catch (error) {
+        console.error('Error calling external API:', error.message);
+        throw error; // Nếu cần xử lý lỗi ở nơi khác
       }
+    }
+
+    async generateExternalResponseData(data: string, external_bank: any, encryptMethod: string): Promise<ExternalTransactionResponse>{
+      const private_key = (encryptMethod == "PGP") ? process.env.PGP_PRIVATE_KEY : process.env.RSA_PRIVATE_KEY
+      const public_key = (encryptMethod == "PGP") ? external_bank.pgp_public_key : external_bank.rsa_public_key
+      const encryptedData = await this.authService.encryptData(data, public_key, encryptMethod);
+      // const hashData = this.authService.hashPayload(encryptedData, external_bank.secret_key);
+      const signature = await this.authService.createSignature(encryptedData, private_key, encryptMethod)
+      return {
+        encryptedData,
+        signature
+      }
+    }
   }
   
