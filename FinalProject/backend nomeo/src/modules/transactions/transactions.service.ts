@@ -161,10 +161,10 @@ export class TransactionsService {
         }
       })
 
-    return {
-      message: 'Transaction created successfully',
-      data: transaction,
-    };
+      return {
+        message: 'Transaction created successfully',
+        data: transaction,
+      };
   } catch (error) {
     throw new Error('Error creating transaction: ' + error.message);
   }
@@ -203,7 +203,9 @@ export class TransactionsService {
       })
 
       const responseData: ExternalTransactionResponse = await this.banksService.generateExternalResponseData(
-        JSON.stringify(transaction),
+        JSON.stringify({
+          statusCode: 200
+        }),
         bank,
         encryptMethod
       )

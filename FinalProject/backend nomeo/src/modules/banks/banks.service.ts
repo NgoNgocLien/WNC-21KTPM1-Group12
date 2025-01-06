@@ -127,11 +127,11 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
     async generateExternalResponseData(data: string, external_bank: any, encryptMethod: string): Promise<ExternalTransactionResponse>{
       const private_key = (encryptMethod == "PGP") ? process.env.PGP_PRIVATE_KEY : process.env.RSA_PRIVATE_KEY
       const public_key = (encryptMethod == "PGP") ? external_bank.pgp_public_key : external_bank.rsa_public_key
-      const encryptedData = await this.authService.encryptData(data, public_key, encryptMethod);
-      // const hashData = this.authService.hashPayload(encryptedData, external_bank.secret_key);
-      const signature = await this.authService.createSignature(encryptedData, private_key, encryptMethod)
+      const encryptedPayload = await this.authService.encryptData(data, public_key, encryptMethod);
+      // const hashData = this.authService.hashPayload(encryptedPayload, external_bank.secret_key);
+      const signature = await this.authService.createSignature(encryptedPayload, private_key, encryptMethod)
       return {
-        encryptedData,
+        encryptedPayload,
         signature
       }
     }

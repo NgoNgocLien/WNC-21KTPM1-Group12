@@ -1,7 +1,7 @@
 import { FeePayment } from "src/modules/transactions/types/FeePayment.type";
 
 type ExternalTransactionResponse = {
-  encryptedData: string;
+  encryptedPayload: string;
   signature: string;
 };
 
