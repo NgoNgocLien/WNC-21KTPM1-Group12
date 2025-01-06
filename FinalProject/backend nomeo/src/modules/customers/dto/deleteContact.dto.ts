@@ -1,8 +1,18 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateContactDto } from './createContact.dto';
-import { IsNumber } from 'class-validator';
+import { IsDefined, IsNumber } from 'class-validator';
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 
-export class DeleteContactDto{
-    @IsNumber()
-    id: number
+@ApiSchema({
+  description: 'Xoá thông tin liên hệ',
+})
+export class DeleteContactDto {
+  @ApiProperty({
+    description: 'ID thông tin liên hệ',
+    example: 1,
+    required: true,
+  })
+  @IsNumber()
+  @IsDefined()
+  id: number;
 }
