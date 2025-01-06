@@ -30,6 +30,16 @@ const TransactionService = {
         throw error;
         }
     },
+
+    async getExternalTransactions() {
+        try {
+        const jsonObject = await BaseService.get(`transactions/external`);
+        return jsonObject;
+        } catch (error) {
+        console.error(error);
+        throw error;
+        }
+    },
 };
 
 export default TransactionService;

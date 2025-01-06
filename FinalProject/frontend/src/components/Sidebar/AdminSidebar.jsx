@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { logout } from '../../redux/authSlice';
-import { ArrowRightStartOnRectangleIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import { ArrowRightStartOnRectangleIcon, UserGroupIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
 import { clearToken } from '../../util/cookie';
 import AdminService from './../../services/AdminService'
 
@@ -57,6 +57,17 @@ const AdminSidebar = () => {
                 
               </div>
               Quản lý nhân viên
+            </NavLink>
+
+            <NavLink
+              to="/admin/transfer-history"
+              className="bg-white py-3 px-4 rounded-xl transition duration-200 flex items-center justify-start gap-x-3 hover:text-red-800"
+            >
+              <div className="flex size-8 flex-none items-center justify-center rounded-3xl bg-red-800 group-hover:bg-white">
+                <CalendarDaysIcon className="size-5 text-white group-hover:text-red-800" />
+                
+              </div>
+              Lịch sử giao dịch
             </NavLink>
 
           </nav>

@@ -46,10 +46,20 @@ const EmployeeService = {
       const jsonObject = await BaseService.patch(`employees/${id}`, data);
       return jsonObject;
     } catch (error) {
-        console.error(error);
-        throw error;
-      }
-    },
+      console.error(error);
+      throw error;
+    }
+  },
+
+  async deleteEmployee(id, data) {
+    try {
+      const jsonObject = await BaseService.delete(`employees/${id}`);
+      return jsonObject;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
 };
 
 export default EmployeeService;

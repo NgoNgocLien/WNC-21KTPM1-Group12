@@ -475,4 +475,41 @@ export class TransactionsService {
       throw new Error('Error fetching account transactions: ' + error.message);
     }
   }
+
+  async getExternalTransactions() {
+    try {
+      const banks = await this.prisma.banks.findMany({
+        where: {
+          id: {
+            not: 1,
+          },
+        },
+      });
+  
+      const transactions = await this.prisma.transactions.findMany({
+        where: {
+          OR: [
+            {
+              id_sender_bank: {
+                not: 1, 
+              },
+            },
+            {
+              id_recipient_bank: {
+                not: 1, 
+              },
+            },
+          ],
+        },
+      });
+  
+      return {
+        message: "Giao dịch của các ngân hàng khác đã được tìm thấy.",
+        data: transactions,
+      };
+    } catch (error) {
+      throw new Error('Error fetching transactions: ' + error.message);
+    }
+  }
+  
 }
