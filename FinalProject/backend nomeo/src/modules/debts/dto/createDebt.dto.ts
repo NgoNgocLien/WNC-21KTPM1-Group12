@@ -8,10 +8,10 @@ import {
   IsString,
 } from 'class-validator';
 import { debt_status } from '@prisma/client';
-import { ApiProperty, ApiSchema } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty, ApiSchema } from '@nestjs/swagger';
 
 @ApiSchema({
-  description: 'Tạo mới một nợ',
+  description: 'Tạo nhắc nợ mới',
 })
 export class CreateDebtDto {
   @ApiProperty({
@@ -50,10 +50,12 @@ export class CreateDebtDto {
   @IsOptional()
   debt_message: string;
 
+  @ApiHideProperty()
   @IsEnum(debt_status)
   @IsOptional()
   status: debt_status;
 
+  @ApiHideProperty()
   @IsDateString()
   @IsOptional()
   created_at: string;

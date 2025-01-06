@@ -4,7 +4,6 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { CreateDebtDto } from './dto/createDebt.dto';
-import { UpdateDebtDto } from './dto/updateDebt.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { DeleteDebtDto } from './dto/deleteDebt.dto';
 import { PayDebtDto } from './dto/payDebt.dto';

@@ -18,19 +18,17 @@ import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
   ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 
+@ApiTags('Auth')
+@ApiResponse({ status: 400, description: 'Yêu cầu không hợp lệ' })
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @ApiResponse({ status: 200, description: 'Đăng nhập thành công' })
   @ApiResponse({ status: 401, description: 'Đăng nhập thất bại' })
-  @ApiResponse({
-    status: 400,
-    description: 'Yêu cầu không hợp lệ',
-    links: null,
-  })
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -46,7 +44,6 @@ export class AuthController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Đăng xuất thành công' })
   @ApiResponse({ status: 401, description: 'Đăng xuất thất bại' })
-  @ApiResponse({ status: 400, description: 'Yêu cầu không hợp lệ' })
   @HttpCode(HttpStatus.OK)
   @Post('logout')
   logout(@Req() req: Request) {
@@ -56,7 +53,6 @@ export class AuthController {
   @ApiBearerAuth('refresh-token')
   @ApiResponse({ status: 200, description: 'Refresh token thành công' })
   @ApiResponse({ status: 401, description: 'Refresh token thất bại' })
-  @ApiResponse({ status: 400, description: 'Yêu cầu không hợp lệ' })
   @Public()
   @UseGuards(RefreshTokenGuard)
   @HttpCode(HttpStatus.OK)
@@ -75,7 +71,6 @@ export class AuthController {
     description: 'Lấy thông tin tài khoản thành công',
   })
   @ApiResponse({ status: 401, description: 'Lấy thông tin tài khoản thất bại' })
-  @ApiResponse({ status: 400, description: 'Yêu cầu không hợp lệ' })
   @Get('profile')
   getProfile(@Req() req: Request) {
     return req.user;
