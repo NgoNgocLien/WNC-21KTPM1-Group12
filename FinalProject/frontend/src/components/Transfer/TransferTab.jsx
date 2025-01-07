@@ -1,6 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { FaUniversity, FaExternalLinkAlt } from 'react-icons/fa';
 
 export default function TransferTab() {

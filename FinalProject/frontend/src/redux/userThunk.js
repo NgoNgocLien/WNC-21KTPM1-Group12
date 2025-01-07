@@ -2,6 +2,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import CustomerService from '../services/CustomerService';
 import EmployeeService from '../services/EmployeeService';
+import AdminService from '../services/AdminService';
 
 export const getUserInfo = createAsyncThunk(
     'user/getCustomerInfo',
@@ -16,8 +17,8 @@ export const getUserInfo = createAsyncThunk(
               response = await EmployeeService.getEmployeeInfo();
               return response;
             case "admin":
-              // response = await CustomerService.getCustomerInfo();
-              // return response;
+              response = await AdminService.getAdminInfo();
+              return response;
             default:
           }
             

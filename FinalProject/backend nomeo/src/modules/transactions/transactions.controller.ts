@@ -16,7 +16,7 @@ import { CreateTransactionDto } from './dto/createTransaction.dto';
 import { TransactionGuard } from '../auth/guards/transaction.guard';
 import { Public } from 'src/common/decorators/public.decorator';
 import { CustomerInfoGuard } from '../auth/guards/customerInfo.guard';
-import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Transactions')
 @ApiBearerAuth('access-token')
@@ -38,7 +38,40 @@ export class TransactionsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Cho phép ngân hàng khác truy vấn họ và tên của khách hàng',
+    description: 'Lấy thông tin khách hàng ngân hàng khác thành công.',
+    schema: {
+      type: 'object',
+      properties: {
+        encryptedPayload: {
+          type: 'string',
+          description: 'Thông tin khách hàng đã được mã hóa mà được giải mã bằng RSA/PGP private key tương ứng của ngân hàng liên kết.',
+          example: 'RSA(fullname, account_number)',
+        },
+      },
+    },
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        encryptMethod: {
+          type: 'string',
+          description: 'Cơ chế mã hóa',
+          example: 'RSA or PGP',
+        },
+        encryptedPayload: {
+          type: 'string',
+          description: 'Thông tin số tài khoản đã được mã hóa bằng RSA/PGP public key tương ứng của Nomeo Bank',
+          example: 'RSA(account_number, bank_code, timestamp)',
+        },
+        hashedPayload: {
+          type: 'string',
+          description: 'Chuỗi hash SHA-256 của encryptedPayload và secret key tương ứng của ngân hàng liên kết',
+          example: 'SHA256(encryptedPayload)',
+        },
+      },
+      required: ['encryptedPayload', 'hashedPayload'],
+    },
   })
   @Public()
   @UseGuards(CustomerInfoGuard)
@@ -76,10 +109,52 @@ export class TransactionsController {
     );
   }
 
-  // TODO: update swagger
   @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Nhận giao dịch từ ngân hàng khác thành công',
+    status: HttpStatus.OK,
+    description: 'Nhận giao dịch từ ngân hàng khác thành công.',
+    schema: {
+      type: 'object',
+      properties: {
+        encryptedPayload: {
+          type: 'string',
+          description: 'statusCode của request đã được mã hóa mà được giải mã bằng RSA/PGP private key tương ứng của ngân hàng liên kết.',
+          example: 'RSA(statusCode)',
+        },
+        signature: {
+          type: 'string',
+          description: 'Chữ kí số của giao dịch do Nomeo Bank tạo bằng RSA/PGP private key.',
+          example: 'SignBySHA256(encryptedPayload)',
+        }
+      },
+    },
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        encryptMethod: {
+          type: 'string',
+          description: 'Cơ chế mã hóa (RSA/PGP)',
+          example: 'RSA or PGP',
+        },
+        encryptedPayload: {
+          type: 'string',
+          description: 'Thông tin giao dịch đã được mã hóa bằng RSA/PGP public key tương ứng của Nomeo Bank',
+          example: 'RSA(transaction)',
+        },
+        hashedPayload: {
+          type: 'string',
+          description: 'Chuỗi hash SHA-256 của encryptedPayload và secret key tương ứng của ngân hàng liên kết',
+          example: 'SHA256(hashedPayload + secretKey)',
+        },
+        signature: {
+          type: 'string',
+          description: 'Chữ kí số của giao dịch do ngân hàng liên kết tạo bằng RSA/PGP private key',
+          example: 'SignBySHA256(encryptedPayload)',
+        }
+      },
+      required: ['encryptedPayload', 'hashedPayload', 'signature'],
+    },
   })
   @Public()
   @UseGuards(TransactionGuard)

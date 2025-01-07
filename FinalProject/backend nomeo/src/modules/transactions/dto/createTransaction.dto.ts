@@ -104,16 +104,6 @@ export class CreateTransactionDto {
   fee_amount: string;
 
   @ApiProperty({
-    description: 'Chữ ký số',
-    example: 'signature',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  @MaxLength(255, { message: 'Digital signature is too long.' })
-  digital_signature?: string;
-
-  @ApiProperty({
     description: 'Tên người nhận',
     example: 'Nguyễn Văn A',
     required: false,

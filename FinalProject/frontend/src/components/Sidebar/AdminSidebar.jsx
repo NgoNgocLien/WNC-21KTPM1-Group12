@@ -4,23 +4,18 @@ import { logout } from '../../redux/authSlice';
 import { ArrowRightStartOnRectangleIcon, UserGroupIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
 import { clearToken } from '../../util/cookie';
 import AdminService from './../../services/AdminService'
+import { getUserInfo } from '../../redux/userThunk';
+import { useDispatch, useSelector } from 'react-redux';
 
 const AdminSidebar = () => {
-  const [adminInfo, setAdminInfo] = useState(null)
+  const dispatch = useDispatch()
+  const {id, username} = useSelector((state) => state.user)
 
   useEffect( () => {
-    const getAdminInfo = async () => {
-      try {
-        const response = await AdminService.getAdminInfo();
-        setAdminInfo(response.data);
-      } catch (error) {
-        console.error('Error fetching admin profile:', error);
+      if (id == 0){
+        dispatch(getUserInfo("admin"))
       }
-    };
-
-    getAdminInfo();
-
-  }, []);
+    }, []);
 
   const handleLogout = () => {
     clearToken();
@@ -42,7 +37,7 @@ const AdminSidebar = () => {
                   className="w-24 h-24 rounded-full border-2 border-white"
                 />
               </div>
-              <p className="text-xl">{adminInfo?.username}</p>
+              <p className="text-xl">{username}</p>
             </div>
           </div>
 
