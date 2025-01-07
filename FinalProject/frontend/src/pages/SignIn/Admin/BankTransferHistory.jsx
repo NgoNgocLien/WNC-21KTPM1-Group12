@@ -14,7 +14,6 @@ const BankTransferHistory = () => {
   const [sortedTransactions, setSortedTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [error, setError] = useState('');
-  const [error, setError] = useState('');
 
   const dispatch = useDispatch();
   const { transactions, banks, status } = useSelector((state) => state.transaction);
@@ -63,7 +62,6 @@ const BankTransferHistory = () => {
       applyFilters();
     }
   }, [sortedTransactions, startDate, endDate, selectedBank, status]);
-  }, [sortedTransactions, startDate, endDate, selectedBank, status]);
 
   useEffect(() => {
     filteredTransactions.forEach((transaction) => {
@@ -72,31 +70,6 @@ const BankTransferHistory = () => {
       if (bankId && !banks[bankId]) {
         dispatch(getBankName(bankId));
       }
-    });
-  }, [filteredTransactions, banks, dispatch]);
-
-  const validateDateRange = (start, end) => {
-    const diffInDays = (end - start) / (1000 * 3600 * 24);
-    return diffInDays <= 30;
-  };
-
-  const handleStartDateChange = (date) => {
-    setStartDate(date);
-    if (!validateDateRange(date, endDate)) {
-      setError('Khoảng thời gian tra cứu không được vượt quá 30 ngày');
-    } else {
-      setError('');
-    }
-  };
-
-  const handleEndDateChange = (date) => {
-    setEndDate(date);
-    if (!validateDateRange(startDate, date)) {
-      setError('Khoảng thời gian tra cứu không được vượt quá 30 ngày');
-    } else {
-      setError('');
-    }
-  };
     });
   }, [filteredTransactions, banks, dispatch]);
 
@@ -149,7 +122,6 @@ const BankTransferHistory = () => {
               <DatePicker
                 selected={startDate}
                 onChange={handleStartDateChange}
-                onChange={handleStartDateChange}
                 dateFormat="dd/MM/yyyy"
                 className={`w-full p-3 border border-gray-300 rounded-xl`}
                 wrapperClassName="react-datepicker-wrapper w-full"
@@ -161,13 +133,11 @@ const BankTransferHistory = () => {
               <DatePicker
                 selected={endDate}
                 onChange={handleEndDateChange}
-                onChange={handleEndDateChange}
                 dateFormat="dd/MM/yyyy"
                 className={`w-full p-3 border border-gray-300 rounded-xl`}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div> 
-            {error && <p className="text-red-500 text-sm">{error}</p>}
             {error && <p className="text-red-500 text-sm">{error}</p>}
           </div>
           <div className="text-base font-medium">Tổng số tiền đã giao dịch: {new Intl.NumberFormat().format(totalAmount)} VNĐ</div>
