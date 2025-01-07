@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
+import TransactionDetailModal from '../EmployeeMgmt/TransactionDetailModal';
 
 const TransactionTable = ({ transactions, banks }) => {
   const [sortedTransactions, setSortedTransactions] = useState(transactions);
   const [sortDirection, setSortDirection] = useState('asc');
-
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
   useEffect(() => {
     setSortedTransactions(transactions); 
   }, [transactions]);
@@ -18,12 +21,22 @@ const TransactionTable = ({ transactions, banks }) => {
     setSortedTransactions(sorted);
     setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
   };
-  console.log(transactions);
-  console.log(sortedTransactions)
+  
+  const handleTransactionClick = (transaction) => {
+    setSelectedTransaction(transaction);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedTransaction(null);
+  };
+
+
   return (
-    <div className="max-h-screen overflow-y-auto shadow-md">
+    <div className="max-h-96 overflow-y-auto shadow-md">
       <table className="min-w-full divide-y divide-gray-200 bg-white">
-        <thead className="bg-red-100 sticky top-0 z-10">
+        <thead className="bg-red-100">
           <tr>
             <th className="py-3 pl-2 text-left text-sm font-semibold text-gray-700">Mã giao dịch</th>
             <th
@@ -66,6 +79,22 @@ const TransactionTable = ({ transactions, banks }) => {
           )}
         </tbody>
       </table>
+
+      {/* <TransactionDetailModal
+          isOpen={isModalOpen}
+          closeModal={closeModal}
+          transaction={selectedTransaction}
+          account_number={inputAccountNumber}
+          bankName={
+            selectedTransaction
+              ? selectedTransaction.type === 'Deposit'
+                ? null
+                : selectedTransaction.type === 'Sender' || selectedTransaction?.type === 'Sender (Debt)'
+                  ? banks[selectedTransaction?.id_recipient_bank]?.name
+                  : banks[selectedTransaction?.id_sender_bank]?.name
+              : null
+          }
+        /> */}
     </div>
   );
 };
