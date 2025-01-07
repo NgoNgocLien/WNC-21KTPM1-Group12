@@ -31,8 +31,8 @@ async function bootstrap() {
   );
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('NoMeoBank API')
-    .setDescription('The NoMeoBank API description')
+    .setTitle('VietBank API')
+    .setDescription('The VietBank API description')
     .setVersion('1.0')
     .addBearerAuth(
       {
