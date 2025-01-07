@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaTrash, FaPen } from 'react-icons/fa';
 import { IoIosClose } from "react-icons/io";
+import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
 
 import { getCustomerContacts } from './../../redux/userThunk';
 import { INTERNAL, EXTERNAL } from './../../util/config';
+import { useNavigate } from 'react-router-dom';
 
 export default function ContactList({
   isMutable,
@@ -15,6 +17,7 @@ export default function ContactList({
   setDisplayContacts
 }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { contacts, status, error } = useSelector((state) => state.user)
 
   useEffect(() => {
@@ -39,6 +42,16 @@ export default function ContactList({
       setDisplayContacts(false)
     }
   }
+
+  const handleTransfer = (contact) => {
+    const url = (contact.bank_name == "NoMeoBank") ? "/customer/transfer-internal" : "/customer/transfer-external"
+    navigate(url, {
+      state: {
+        contact: contact
+      }
+    })
+  }
+
   return (
     <>
 
@@ -114,6 +127,16 @@ export default function ContactList({
                             onClick={() => openDeleteModal(contact)}
                             className="h-fit p-2 text-red-800 border-[1px] border-red-800 rounded-full hover:bg-red-100 transition">
                             <FaTrash size={12} />
+                          </button>
+
+                          <button
+                            className="h-fit p-2 text-red-800 border-[1px] border-red-800 rounded-full hover:bg-red-100 transition">
+                            <div className="flex size-4 flex-none items-center justify-center rounded-3xl" 
+                              onClick={() => {
+                                handleTransfer(contact); 
+                              }}>
+                              <ArrowsRightLeftIcon className="size-5 text-red-800 " />
+                            </div>
                           </button>
                         </div>
                       )

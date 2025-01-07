@@ -10,7 +10,7 @@ import { INTERNAL } from '../../../../util/config';
 
 export default function TransferInternal() {
   const location = useLocation();
-  const { debt } = location.state || {};
+  const { debt, contact } = location.state || {};
 
   const [currentStep, setCurrentStep] = useState(1)
   const [values, setValues] = useState(null)
@@ -30,6 +30,7 @@ export default function TransferInternal() {
             setCurrentStep={setCurrentStep}
             setValues={setValues}
             debt={debt}
+            contact={contact}
           />
         )
       }

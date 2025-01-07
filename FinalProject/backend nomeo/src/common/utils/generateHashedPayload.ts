@@ -40,7 +40,8 @@ const hmacKey = 'TECHBANK_NOMEOBANK';
 // Function to generate the full request data
   function hashPayload(data: string, secret_key: string){
     return crypto.createHash('sha256')
-      .update(data + secret_key)  
+      .update("O6l/NelpVWqRSMOuPFo7jNfsFF2d30z7N5Zpc/e5u6eaULrQO0cmdlPWrE/vIpk9/ksh4BaIexfpusubh8L8g3+WG7PtvXCTUgj8kyxgrpnFrPXD1kul0ba2UKgIpo5o2Re2nYJShuljwtBulkTWMycaVM9KBDJqAos/He6xe2Wdn0JWdtCiI/M/piOhkIAvaruROZZXfobwYxucTOWVMt29UbcX3lRFLSrdnl3xDoEn1/u19PVaEICduF28EUiDrTC2GBO4AklM5/VaqXy0+B2Zg7CWia/JgtAK8iNuRKPMQbKJrkNg4CTY9X7csp8dsILxWHQywy3st3lQj80d0fDDh8yKqLxwrRGSC4/z/nInBdokZn6FTKC5wRWsER4+8PJzVU9J/KGtbEEdIY7Ax1Hicytwi64RVdrgF4HL7gPNPYfsc7LyooZ2CqYU3v5ytiNtsWH3iO9zPbH9QOO8jJ3JjlYVkYDr0isrGL62e9L8LZ+idxC7FkS+BL11DPqYud0WAPmpdBCWFNuf5yS7K+snkvDBfsokDjiaz9dOckZXN3ZIH4XARZ/eGY9mpxmrJRd4IiofEWZ3bU1GqApqgaQVjxiXGtZoaURVU+TfM7iNZ4C0h6cFTPGTC3tNFxeGg7WtSZ9EtS10KEEvJvUcmXmPdYeo15kwg5jSUIytYY0="
+ + "TECHBANK_NOMEOBANK")  
       .digest('hex');
   }
 
@@ -76,16 +77,16 @@ const data1 = JSON.stringify({
   transaction_message: 'Test transaction',
   fee_payment_method: 'SENDER',
   fee_amount: '10',
-  timestamp: '1736228778'
+  timestamp: '1736232365'
 })
 const encryptData1 = encryptData(data1, publicKey);
 const hashData1 = hashPayload(encryptData1, hmacKey);
-const signature = createSignature(encryptData1, privateKey)
+// const signature = createSignature(encryptData1, privateKey)
 
 console.log('Request Data 1:', {
   hashedPayload: hashData1,
-  encryptedPayload: encryptData1,
-  signature
+  // encryptedPayload: encryptData1,
+  // signature
 });
 
 

@@ -1,11 +1,38 @@
 import { useEffect, useState } from "react";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 
 import banks from "../../util/banks";
 import { customSelectStyles } from "../../util/customStyle";
+import CustomerService from "../../services/CustomerService";
+import { setUserStatus } from "../../redux/userSlice";
+import { FAILED, LOADING, SUCCEEDED } from "../../util/config";
 
 export default function ExternalBankSelect({formik}) {
+    const dispatch = useDispatch();
+
+    const handleChangeBank = async (option) => {
+        try{
+            formik.setFieldValue('id_recipient_bank', option.value);
+            if (formik.values.recipient_account_number) {
+                dispatch(setUserStatus({
+                  status: LOADING
+                }));
+                const recipient_name = await CustomerService.getExternalRecipientInfo(Number(option.value), formik.values.recipient_account_number);
+                formik.setFieldValue('recipient_name', recipient_name);
+                dispatch(setUserStatus({
+                  status: SUCCEEDED
+                }));
+              }
+        } catch (error){
+          console.log(error.message)
+          dispatch(setUserStatus({
+            status: FAILED,
+            error: error.message
+          }));
+        }
+    }
+
     return (
         <div className="w-full flex items-center bg-white rounded-xl justify-between">
             <div className="w-3/12 font-semibold">
@@ -16,9 +43,7 @@ export default function ExternalBankSelect({formik}) {
                     name="id_recipient_bank"
                     placeholder="Chọn ngân hàng"
                     value={bankOptions.find(option => option.value === formik.values.id_recipient_bank)}
-                    onChange={(option) => {
-                        formik.setFieldValue('id_recipient_bank', option.value);
-                    }}
+                    onChange={(option) => { handleChangeBank(option)}}
                     options={bankOptions}
                     styles={customSelectStyles}
                     />

@@ -23,6 +23,7 @@ const CustomerService = {
 
   async getExternalRecipientInfo(bank_id, account_number) {
     try {
+      console.log(bank_id)
       const jsonObject = await BaseService.get( `customers/profile/external/${bank_id}/${account_number}`);
       return jsonObject.data;
     } catch (error) {

@@ -213,6 +213,7 @@ export class AuthService {
       .update(data + secret_key)
       .digest('hex');
 
+    // console.log(expected, '`n', hashData)
     return expected === hashData;
   }
 

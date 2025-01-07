@@ -40,6 +40,8 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
       throw new UnauthorizedException('Error decrypting payload');
     }
 
+    console.log(payload)
+    
     const bank = await this.banksService.getBankByCode(payload.bank_code);
     if (!bank) {
       throw new UnauthorizedException('Invalid bank');
@@ -58,8 +60,6 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
     if (!validSignature) {
       throw new UnauthorizedException('Invalid signature');
     }
-
-    console.log(payload)
 
     return {
       signature,

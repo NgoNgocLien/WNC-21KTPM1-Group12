@@ -9,13 +9,13 @@ import ContactList from '../Account/ContactList';
 import ExternalBankSelect from './ExternalBankSelect';
 
 import { getCustomerContacts } from '../../redux/userThunk';
-import { SENDER, RECIPIENT, LOADING, SUCCEEDED, FAILED } from '../../util/config';
-import { getAccessToken } from '../../util/cookie';
+import { SENDER, RECIPIENT, LOADING, SUCCEEDED, FAILED, INTERNAL_BAND_ID } from '../../util/config';
 import CustomerService from '../../services/CustomerService';
 import { setUserStatus } from '../../redux/userSlice';
+import banks from '../../util/banks';
 
 
-export default function TransferInternalStep1({ setCurrentStep, setValues }) {
+export default function TransferInternalStep1({ setCurrentStep, setValues, contact }) {
   const { account_number, balance, contacts, fullname } = useSelector((state) => state.user);
   const [ displayContacts, setDisplayContacts ] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
@@ -24,7 +24,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
   const formik = useFormik({
     initialValues: {
       sender_account_number: account_number,
-      id_sender_bank: null,
+      id_sender_bank: INTERNAL_BAND_ID,
       recipient_account_number: ``,
       id_recipient_bank: null,
       transaction_amount: null,
@@ -46,6 +46,19 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
       resetForm();
     },
   });
+
+  useEffect(() => {
+      if (contact) {
+        console.log(banks)
+        const index = banks.findIndex((bank) =>{
+          return bank.bank_name == contact.bank_name
+        } )
+        
+        formik.setFieldValue('recipient_account_number', contact.account_number);
+        formik.setFieldValue('recipient_name', contact.contact_fullname);
+        formik.setFieldValue('id_recipient_bank', banks[index].bank_id);
+      }
+    }, [contact])
   
   const handleClickContactBook = () => {
     if (contacts === null) {
@@ -62,7 +75,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
         dispatch(setUserStatus({
           status: LOADING
         }));
-        const recipient_name = await CustomerService.getExternalRecipientInfo(Number(formik.id_recipient_bank), account_number);
+        const recipient_name = await CustomerService.getExternalRecipientInfo(Number(formik.values.id_recipient_bank), account_number);
         formik.setFieldValue('recipient_name', recipient_name);
         dispatch(setUserStatus({
           status: SUCCEEDED
@@ -78,13 +91,15 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
   };
 
   useEffect(()=>{
-    console.log(selectedContact)
     if (selectedContact){
+      const index = banks.findIndex((bank) => bank.bank_name == contact.bank_name)
       formik.setFieldValue("recipient_account_number", selectedContact.account_number)
       formik.setFieldValue("recipient_name", selectedContact.contact_fullname)
+      formik.setFieldValue('id_recipient_bank', banks[index].bank_id);
     }
   },[selectedContact])
 
+  // console.log(formik.values)
   return (
     <>
       {
@@ -104,8 +119,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
       <div className="w-8/12 mx-auto p-6 flex flex-col bg-white rounded-xl ">
 
         <ExternalBankSelect formik={formik} />
-       
-        <div className="w-full flex justify-between items-center mt-4">
+        <div className="w-full mt-4 flex justify-between items-center">
           <div className="w-3/12 font-semibold">
             Tài khoản thụ hưởng
           </div>
@@ -121,10 +135,8 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
                 onBlur={handleAccountNumberBlur}
                 className="w-full flex-1 bg-white p-3 text-base rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
               />
-              <FaAddressBook className="text-xl text-red-800 cursor-pointer hover:text-red-700 me-2" onClick={handleClickContactBook}/>
+              <FaAddressBook className="text-xl text-red-800 cursor-pointer hover:text-red-700 me-2" onClick={handleClickContactBook} />
             </div>
-          
-            
           </div>
         </div>
 
@@ -142,23 +154,34 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
             </div>
           )
         }
-        
+
         <div className="w-full mt-4 flex justify-between items-center">
           <div className="w-3/12 font-semibold">Số tiền</div>
           <div className="w-7/12 ">
             <div className="flex items-center rounded-xl outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-red-800">
               <input
-                  type="number"
-                  id="transaction_amount"
-                  name="transaction_amount"
-                  required
-                  placeholder="Nhập số tiền"
-                  value={formik.values.transaction_amount}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className="w-full flex-1 bg-white p-3 text-base rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
-                />
-               <label for="transaction_amount" class="focus-within:relative pr-3 text-md text-gray-400">VNĐ</label>
+                type="text"
+                id="transaction_amount"
+                name="transaction_amount"
+                required
+                placeholder="Nhập số tiền"
+                value={
+                  formik.values.transaction_amount
+                    ? Number(formik.values.transaction_amount).toLocaleString('en-US') // Format with commas
+                    : ''
+                }
+                onChange={(e) => {
+                  const rawValue = e.target.value.replace(/,/g, '');
+                  if (!isNaN(rawValue) && rawValue !== '') {
+                    formik.setFieldValue('transaction_amount', rawValue);
+                  } else if (rawValue === '') {
+                    formik.setFieldValue('transaction_amount', '');
+                  }
+                }}
+                onBlur={formik.handleBlur}
+                className="w-full flex-1 bg-white p-3 text-base rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 text-md"
+              />
+              <label for="transaction_amount" class="focus-within:relative pr-3 text-md text-gray-400">VNĐ</label>
             </div>
           </div>
         </div>
@@ -185,7 +208,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
         <div className="w-full mt-4 flex justify-between items-center">
           <div className="w-3/12 font-semibold">Phí giao dịch</div>
           <div className="w-7/12 ">
-           {Number(1000).toLocaleString()} VNĐ
+            {Number(1000).toLocaleString()} VNĐ
           </div>
         </div>
 
@@ -211,7 +234,8 @@ export default function TransferInternalStep1({ setCurrentStep, setValues }) {
                   value={RECIPIENT}
                   checked={formik.values.fee_payment_method === RECIPIENT}
                   onChange={formik.handleChange}
-                  className="mr-2 peer appearance-none w-3 h-3 border-2 border-gray-400 rounded-full checked:border-red-800 checked:bg-red-800"
+                  className="mr-2 peer appearance-none w-3 h-3 border-2 border-gray-400 rounded-full 
+                  checked:border-red-800 checked:bg-red-800 disabled:bg-gray-300 disabled:border-gray-300"
                 />
                 Người nhận
               </label>

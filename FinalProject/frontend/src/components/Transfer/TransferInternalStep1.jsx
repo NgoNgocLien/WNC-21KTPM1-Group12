@@ -7,14 +7,12 @@ import { FaAddressBook } from "react-icons/fa";
 import TransferAccount from './TransferAccount';
 import { getCustomerContacts } from '../../redux/userThunk';
 import { SENDER, RECIPIENT, INTERNAL_BAND_ID, LOADING, SUCCEEDED, FAILED } from '../../util/config';
-// import getFullname from '../../util/getFullname';
-import { getAccessToken } from '../../util/cookie';
 import ContactList from '../Account/ContactList';
 import CustomerService from '../../services/CustomerService';
 import { setUserStatus } from '../../redux/userSlice';
 
 
-export default function TransferInternalStep1({ setCurrentStep, setValues, debt }) {
+export default function TransferInternalStep1({ setCurrentStep, setValues, debt, contact }) {
   const { account_number, balance, contacts, fullname } = useSelector((state) => state.user);
   const [displayContacts, setDisplayContacts] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
@@ -33,6 +31,14 @@ export default function TransferInternalStep1({ setCurrentStep, setValues, debt 
     }
 
   }, [debt])
+
+  useEffect(() => {
+    if (contact) {
+      formik.setFieldValue('recipient_account_number', contact.account_number);
+      formik.setFieldValue('recipient_name', contact.contact_fullname);
+    }
+
+  }, [contact])
 
   const formik = useFormik({
     initialValues: {

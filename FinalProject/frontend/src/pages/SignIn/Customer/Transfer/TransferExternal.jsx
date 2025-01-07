@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import StepLabel from '../../../../components/Transfer/StepLabel'
 import TransferExternalStep1 from '../../../../components/Transfer/TransferExternalStep1';
@@ -9,6 +10,9 @@ import AddContactModal from '../../../../components/Account/AddContactModal';
 import { EXTERNAL } from '../../../../util/config';
 
 export default function TransferExternal() {
+  const location = useLocation();
+  const { contact } = location.state || {};
+
   const [currentStep, setCurrentStep] = useState(1)
   const [values, setValues] = useState(null)
   const [transaction, setTransaction] = useState(null)
@@ -26,6 +30,7 @@ export default function TransferExternal() {
           <TransferExternalStep1
             setCurrentStep={setCurrentStep}
             setValues={setValues}
+            contact={contact}
           />
         )
       }
