@@ -490,14 +490,6 @@ export class TransactionsService {
 
   async getExternalTransactions() {
     try {
-      const banks = await this.prisma.banks.findMany({
-        where: {
-          id: {
-            not: 1,
-          },
-        },
-      });
-  
       const transactions = await this.prisma.transactions.findMany({
         where: {
           OR: [
@@ -515,9 +507,14 @@ export class TransactionsService {
         },
       });
   
+      const transactionsWithType = transactions.map(transaction => ({
+        ...transaction,
+        type: transaction.id_sender_bank === 1 ? 'Sender' : 'Recipient'
+      }));
+
       return {
         message: "Giao dịch của các ngân hàng khác đã được tìm thấy.",
-        data: transactions,
+        data: transactionsWithType,
       };
     } catch (error) {
       throw new Error('Error fetching transactions: ' + error.message);
