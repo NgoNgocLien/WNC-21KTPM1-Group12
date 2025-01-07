@@ -1,11 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
+@ApiSchema({
+  description: 'Nạp tiền',
+})
 export class CreateDepositDto {
   @ApiProperty({
     description: 'ID khách hàng',
@@ -35,7 +33,7 @@ export class CreateDepositDto {
 
   @ApiProperty({
     description: 'Nội dung nạp tiền',
-    example: "Nạp tiền",
+    example: 'Nạp tiền',
     required: false,
   })
   @IsOptional()

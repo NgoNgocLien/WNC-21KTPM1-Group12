@@ -1,5 +1,5 @@
 import { Role } from '../types/Role';
-import { IsDefined, IsEnum, IsString } from 'class-validator';
+import { IsDefined, IsEnum, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginDto {
@@ -36,9 +36,9 @@ export class LoginDto {
     description:
       'Token từ Firebase Cloud Messaging, cho phép gửi thông báo đến thiết bị',
     example: 'fcm_token',
-    required: true,
+    required: false,
   })
   @IsString()
-  @IsDefined()
+  @IsOptional()
   fcm_token: string;
 }
