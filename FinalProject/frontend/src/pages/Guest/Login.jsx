@@ -9,10 +9,11 @@ import { GoogleReCaptchaProvider, GoogleReCaptcha } from "react-google-recaptcha
 
 import { login } from "../../redux/authSlice";
 
-import { BASE_URL, FAILED } from "../../util/config";
+import { BASE_URL, FAILED, LOADING, SUCCEEDED } from "../../util/config";
 import { setAccessToken, setRefreshToken } from "../../util/cookie";
 import { requestFCMToken } from "../../util/fcm";
 import { useDispatch } from "react-redux";
+import { setUserStatus } from "../../redux/userSlice";
 
 const loginSchema = Yup.object().shape({
   username: Yup.string().required("Vui lòng nhập tên đăng nhập"),
@@ -27,6 +28,9 @@ export default function Login() {
   const [refreshReCaptcha, setRefreshReCaptcha] = useState(false);
 
   const handleLogin = async (values) => {
+    dispatch(setUserStatus({
+      status: LOADING
+    }));
     switch (role) {
       case 'customer':
         requestFCMToken().then(async (token) => {
@@ -57,7 +61,12 @@ export default function Login() {
             setAccessToken(data.access_token);
             setRefreshToken(data.refresh_token);
 
+            dispatch(setUserStatus({
+              status: SUCCEEDED
+            }));
+
             window.location.href = '/customer';
+            
           } catch (error) {
             dispatch(login({
               role: null,
@@ -104,6 +113,9 @@ export default function Login() {
           setAccessToken(data.access_token);
           setRefreshToken(data.refresh_token);
 
+          dispatch(setUserStatus({
+            status: SUCCEEDED
+          }));
           window.location.href = '/employee';
         } catch (error) {
           dispatch(login({
@@ -143,6 +155,10 @@ export default function Login() {
           setAccessToken(data.access_token);
           setRefreshToken(data.refresh_token);
 
+          dispatch(setUserStatus({
+            status: SUCCEEDED
+          }));
+          
           window.location.href = '/admin';
         } catch (error) {
           dispatch(login({

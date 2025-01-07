@@ -154,20 +154,20 @@ export class CustomersService {
 
   async findExternalProfile(bank_id: number, account_number: string) {
     try {
-      // const external_bank = await this.banksService.getBankById(bank_id)
+      const external_bank = await this.banksService.getBankById(bank_id)
 
-      // const external_bank_url = '/partner/get-account-info'
+      const external_bank_url = '/partner/get-account-info'
 
-      // const data = JSON.stringify({
-      //   accountNumber: account_number,
-      //   fromBankCode: ""
-      // })
+      const data = JSON.stringify({
+        accountNumber: account_number,
+        fromBankCode: ""
+      })
 
-      // const fulname = await this.banksService.getExternalFullname(data, external_bank, external_bank_url)
+      const fulname = await this.banksService.getExternalFullname(data, external_bank, external_bank_url)
 
-      // if (!fulname) {
-      //   throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
-      // }
+      if (!fulname) {
+        throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
+      }
 
       return {
         message: "Profile fetched successfully",
@@ -192,7 +192,7 @@ export class CustomersService {
       });
 
       if (!customerExists) {
-        throw new NotFoundException(`Customer with id ${id} not found`);
+        throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
       }
 
       const customer = await this.prisma.customers.update({
@@ -270,7 +270,7 @@ export class CustomersService {
         where: { id },
       });
       if (!customerExists) {
-        throw new NotFoundException(`Khách hàng không tồn tại`);
+        throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
       }
 
       const accounts = await this.prisma.accounts.findMany({
@@ -298,7 +298,7 @@ export class CustomersService {
         where: { id },
       });
       if (!customerExists) {
-        throw new NotFoundException(`Khách hàng không tồn tại`);
+        throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
       }
 
       const contacts = await this.prisma.contacts.findMany({
@@ -349,7 +349,7 @@ export class CustomersService {
         where: { id: data.id_customer },
       });
       if (!customerExists) {
-        throw new NotFoundException(`Khách hàng không tồn tại`);
+        throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
       }
 
       const contactExists = await this.prisma.contacts.findFirst({
