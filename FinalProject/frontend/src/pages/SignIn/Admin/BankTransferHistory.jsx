@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { ArrowsRightLeftIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 import { getBankName, getExternalTransactions } from '../../../redux/transactionThunk';
 import { IDLE, SUCCEEDED } from '../../../util/config';
-import { format } from 'date-fns';
-import TransactionDetailModal from '../../../components/EmployeeMgmt/TransactionDetailModal';
 import TransactionTable from '../../../components/Table/TransactionTable';
 
 const BankTransferHistory = () => {
@@ -14,11 +11,9 @@ const BankTransferHistory = () => {
   const [endDate, setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
   const [selectedBank, setSelectedBank] = useState('');
   const [totalAmount, setTotalAmount] = useState(0);
-  const [filters, setFilters] = useState(['all']);
   const [sortedTransactions, setSortedTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
-  const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState('');
 
   const dispatch = useDispatch();
   const { transactions, banks, status } = useSelector((state) => state.transaction);
@@ -38,25 +33,35 @@ const BankTransferHistory = () => {
 
   useEffect(() => {
     const applyFilters = () => {
-      const newFilteredTransactions = sortedTransactions.filter((t) => {
-        const typeMatch =
-          filters.includes('all') ||
-          (filters.includes('sender') && t.type === 'Sender') ||
-          (filters.includes('recipient') && (t.type === 'Recipient'));
+      const newFilteredTransactions = sortedTransactions.filter((t) => {  
+        const startDateMatch = !startDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) >= startDate.setHours(0, 0, 0, 0);
+        const endDateMatch = !endDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) <= endDate.setHours(0, 0, 0, 0);
+        const bankMatch = !selectedBank || 
+          (t.id_sender_bank === 1 ? t.id_recipient_bank === parseInt(selectedBank) : t.id_sender_bank === parseInt(selectedBank));
   
-        const startDateMatch = !startDate || new Date(t.transaction_time) >= startDate;
-        const endDateMatch = !endDate || new Date(t.transaction_time) <= endDate;
-  
-        return typeMatch && startDateMatch && endDateMatch;
+        return startDateMatch && endDateMatch && bankMatch;
       });
-  
+      
+      let totalAmountReceived = 0;
+      let totalAmountSent = 0;
+      
+      newFilteredTransactions.forEach((transaction) => {
+        if (transaction.id_sender_bank === 1) {
+          
+          totalAmountSent += parseInt(transaction.transaction_amount);
+        } else {
+          totalAmountReceived += parseInt(transaction.transaction_amount);
+        }
+      });
+      
+      setTotalAmount(totalAmountReceived - totalAmountSent);
       setFilteredTransactions(newFilteredTransactions);
     };
   
     if (status === SUCCEEDED && transactions.length > 0) {
       applyFilters();
     }
-  }, [sortedTransactions, filters, startDate, endDate, status]);
+  }, [sortedTransactions, startDate, endDate, selectedBank, status]);
 
   useEffect(() => {
     filteredTransactions.forEach((transaction) => {
@@ -65,94 +70,31 @@ const BankTransferHistory = () => {
       if (bankId && !banks[bankId]) {
         dispatch(getBankName(bankId));
       }
-      });
-    }, [sortedTransactions, banks, dispatch]);
-  
-  const renderTransactions = () => {
-    if (status === SUCCEEDED) {
-      if (filteredTransactions.length === 0) {
-        return <p className="text-center text-gray-500">Không có giao dịch nào trong khoảng thời gian này</p>;
-      }
-  
-      return (
-        <div className="max-h-96 overflow-y-auto">
-          {filteredTransactions.map((transaction) => {
-            const formattedTime = format(new Date(transaction.transaction_time), 'dd/MM/yyyy - HH:mm:ss');
-            const amountSign = transaction.type === 'Sender' ? '-' : '+';
-            let transactionLabel = '';
-            let labelColor = '';
-  
-            if (transaction.type === 'Recipient') {
-              transactionLabel = 'Nhận tiền';
-              labelColor = 'bg-green-500';
-            } else if (transaction.type === 'Sender') {
-              transactionLabel = 'Chuyển tiền';
-              labelColor = 'bg-yellow-500';
-            }
-  
-            const formattedAmount = new Intl.NumberFormat().format(transaction.transaction_amount);
-  
-            return (
-              <div
-                key={transaction.id}
-                className={`py-4 pr-4 border-b border-gray-300 flex items-center justify-between cursor-pointer`}
-                onClick={() => handleTransactionClick(transaction)}
-              >
-                <div className="flex items-center space-x-2">
-                  <img
-                    src={banks[transaction.type === 'Recipient' ? transaction.id_sender_bank : transaction.id_recipient_bank]?.logo}
-                    alt="Bank Logo"
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <div>
-                    <p className="font-semibold">{transaction.id}.{transaction.transaction_message || '(Không có nội dung)'}</p>
-                    <p className="text-sm text-gray-500">Từ TK {transaction.sender_account_number} - {transaction.id_sender_bank === 1 ? "NoMeoBank" : banks[transaction.id_sender_bank]?.name} đến TK {transaction.recipient_account_number} - {transaction.id_recipient_bank === 1 ? "NoMeoBank" : banks[transaction.id_recipient_bank]?.name}. {formattedTime}</p>   
-                  </div>
-                </div>
-                  
-                <div className="amount w-50 text-right">
-                  <p className={`text-lg ${amountSign === '+' ? 'text-green-600' : 'text-red-600'}`}>
-                    {amountSign}{formattedAmount} VNĐ
-                  </p>
-                </div>
-  
-                <div className="flex flex-col items-end space-y-1">
-                  <div className={`ml-4 py-1 px-2 text-xs font-base rounded text-white ${labelColor}`}>
-                    {transactionLabel}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      );
-    }
-      return null;
-    };
-  
-    const handleTransactionClick = (transaction) => {
-      setSelectedTransaction(transaction);
-      setIsModalOpen(true);
-    };
-  
-    const closeModal = () => {
-      setIsModalOpen(false);
-      setSelectedTransaction(null);
-    };
+    });
+  }, [filteredTransactions, banks, dispatch]);
 
-    const handleFilterButtonClick = (filter) => {
-      setFilters((prev) => {
-        const newFilters = prev.includes(filter)
-          ? prev.filter((f) => f !== filter)
-          : [...prev, filter];
-  
-        if (!newFilters.includes('recipient') && !newFilters.includes('sender')) {
-          return ['all'];
-        }
-  
-        return newFilters.includes('all') ? newFilters.filter((f) => f !== 'all') : newFilters;
-      });
-    };
+  const validateDateRange = (start, end) => {
+    const diffInDays = (end - start) / (1000 * 3600 * 24);
+    return diffInDays <= 30;
+  };
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+    if (!validateDateRange(date, endDate)) {
+      setError('Khoảng thời gian tra cứu không được vượt quá 30 ngày');
+    } else {
+      setError('');
+    }
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+    if (!validateDateRange(startDate, date)) {
+      setError('Khoảng thời gian tra cứu không được vượt quá 30 ngày');
+    } else {
+      setError('');
+    }
+  };
 
   return (
     <>
@@ -179,7 +121,7 @@ const BankTransferHistory = () => {
               <label className="block text-base font-medium mb-2">Từ ngày</label>
               <DatePicker
                 selected={startDate}
-                onChange={(date) => setStartDate(date)}
+                onChange={handleStartDateChange}
                 dateFormat="dd/MM/yyyy"
                 className={`w-full p-3 border border-gray-300 rounded-xl`}
                 wrapperClassName="react-datepicker-wrapper w-full"
@@ -190,61 +132,17 @@ const BankTransferHistory = () => {
               <label className="block text-base font-medium mb-2">Đến ngày</label>
               <DatePicker
                 selected={endDate}
-                onChange={(date) => setEndDate(date)}
+                onChange={handleEndDateChange}
                 dateFormat="dd/MM/yyyy"
                 className={`w-full p-3 border border-gray-300 rounded-xl`}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
             </div> 
+            {error && <p className="text-red-500 text-sm">{error}</p>}
           </div>
-          <TransactionTable transactions={sortedTransactions} banks={banks}/>
+          <div className="text-base font-medium">Tổng số tiền đã giao dịch: {new Intl.NumberFormat().format(totalAmount)} VNĐ</div>
+          <TransactionTable transactions={filteredTransactions} banks={banks}/>
         </div>
-        
-        {/* {transactions.length > 0 && (
-        <>
-          <div className="flex justify-end mt-1 gap-2">
-            <button
-              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('recipient') ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-200'} text-white`}
-              onClick={() => handleFilterButtonClick('recipient')}
-            >
-              <BanknotesIcon className="w-6 h-6" />
-              Nhận tiền
-            </button>
-            <button
-              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('sender') ? 'bg-yellow-500 hover:bg-yellow-400' : 'bg-gray-200'} text-white`}
-              onClick={() => handleFilterButtonClick('sender')}
-            >
-              <ArrowsRightLeftIcon className="w-6 h-6" />
-              Chuyển tiền
-            </button>
-            <button
-              className={`flex items-center gap-2 py-2 px-4 rounded-xl ${filters.includes('all') ? 'bg-red-700 hover:bg-red-800' : 'bg-gray-200'} text-white`}
-              onClick={() => setFilters(['all'])}
-            >
-              Tất cả
-            </button>
-          </div>
-          <div className="text-lg font-semibold">Tổng số tiền đã giao dịch: {totalAmount} VNĐ</div>
-          <div className="p-6 bg-white rounded-xl">{renderTransactions()}</div>
-        </>
-        )} */}
-
-
-        {/* <TransactionDetailModal
-          isOpen={isModalOpen}
-          closeModal={closeModal}
-          transaction={selectedTransaction}
-          account_number={inputAccountNumber}
-          bankName={
-            selectedTransaction
-              ? selectedTransaction.type === 'Deposit'
-                ? null
-                : selectedTransaction.type === 'Sender' || selectedTransaction?.type === 'Sender (Debt)'
-                  ? banks[selectedTransaction?.id_recipient_bank]?.name
-                  : banks[selectedTransaction?.id_sender_bank]?.name
-              : null
-          }
-        /> */}
       </div>
     </>
   );
