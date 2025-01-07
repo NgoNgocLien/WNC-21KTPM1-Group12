@@ -62,10 +62,21 @@ const hmacKey = 'TECHBANK_NOMEOBANK';
 
 // POST /transactions/external/receive
 
+// const data1 = JSON.stringify({
+//   ...payload,
+//   timestamp: Math.floor(Date.now() / 1000).toString(),
+//   bank_code: "B001"
+// })
+
 const data1 = JSON.stringify({
-  ...payload,
-  timestamp: Math.floor(Date.now() / 1000).toString(),
-  bank_code: "B001"
+  bank_code: 'B001',
+  sender_account_number: 'A12345',
+  recipient_account_number: 'ACC123456789',
+  transaction_amount: '100',
+  transaction_message: 'Test transaction',
+  fee_payment_method: 'SENDER',
+  fee_amount: '10',
+  timestamp: '1736228778'
 })
 const encryptData1 = encryptData(data1, publicKey);
 const hashData1 = hashPayload(encryptData1, hmacKey);
@@ -80,15 +91,15 @@ console.log('Request Data 1:', {
 
 // POST /transactions/recipient_profile
 
-const data2 = {
-  bank_code: "B001",
-  account_number: "ACC123456789",
-  timestamp: Math.floor(Date.now() / 1000).toString()
-}
-const encryptData2 = encryptData(JSON.stringify(data2), publicKey);
-const hashData2 = hashPayload(encryptData2, hmacKey);
-console.log('Request Data 2:', {
-  encryptedPayload: encryptData2,
-  hashedPayload: hashData2
-});
+// const data2 = {
+//   bank_code: "B001",
+//   account_number: "ACC123456789",
+//   timestamp: Math.floor(Date.now() / 1000).toString()
+// }
+// const encryptData2 = encryptData(JSON.stringify(data2), publicKey);
+// const hashData2 = hashPayload(encryptData2, hmacKey);
+// console.log('Request Data 2:', {
+//   encryptedPayload: encryptData2,
+//   hashedPayload: hashData2
+// });
 

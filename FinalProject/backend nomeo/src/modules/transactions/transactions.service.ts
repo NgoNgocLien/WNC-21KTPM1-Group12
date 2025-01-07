@@ -174,6 +174,7 @@ export class TransactionsService {
     try {
       const bank = await this.banksService.getBankByCode(payload.bank_code);
 
+      console.log(payload.recipient_account_number)
       const customer = await this.customersService.findInternalProfile(payload.recipient_account_number)
       const recipient_name = customer.data;
 
