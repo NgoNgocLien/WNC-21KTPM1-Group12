@@ -53,7 +53,7 @@ const TransactionTable = ({ transactions, banks }) => {
         <tbody className="divide-y divide-gray-200">
           {sortedTransactions.length > 0 ? sortedTransactions.map((transaction, index) => (
             <tr key={index} onClick={() => handleTransactionClick(transaction)}
-            className="cursor-pointer hover:bg-gray-100">
+            className="cursor-pointer hover:bg-red-50">
               <td className="py-3 pl-2 text-left text-sm text-gray-700 truncate max-w-72">{transaction.id}</td>
               <td className="py-3 text-left text-sm text-gray-700">
                 {transaction.transaction_time ? format(new Date(transaction.transaction_time), 'dd/MM/yyyy HH:mm:ss') : 'N/A'}

@@ -88,7 +88,7 @@ const BankTransferHistory = () => {
               <label className="block text-base font-medium mb-2">Ngân hàng</label>
               <select value={selectedBank} onChange={(e) => setSelectedBank(e.target.value)} className="w-full p-3 border border-gray-300 rounded-xl">
                 <option value="">Tất cả</option>
-                {banks && banks.map((bank) => {
+                {banks && banks.filter(bank => bank.id !== 1).map((bank) => {
                   return (
                     <option key={bank.id} value={bank.id}>
                       {bank.name}

@@ -121,7 +121,7 @@ export default function TransferHistory() {
                   <img
                     src={bankLogo ? bankLogo : `https://picsum.photos/id/155/200/300`}
                     alt="Bank Logo"
-                    className="w-10 h-10 rounded-full"
+                    className="w-10 h-10 rounded-full object-cover"
                   />
                   <div>
                     <p className="font-semibold">{transaction.transaction_message || transaction.deposit_message || '(Không có nội dung)'}</p>
