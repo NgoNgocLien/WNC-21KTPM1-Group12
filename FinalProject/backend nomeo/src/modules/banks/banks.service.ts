@@ -152,8 +152,11 @@ import { FEE_AMOUNT } from 'src/common/utils/config';
         
         const dataResponse = await response.json();
         let decryptedPayload = null;
-        decryptedPayload = await this.authService.decryptData(dataResponse.data.encryptedPayload, private_key, encryptMethod);
-        console.log(decryptedPayload)
+
+        encryptedPayload = (dataResponse.data) ? dataResponse.data.encryptedPayload : dataResponse.encryptedPayload
+        // console.log(encryptedPayload)
+        decryptedPayload = await this.authService.decryptData(encryptedPayload, private_key, encryptMethod);
+
 
         if (encryptMethod == "RSA" && decryptedPayload.statusCode === 200){
           return {sender_signature: body.signature, recipient_signature: dataResponse.signature};
@@ -213,7 +216,7 @@ import { FEE_AMOUNT } from 'src/common/utils/config';
         const dataResponse = await response.json();
         let decryptedPayload = null;
         encryptedPayload = (dataResponse.data) ? dataResponse.data.encryptedPayload : dataResponse.encryptedPayload
-        console.log(encryptedPayload)
+        // console.log(encryptedPayload)
         decryptedPayload = await this.authService.decryptData(encryptedPayload, private_key, encryptMethod);
         
 
