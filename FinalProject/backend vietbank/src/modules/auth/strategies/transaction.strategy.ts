@@ -42,7 +42,7 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
 
     console.log(payload)
     
-    const bank = await this.banksService.getBankByCode(payload.bank_code);
+    const bank = await this.banksService.getBankByInternalCode(payload.bank_code);
     if (!bank) {
       throw new UnauthorizedException('Invalid bank');
     }

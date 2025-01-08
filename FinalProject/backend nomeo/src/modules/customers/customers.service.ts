@@ -156,17 +156,17 @@ export class CustomersService {
     try {
       const external_bank = await this.banksService.getBankById(bank_id)
 
-      const external_bank_url = 'https://bank-backend-awr6.onrender.com/partner/get-account-info'
+      const external_bank_url = external_bank.base_url + '/partner/get-account-info'
 
-      const fulname = await this.banksService.getExternalFullname(account_number, external_bank, external_bank_url)
+      const fullname = await this.banksService.getExternalFullname(account_number, external_bank, external_bank_url)
 
-      if (!fulname) {
+      if (!fullname) {
         throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
       }
 
       return {
         message: "Profile fetched successfully",
-        data: fulname
+        data: fullname
       }
     } catch (error) {
       if (

@@ -136,7 +136,7 @@ export class TransactionsService {
         feeAmount: FEE_AMOUNT,
       }
 
-      const external_bank_base_url = "https://bank-backend-awr6.onrender.com/partner/transaction";
+      const external_bank_base_url = external_bank.base_url + "/partner/transaction";
 
       const {sender_signature, recipient_signature } = await this.banksService.makeTransaction(JSON.stringify(transformedTransasction), external_bank, external_bank_base_url)
 

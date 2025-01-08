@@ -37,42 +37,92 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
       return bank
     }
 
-    async makeTransaction(data: string, external_bank: any, url: string){
+    async generateBodyRSA(
+      encryptedPayload: string, secret_key: string, isSignature: boolean,
+      private_key?: string,
+    ){
+      const header = {
+        hashMethod: 'sha256',
+        timestamp: Date.now()
+      }
+      const integrity = this.authService.hashPayload(JSON.stringify(header) + encryptedPayload, secret_key)
+
+      if (isSignature){
+        const signature = await this.authService.createSignature(
+          JSON.stringify(header) + encryptedPayload, 
+          private_key, 
+          "RSA")
+        return {
+          header,
+          encryptedPayload,
+          integrity,
+          signature
+        }
+      }
+
+      return {
+        header,
+        encryptedPayload,
+        integrity,
+        hashedPayload: integrity
+      }
+    }
+
+    async generateBodyPGP(
+      encryptedPayload: string, secret_key: string, isSignature: boolean,
+      private_key?: string,
+    ){
+      const integrity = this.authService.hashPayload(encryptedPayload, secret_key)
+
+      if (isSignature){
+        const signature = await this.authService.createSignature(
+          encryptedPayload, 
+          private_key, 
+          "PGP")
+        return {
+          encryptedPayload,
+          integrity,
+          hashedPayload: integrity,
+          signature
+        }
+      }
+
+      return {
+        encryptedPayload,
+        integrity
+      }
+    }
+    // NoMeo -> 
+    async makeTransaction(data: any, external_bank: any, url: string){
       try {
         const encryptMethod = (external_bank.rsa_public_key) ? "RSA" : "PGP"
         const private_key = (external_bank.rsa_public_key) ? process.env.RSA_PRIVATE_KEY : process.env.PGP_PRIVATE_KEY
         const public_key = external_bank.rsa_public_key || external_bank.pgp_public_key
-       
-        const header = {
-          hashMethod: 'sha256',
-          timestamp: Date.now()
+              
+
+        let body = null, encryptedPayload = null;
+        switch (encryptMethod){
+          case "RSA":
+            encryptedPayload = await this.authService.encryptData(data, public_key, "RSA")
+            body = await this.generateBodyRSA(encryptedPayload, external_bank.secret_key, true, private_key)
+            break;
+          case "PGP":
+            let newData = {
+              ...JSON.parse(data),
+              timestamp: Date.now()
+            }
+            encryptedPayload = await this.authService.encryptData(newData, public_key, "PGP")
+            body = await this.generateBodyPGP(encryptedPayload, external_bank.secret_key, true, private_key)
+            break;
+          default:
         }
-
-        const encryptedPayload = await this.authService.encryptData(data, public_key, encryptMethod)
-        const integrity = this.authService.hashPayload(JSON.stringify(header) + encryptedPayload, external_bank.secret_key)
-
-        // console.log(JSON.stringify(header) + encryptedPayload)
-        const signature = await this.authService.createSignature(
-          JSON.stringify(header) + encryptedPayload, 
-          private_key, 
-          encryptMethod)
-
-        // console.log(signature)
-
         const response = await fetch(url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            header,
-            encryptedPayload,
-            integrity,
-            signature,
-          }),
+          body: JSON.stringify(body),
         });
-
-        // console.log(response)
         
         if (!response.ok) {
           const error = await response.json();
@@ -82,75 +132,85 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
         
         const dataResponse = await response.json();
         let decryptedPayload = null;
-        try {
-          decryptedPayload = await this.authService.decryptData(dataResponse.encryptedPayload, private_key, encryptMethod);
-          console.log(decryptedPayload)
+        decryptedPayload = await this.authService.decryptData(dataResponse.encryptedPayload, private_key, encryptMethod);
+        console.log(decryptedPayload)
 
-          if (decryptedPayload.statusCode === 200){
-            return {sender_signature:signature, recipient_signature: dataResponse.signature};
-          //   if (!this.authService.verifyHash(response.data.encryptedPayload, external_bank.secret_key, decryptedPayload.integrity)){
-          //     throw new UnauthorizedException('Invalid payload hash');
-          //   }
-            
-          //   const validSignature = await this.authService.verifySignature(response.data.encryptedPayload, public_key, response.data.signature, encryptMethod)
-          //   if (!validSignature) {
-          //     throw new UnauthorizedException('Invalid signature');
-          //   }
-          } else {
-            throw new Error("Error in creating transaction in external server")
-          }
-          } catch (error) {
-          // console.log(error)
-          throw new UnauthorizedException('Error decrypting payload');
+        if (encryptMethod == "RSA" && decryptedPayload.statusCode === 200){
+          return {sender_signature: body.signature, recipient_signature: dataResponse.signature};
+        } if (encryptMethod == "PGP") {
+          
+        } else{
+          throw new Error("Error in creating transaction in external server")
         }
-
-        
       } catch (error) {
         console.error('Error calling external API:', error.message);
         throw error; // Nếu cần xử lý lỗi ở nơi khác
       }
     }
 
+    // NoMe0 ->
     async getExternalFullname(account_number: string, external_bank: any, url: string){
       try {
         const encryptMethod = (external_bank.rsa_public_key) ? "RSA" : "PGP"
         const public_key = external_bank.rsa_public_key || external_bank.pgp_public_key
-
-        const payload = {
-          fromBankCode: external_bank.external_code, 
-          accountNumber: account_number
-        }
-        const header = {
-          hashMethod: 'sha256',
-          timestamp: Date.now()
-        }
-
-        const encryptedPayload = await this.authService.encryptData(JSON.stringify(payload), public_key, encryptMethod )
+        const private_key = (encryptMethod == "PGP") ? process.env.PGP_PRIVATE_KEY : process.env.RSA_PRIVATE_KEY
       
-        const integrity = this.authService.hashPayload(JSON.stringify(header) + encryptedPayload, external_bank.secret_key)
-
-        const response = await axios.post(url, {
-          header,
-          encryptedPayload,
-          integrity,
-        });
-
-        let decryptedPayload = null;
-        try {
-          const private_key = (encryptMethod == "PGP") ? process.env.PGP_PRIVATE_KEY : process.env.RSA_PRIVATE_KEY
-          decryptedPayload = await this.authService.decryptData(response.data.encryptedPayload, private_key, encryptMethod);
-          const fullname = decryptedPayload.data.customer.full_name;
-          return fullname;
-
-        } catch (error) {
-          throw new UnauthorizedException('Error decrypting payload');
+        let body = null, payload = null, encryptedPayload = null;
+        switch (encryptMethod){
+          case "RSA":
+            payload = {
+              fromBankCode: external_bank.external_code, 
+              accountNumber: account_number
+            }
+            encryptedPayload = await this.authService.encryptData(JSON.stringify(payload), public_key, encryptMethod )
+            body = await this.generateBodyRSA(encryptedPayload, external_bank.secret_key, false, private_key)
+            break;
+          case "PGP":
+            payload = {
+              bank_code: external_bank.external_code, 
+              account_number,
+              timestamp: Date.now() 
+            }
+            encryptedPayload = await this.authService.encryptData(JSON.stringify(payload), public_key, encryptMethod )
+            body = await this.generateBodyPGP(encryptedPayload, external_bank.secret_key, false, private_key)
+            break;
+          default:
         }
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          console.error('Error:', error);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const dataResponse = await response.json();
+        let decryptedPayload = null;
+ 
+        decryptedPayload = await this.authService.decryptData(dataResponse.encryptedPayload, private_key, encryptMethod);
+        
+
+        if (encryptMethod == "RSA" && decryptedPayload.statusCode === 200){
+          return decryptedPayload.data.customer.full_name;
+        } if (encryptMethod == "PGP") {
+          return decryptedPayload.data.full_name;
+        } else{
+          throw new Error("Error in creating transaction in external server")
+        }
+
       } catch (error) {
         console.error('Error calling external API:', error.message);
         throw error; // Nếu cần xử lý lỗi ở nơi khác
       }
     }
 
+    // -> NoMeo
     async generateExternalResponseData(data: string, external_bank: any, encryptMethod: string): Promise<ExternalTransactionResponse>{
       const private_key = (encryptMethod == "PGP") ? process.env.PGP_PRIVATE_KEY : process.env.RSA_PRIVATE_KEY
       const public_key = (encryptMethod == "PGP") ? external_bank.pgp_public_key : external_bank.rsa_public_key

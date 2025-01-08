@@ -325,8 +325,13 @@ export class AuthService {
   }
 
   verifyTimestamp(timestamp: string) {
-    const currentTime = Math.floor(Date.now() / 1000);
-    const requestTime = parseInt(timestamp, 10);
-    return !(isNaN(requestTime) || currentTime - requestTime > 300000);
+    const currentTime = Date.now();
+    const requestTime = Number(timestamp);
+    return (
+      !isNaN(requestTime) && 
+      requestTime > 0 && // Ensure timestamp is positive
+      currentTime - requestTime <= 10000 && 
+      currentTime >= requestTime // Ensure the timestamp is not in the future
+    );
   }
 }
