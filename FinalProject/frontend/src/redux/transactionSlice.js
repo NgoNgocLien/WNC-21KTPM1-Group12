@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createExternalTransactions, createInternalTransactions, getAccountTransactions, getBanks, getCustomerTransactions, getExternalTransactions } from './transactionThunk';
+import { createExternalTransactions, createInternalTransactions, getAccountTransactions, getCustomerTransactions, getExternalTransactions } from './transactionThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 
 const initialState = {
@@ -48,22 +48,6 @@ const transactionSlice = createSlice({
         state.status = FAILED;
         state.error = action.payload;
       })
-      // .addCase(getBanks.pending, (state) => {
-      //   state.status = LOADING;
-      //   state.error = null;
-      // })
-      // .addCase(getBanks.fulfilled, (state, action) => {
-      //   state.status = SUCCEEDED;
-      //   state.banks = action.payload.data.map(bank => ({
-      //     id: bank.id,
-      //     name: bank.name,
-      //     logo: bank.logo
-      //   }));
-      // })
-      // .addCase(getBanks.rejected, (state, action) => {
-      //   state.status = FAILED;
-      //   state.error = action.payload;
-      // })
       .addCase(getCustomerTransactions.pending, (state) => {
         state.status = LOADING;
         state.error = null;
