@@ -37,6 +37,28 @@ export class AdminsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Tạo admin thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Tạo admin thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 20,
+            },
+            username: {
+              type: 'string',
+              example: 'admin20',
+            }
+          },
+        },
+      },
+    },
   })
   @HttpCode(HttpStatus.OK)
   @Post()
@@ -47,6 +69,41 @@ export class AdminsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Lấy thông tin tất cả admin thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy thông tin tất cả admin thành công',
+        },
+        data: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'integer',
+                example: 20,
+              },
+              username: {
+                type: 'string',
+                example: 'admin20',
+              }
+            },
+          },
+          example: [
+            {
+              id: 20,
+              username: 'admin20'
+            },
+            {
+              id: 21,
+              username: 'admin21'
+            },
+          ],
+        },
+      },
+    },
   })
   @HttpCode(HttpStatus.OK)
   @Get()
@@ -57,6 +114,28 @@ export class AdminsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Lấy thông tin admin thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy thông tin admin thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 20,
+            },
+            username: {
+              type: 'string',
+              example: 'admin20',
+            }
+          },
+        },
+      },
+    },
   })
   @HttpCode(HttpStatus.OK)
   @Get('profile')
@@ -67,6 +146,28 @@ export class AdminsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Cập nhật admin thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Cập nhật admin thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 20,
+            },
+            username: {
+              type: 'string',
+              example: 'admin20',
+            }
+          },
+        },
+      },
+    },
   })
   @ApiParam({
     name: 'id',
@@ -88,6 +189,28 @@ export class AdminsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Xóa admin thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Xóa admin thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 20,
+            },
+            username: {
+              type: 'string',
+              example: 'admin20',
+            }
+          },
+        },
+      },
+    },
   })
   @ApiParam({
     name: 'id',
