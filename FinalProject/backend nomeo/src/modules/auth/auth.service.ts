@@ -279,6 +279,7 @@ export class AuthService {
       const signedMessage = await openpgp.sign({
         message: await openpgp.createMessage({ text: data }), // Message to be signed
         signingKeys: privateKeyObj, // Private key for signing
+        detached: true,
       });
 
       return signedMessage;
