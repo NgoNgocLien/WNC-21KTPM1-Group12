@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBankName, getExternalTransactions } from '../../../redux/transactionThunk';
+import { getBanks, getExternalTransactions } from '../../../redux/transactionThunk';
 import { IDLE, SUCCEEDED } from '../../../util/config';
 import TransactionTable from '../../../components/Table/TransactionTable';
 
@@ -21,6 +21,7 @@ const BankTransferHistory = () => {
   useEffect(() => {
     if (status === IDLE) {
       dispatch(getExternalTransactions());
+      dispatch(getBanks());
     }
   }, [dispatch, status]);
 
@@ -62,16 +63,6 @@ const BankTransferHistory = () => {
       applyFilters();
     }
   }, [sortedTransactions, startDate, endDate, selectedBank, status]);
-
-  useEffect(() => {
-    filteredTransactions.forEach((transaction) => {
-      const bankId = transaction.id_sender_bank === 1 ? transaction.id_recipient_bank : transaction.id_sender_bank;
-  
-      if (bankId && !banks[bankId]) {
-        dispatch(getBankName(bankId));
-      }
-    });
-  }, [filteredTransactions, banks, dispatch]);
 
   const validateDateRange = (start, end) => {
     const diffInDays = (end - start) / (1000 * 3600 * 24);

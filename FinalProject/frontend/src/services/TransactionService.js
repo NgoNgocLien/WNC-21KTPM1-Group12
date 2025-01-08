@@ -11,9 +11,9 @@ const TransactionService = {
         }
     },
 
-    async getBankName(id_bank) {
+    async getBanks() {
         try {
-        const jsonObject = await BaseService.get( `transactions/bank/${id_bank}`);
+        const jsonObject = await BaseService.get( `transactions/bank`);
         return jsonObject;
         } catch (error) {
         console.error(error);

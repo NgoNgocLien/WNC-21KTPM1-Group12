@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ArrowsRightLeftIcon, BanknotesIcon, CreditCardIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { getCustomerTransactions, getBankName } from '../../redux/transactionThunk';
+import { getCustomerTransactions, getBanks } from '../../redux/transactionThunk';
 import { SUCCEEDED } from '../../util/config';
 import DatePicker from 'react-datepicker';
 import { format } from 'date-fns';
@@ -50,17 +50,10 @@ export default function TransferHistory() {
   }, [transactions, filters, startDate, endDate, status_trans]);
 
   useEffect(() => {
-    filteredTransactions.forEach((transaction) => {
-      const bankId =
-        transaction.type === 'Sender' || transaction.type === 'Sender (Debt)'
-          ? transaction.id_recipient_bank
-          : transaction.id_sender_bank;
-
-      if (bankId && !banks[bankId]) {
-        dispatch(getBankName(bankId));
-      }
-    });
-  }, [filteredTransactions, banks, dispatch]);
+    if (banks == null) {
+      dispatch(getBanks());
+    }
+  }, [banks, dispatch]);
 
   const handleSearch = () => {
     if (inputAccountNumber) {

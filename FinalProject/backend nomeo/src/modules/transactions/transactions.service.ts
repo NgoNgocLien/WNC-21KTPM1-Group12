@@ -361,22 +361,18 @@ export class TransactionsService {
     }
   }
 
-  async findBankTransactions(id_bank: number){
+  async findBankTransactions(){
     try{
-      const bank = await this.prisma.banks.findUnique({
-        where:{
-          id: Number(id_bank),
-        },
+      const bank = await this.prisma.banks.findMany({
         select: {
           id: true,
           name: true,
           logo: true,
-          
         }
       })
 
       return {
-        message: "Bank fetched successfully",
+        message: "Lấy thông tin banks thành công",
         data: bank
       }
     } catch(error){
