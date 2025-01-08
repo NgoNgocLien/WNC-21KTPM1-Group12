@@ -119,8 +119,11 @@ export class TransactionsService {
 
   async sendExternalTransaction(createTransactionDto: CreateTransactionDto) {
     try {
+     
+      const external_bank = await this.banksService.getBankById(createTransactionDto.id_recipient_bank);
+
       const transformedTransasction = {
-        fromBankCode: "Bank B",
+        fromBankCode: external_bank.external_code,
         fromAccountNumber: createTransactionDto.sender_account_number,
         toBankAccountNumber: createTransactionDto.recipient_account_number,
         amount: Number(createTransactionDto.transaction_amount),
@@ -128,8 +131,6 @@ export class TransactionsService {
         feePayer: createTransactionDto.fee_payment_method,
         feeAmount: Number(createTransactionDto.fee_amount),
       }
-      
-      const external_bank = await this.banksService.getBankById(createTransactionDto.id_recipient_bank);
 
       const external_bank_base_url = "https://bank-backend-awr6.onrender.com/partner/transaction";
 
@@ -172,7 +173,7 @@ export class TransactionsService {
 
   async receiveExternalTransaction(sender_signature: string, payload: ExternalTransactionPayload, encryptMethod: string) {
     try {
-      const bank = await this.banksService.getBankByCode(payload.bank_code);
+      const bank = await this.banksService.getBankByInternalCode(payload.bank_code);
 
       console.log(payload.recipient_account_number)
       const customer = await this.customersService.findInternalProfile(payload.recipient_account_number)

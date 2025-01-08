@@ -28,8 +28,9 @@ model banks {
   rsa_public_key                                     String?
   logo                                               String?
   secret_key                                         String?
-  code                                               String?
+  internal_code                                      String?
   pgp_public_key                                     String?
+  external_code                                      String?
   contacts                                           contacts[]
   transactions_transactions_id_recipient_bankTobanks transactions[] @relation("transactions_id_recipient_bankTobanks")
   transactions_transactions_id_sender_bankTobanks    transactions[] @relation("transactions_id_sender_bankTobanks")

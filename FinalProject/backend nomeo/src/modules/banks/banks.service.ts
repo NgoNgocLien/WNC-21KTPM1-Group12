@@ -17,10 +17,10 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
       private readonly authService: AuthService
     ) {}
   
-    async getBankByCode(code: string) {
+    async getBankByInternalCode(internal_code: string) {
         const bank = await this.prisma.banks.findMany({
           where: {
-            code,
+            internal_code,
           },
         });
             
@@ -72,7 +72,7 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
           }),
         });
 
-        console.log(response)
+        // console.log(response)
         
         if (!response.ok) {
           const error = await response.json();
@@ -117,7 +117,7 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
         const public_key = external_bank.rsa_public_key || external_bank.pgp_public_key
 
         const payload = {
-          fromBankCode: "Bank B", 
+          fromBankCode: external_bank.external_code, 
           accountNumber: account_number
         }
         const header = {
