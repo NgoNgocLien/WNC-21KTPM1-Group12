@@ -350,10 +350,19 @@ export class TransactionsService {
         transactionsWithBalance.unshift(currentTransaction);
       }
 
+      const banks = await this.prisma.banks.findMany({
+        select: {
+          id: true,
+          name: true,
+          logo: true,
+        }
+      })
+
       return {
-        message: 'Get account transactions successfully',
+        message: 'Lấy thông tin giao dịch thành công',
         data: {
           transactions: transactionsWithBalance,
+          banks: banks
         },
       };
     } catch (error) {
@@ -489,10 +498,19 @@ export class TransactionsService {
         transactionsWithBalance.unshift(currentTransaction);
       }
 
+      const banks = await this.prisma.banks.findMany({
+        select: {
+          id: true,
+          name: true,
+          logo: true,
+        }
+      })
+
       return {
         message: 'Get account transactions successfully',
         data: {
           transactions: transactionsWithBalance,
+          banks: banks
         },
       };
     } catch (error) {
@@ -517,6 +535,9 @@ export class TransactionsService {
             },
           ],
         },
+        orderBy: {
+          transaction_time: 'desc',
+        },
       });
   
       const transactionsWithType = transactions.map(transaction => ({
@@ -524,9 +545,20 @@ export class TransactionsService {
         type: transaction.id_sender_bank === 1 ? 'Sender' : 'Recipient'
       }));
 
+      const banks = await this.prisma.banks.findMany({
+        select: {
+          id: true,
+          name: true,
+          logo: true,
+        }
+      })
+
       return {
         message: "Giao dịch của các ngân hàng khác đã được tìm thấy.",
-        data: transactionsWithType,
+        data: {
+          transactions: transactionsWithType,
+          banks: banks
+        },
       };
     } catch (error) {
       throw new Error('Error fetching transactions: ' + error.message);
