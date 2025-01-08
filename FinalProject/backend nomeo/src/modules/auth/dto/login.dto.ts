@@ -1,7 +1,10 @@
 import { Role } from '../types/Role';
 import { IsDefined, IsEnum, IsOptional, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 
+@ApiSchema({
+  description: 'DTO đăng nhập',
+})
 export class LoginDto {
   @ApiProperty({
     description: 'Tên đăng nhập',
