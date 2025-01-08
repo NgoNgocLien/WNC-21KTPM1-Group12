@@ -35,8 +35,8 @@ export default function TransferHistory() {
           (filters.includes('debt') && (t.type === 'Sender (Debt)' || t.type === 'Recipient (Debt)')) ||
           (filters.includes('recipient') && (t.type === 'Recipient' || t.type === 'Deposit'));
 
-        const startDateMatch = !startDate || new Date(t.transaction_time) >= startDate;
-        const endDateMatch = !endDate || new Date(t.transaction_time) <= endDate;
+        const startDateMatch = !startDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) >= startDate.setHours(0, 0, 0, 0);
+        const endDateMatch = !endDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) <= endDate.setHours(0, 0, 0, 0);
 
         return typeMatch && startDateMatch && endDateMatch;
       });

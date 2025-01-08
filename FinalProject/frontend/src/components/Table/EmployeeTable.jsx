@@ -59,8 +59,8 @@ const EmployeeTable = ({ employees }) => {
               <td className="py-3 px-4 text-sm text-gray-700">{employee.fullname}</td>
               <td className="py-3 px-4 text-sm text-gray-700">{employee.email}</td>
               {/* <td className="py-3 px-4 text-center text-sm text-gray-700">{employee.phone}</td> */}
-              <td className="py-1 px-2 text-center text-sm text-gray-700">
-                <span className={`px-3 py-1 rounded-lg ${employee.status === 'ACTIVE' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
+              <td className="py-1 px-2 text-center text-xs text-gray-700">
+                <span className={`px-2 py-1 rounded-lg ${employee.status === 'ACTIVE' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
                   {employee.status}
                 </span>
               </td>
