@@ -4,7 +4,7 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateTransactionDto } from './dto/createTransaction.dto';
 import { Prisma } from '@prisma/client';
 
-import { INTERNAL_BAND_ID } from 'src/common/utils/config';
+import { FEE_AMOUNT, INTERNAL_BAND_ID } from 'src/common/utils/config';
 import { BanksService } from '../banks/banks.service';
 import { CustomersService } from '../customers/customers.service';
 import { ExternalTransactionPayload } from '../auth/types/ExternalTransactionPayload';
@@ -76,7 +76,7 @@ export class TransactionsService {
       }
 
       const transaction_amount = new Prisma.Decimal(createTransactionDto.transaction_amount)
-      await this.prisma.accounts.update({
+      const updatedAccount = await this.prisma.accounts.update({
         where: { account_number: senderExists.account_number },
         data: {
           account_balance: {
@@ -109,7 +109,11 @@ export class TransactionsService {
 
       return {
         message: 'Transaction created successfully',
-        data: transaction,
+        data: {
+          ...transaction,
+          type: "Sender",
+          current_balance: updatedAccount.account_balance
+        },
       };
     } catch (error) {
       throw new Error('Error creating transaction: ' + error.message);
@@ -129,7 +133,7 @@ export class TransactionsService {
         amount: Number(createTransactionDto.transaction_amount),
         message: createTransactionDto.transaction_message,
         feePayer: createTransactionDto.fee_payment_method,
-        feeAmount: Number(createTransactionDto.fee_amount),
+        feeAmount: FEE_AMOUNT,
       }
 
       const external_bank_base_url = "https://bank-backend-awr6.onrender.com/partner/transaction";
@@ -145,13 +149,14 @@ export class TransactionsService {
           transaction_amount: new Prisma.Decimal(createTransactionDto.transaction_amount),
           transaction_message: createTransactionDto.transaction_message,
           fee_payment_method: createTransactionDto.fee_payment_method,
+          fee_amount: FEE_AMOUNT,
           sender_signature, 
           recipient_signature,
           recipient_name: createTransactionDto.recipient_name,
         },
       });
 
-      await this.prisma.accounts.update({
+      const updatedAccount = await this.prisma.accounts.update({
         where: {
           account_number: transaction.sender_account_number
         },
@@ -164,7 +169,11 @@ export class TransactionsService {
 
       return {
         message: 'Transaction created successfully',
-        data: transaction,
+        data: {
+          ...transaction,
+          type: "Sender",
+          current_balance: updatedAccount.account_balance
+        },
       };
   } catch (error) {
     throw new Error('Error creating transaction: ' + error.message);

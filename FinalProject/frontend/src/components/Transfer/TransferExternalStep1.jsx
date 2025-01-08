@@ -92,7 +92,7 @@ export default function TransferInternalStep1({ setCurrentStep, setValues, conta
 
   useEffect(()=>{
     if (selectedContact){
-      const index = banks.findIndex((bank) => bank.bank_name == contact.bank_name)
+      const index = banks.findIndex((bank) => bank.bank_name == selectedContact.bank_name)
       formik.setFieldValue("recipient_account_number", selectedContact.account_number)
       formik.setFieldValue("recipient_name", selectedContact.contact_fullname)
       formik.setFieldValue('id_recipient_bank', banks[index].bank_id);

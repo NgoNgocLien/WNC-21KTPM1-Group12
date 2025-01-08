@@ -90,6 +90,12 @@ const transactionSlice = createSlice({
       })
       .addCase(createInternalTransactions.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
+        console.log(action.payload.data)
+
+        state.transactions = [
+          action.payload.data,
+          ...state.transactions,
+        ]
       })
       .addCase(createInternalTransactions.rejected, (state, action) => {
         state.status = FAILED;
@@ -101,6 +107,11 @@ const transactionSlice = createSlice({
       })
       .addCase(createExternalTransactions.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
+        console.log(action.payload.data)
+        state.transactions = [
+          action.payload.data,
+          ...state.transactions,
+        ]
       })
       .addCase(createExternalTransactions.rejected, (state, action) => {
         state.status = FAILED;

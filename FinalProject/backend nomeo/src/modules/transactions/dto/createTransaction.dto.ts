@@ -101,8 +101,6 @@ export class CreateTransactionDto {
     minimum: 0,
   })
 
-  @IsOptional()
-  fee_amount: number | string;
 
   @ApiProperty({
     description: 'Tên người nhận',

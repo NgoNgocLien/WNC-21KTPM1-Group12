@@ -6,6 +6,7 @@ import { HiCheckBadge } from "react-icons/hi2";
 import { SENDER, INTERNAL_BAND_NAME } from '../../util/config';
 import { formatTime } from '../../util/format';
 import { getCustomerContacts } from './../../redux/userThunk';
+import banks from '../../util/banks';
 
 
 export default function TransferStep4({ setIsAddModalOpen, transaction }) {
@@ -25,6 +26,10 @@ export default function TransferStep4({ setIsAddModalOpen, transaction }) {
       }
     }
   }, [transaction, contacts, dispatch])
+
+  const getBankName = () => {
+    return banks.find(bank => bank.bank_id == transaction.id_recipient_bank).bank_name
+  }
 
   return (
     <>
@@ -56,7 +61,7 @@ export default function TransferStep4({ setIsAddModalOpen, transaction }) {
               </div>
               <div className="w-6/12 flex flex-col gap-0">
                 <p className="font-semibold">{transaction.recipient_name}</p>
-                <p>{INTERNAL_BAND_NAME}</p>
+                <p>{getBankName()}</p>
                 <p>{transaction.recipient_account_number}</p>
               </div>
             </div>

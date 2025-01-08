@@ -104,7 +104,7 @@ export class TransactionsController {
   })
   @Post('external/send')
   sendExternalTransaction(@Body() createTransactionDto: CreateTransactionDto) {
-    console.log(createTransactionDto)
+    console.log(JSON.stringify(createTransactionDto))
     return this.transactionsService.sendExternalTransaction(
       createTransactionDto,
     );
