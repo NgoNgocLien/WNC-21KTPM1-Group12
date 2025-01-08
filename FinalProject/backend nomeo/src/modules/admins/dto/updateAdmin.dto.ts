@@ -6,11 +6,11 @@ import { IsOptional, IsString } from 'class-validator';
   description: 'Cập nhật admin',
 })
 export class UpdateAdminDto extends PartialType(CreateAdminDto) {
-  @ApiProperty({
-    description: 'Refresh token',
-    example: 'refresh_token',
-    required: false,
-  })
+  // @ApiProperty({
+  //   description: 'Refresh token',
+  //   example: 'refresh_token',
+  //   required: false,
+  // })
   @IsString()
   @IsOptional()
   refresh_token: string;

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { CreateAdminDto } from './dto/createAdmin.dto';
 import { UpdateAdminDto } from './dto/updateAdmin.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
@@ -11,10 +11,14 @@ export class AdminsService {
     try {
       const admin = await this.prisma.admins.create({
         data: createAdminDto,
+        select: {
+          id: true,
+          username: true,
+        },
       });
 
       return {
-        message: 'Admin created successfully',
+        message: 'Tạo admin thành công',
         data: admin,
       };
     } catch (error) {
@@ -24,10 +28,15 @@ export class AdminsService {
 
   async findAll() {
     try {
-      const admins = await this.prisma.admins.findMany();
+      const admins = await this.prisma.admins.findMany({
+        select: {
+          id: true,
+          username: true,
+        },
+      });
 
       return {
-        message: 'Admins fetched successfully',
+        message: 'Lấy thông tin tất cả admin thành công',
         data: admins,
       };
     } catch (error) {
@@ -47,7 +56,7 @@ export class AdminsService {
       });
 
       return {
-        message: 'Admin found successfully',
+        message: 'Lấy thông tin admin thành công',
         data: admin,
       };
     } catch (error) {
@@ -91,6 +100,26 @@ export class AdminsService {
   }
 
   async remove(id: number) {
-    return `This action removes a #${id} admin`;
+    try {
+      const adminExists = await this.prisma.admins.findFirst({
+        where: {
+          id,
+        },
+      });
+      if (!adminExists) {
+        throw new NotFoundException(`Admin không tồn tại`);
+      }
+      // xóa admin
+      return {
+        message: 'Xóa admin thành công',
+        data: adminExists
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.log(error.message)
+      throw new InternalServerErrorException('Lỗi hệ thống');
+    }
   }
 }
