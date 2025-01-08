@@ -156,14 +156,9 @@ export class CustomersService {
     try {
       const external_bank = await this.banksService.getBankById(bank_id)
 
-      const external_bank_url = '/partner/get-account-info'
+      const external_bank_url = 'https://bank-backend-awr6.onrender.com/partner/get-account-info'
 
-      const data = JSON.stringify({
-        accountNumber: account_number,
-        fromBankCode: ""
-      })
-
-      const fulname = await this.banksService.getExternalFullname(data, external_bank, external_bank_url)
+      const fulname = await this.banksService.getExternalFullname(account_number, external_bank, external_bank_url)
 
       if (!fulname) {
         throw new NotFoundException(`Không tìm thấy tài khoản tương ứng`);
@@ -171,7 +166,7 @@ export class CustomersService {
 
       return {
         message: "Profile fetched successfully",
-        data: "Alice Smith"
+        data: fulname
       }
     } catch (error) {
       if (

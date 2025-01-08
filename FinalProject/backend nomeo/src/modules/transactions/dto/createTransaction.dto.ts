@@ -67,7 +67,7 @@ export class CreateTransactionDto {
   @Min(5000, { message: 'Transaction amount must be at least 5000 VND.' })
   @IsNumber()
   @IsDefined()
-  transaction_amount: number;
+  transaction_amount: number | string;
 
   @ApiProperty({
     description: 'Nội dung giao dịch',
@@ -100,8 +100,9 @@ export class CreateTransactionDto {
     required: false,
     minimum: 0,
   })
+
   @IsOptional()
-  fee_amount: string;
+  fee_amount: number | string;
 
   @ApiProperty({
     description: 'Tên người nhận',

@@ -120,18 +120,18 @@ export class TransactionsService {
   async sendExternalTransaction(createTransactionDto: CreateTransactionDto) {
     try {
       const transformedTransasction = {
-        fromBankCode: "",
+        fromBankCode: "Bank B",
         fromAccountNumber: createTransactionDto.sender_account_number,
-        toBankAccountNumber: "A12345",
-        amount: createTransactionDto.transaction_amount,
+        toBankAccountNumber: createTransactionDto.recipient_account_number,
+        amount: Number(createTransactionDto.transaction_amount),
         message: createTransactionDto.transaction_message,
         feePayer: createTransactionDto.fee_payment_method,
-        feeAmount: createTransactionDto.fee_amount,
+        feeAmount: Number(createTransactionDto.fee_amount),
       }
       
-      const external_bank = await this.banksService.getBankById(createTransactionDto.id_sender_bank);
+      const external_bank = await this.banksService.getBankById(createTransactionDto.id_recipient_bank);
 
-      const external_bank_base_url = "";
+      const external_bank_base_url = "https://bank-backend-awr6.onrender.com/partner/transaction";
 
       const {sender_signature, recipient_signature } = await this.banksService.makeTransaction(JSON.stringify(transformedTransasction), external_bank, external_bank_base_url)
 

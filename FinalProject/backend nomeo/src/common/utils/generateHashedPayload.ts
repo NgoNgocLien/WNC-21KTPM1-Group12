@@ -69,25 +69,25 @@ const hmacKey = 'TECHBANK_NOMEOBANK';
 //   bank_code: "B001"
 // })
 
-const data1 = JSON.stringify({
-  bank_code: 'B001',
-  sender_account_number: 'A12345',
-  recipient_account_number: 'ACC123456789',
-  transaction_amount: '100',
-  transaction_message: 'Test transaction',
-  fee_payment_method: 'SENDER',
-  fee_amount: '10',
-  timestamp: '1736232365'
-})
-const encryptData1 = encryptData(data1, publicKey);
-const hashData1 = hashPayload(encryptData1, hmacKey);
+// const data1 = JSON.stringify({
+//   bank_code: 'B001',
+//   sender_account_number: 'A12345',
+//   recipient_account_number: 'ACC123456789',
+//   transaction_amount: '100',
+//   transaction_message: 'Test transaction',
+//   fee_payment_method: 'SENDER',
+//   fee_amount: '10',
+//   timestamp: '1736232365'
+// })
+// const encryptData1 = encryptData(data1, publicKey);
+// const hashData1 = hashPayload(encryptData1, hmacKey);
 // const signature = createSignature(encryptData1, privateKey)
 
-console.log('Request Data 1:', {
-  hashedPayload: hashData1,
+// console.log('Request Data 1:', {
+//   hashedPayload: hashData1,
   // encryptedPayload: encryptData1,
   // signature
-});
+// });
 
 
 // POST /transactions/recipient_profile
@@ -103,4 +103,7 @@ console.log('Request Data 1:', {
 //   encryptedPayload: encryptData2,
 //   hashedPayload: hashData2
 // });
+
+
+
 
