@@ -20,7 +20,7 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
     async getBankByInternalCode(internal_code: string) {
         const bank = await this.prisma.banks.findMany({
           where: {
-            internal_code,
+            internal_code: internal_code,
           },
         });
             

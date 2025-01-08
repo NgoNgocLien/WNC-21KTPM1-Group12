@@ -256,7 +256,7 @@ export class AuthService {
         decryptionKeys: privateKeyObj,
       });
 
-      return decrypted.data;
+      return JSON.parse(decrypted.data);
     }
 
     const encryptedBuffer = Buffer.from(data, 'base64');

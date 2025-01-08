@@ -56,6 +56,7 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
           header,
           encryptedPayload,
           integrity,
+          hashedPayload: integrity,
           signature
         }
       }
@@ -80,6 +81,7 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
           private_key, 
           "PGP")
         return {
+          encryptMethod: "PGP",
           encryptedPayload,
           integrity,
           hashedPayload: integrity,
@@ -88,7 +90,9 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
       }
 
       return {
+        encryptMethod: "PGP",
         encryptedPayload,
+        hashedPayload: integrity,
         integrity
       }
     }
@@ -151,6 +155,7 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
     // NoMe0 ->
     async getExternalFullname(account_number: string, external_bank: any, url: string){
       try {
+        console.log(url)
         const encryptMethod = (external_bank.rsa_public_key) ? "RSA" : "PGP"
         const public_key = external_bank.rsa_public_key || external_bank.pgp_public_key
         const private_key = (encryptMethod == "PGP") ? process.env.PGP_PRIVATE_KEY : process.env.RSA_PRIVATE_KEY
@@ -193,13 +198,13 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
         const dataResponse = await response.json();
         let decryptedPayload = null;
  
-        decryptedPayload = await this.authService.decryptData(dataResponse.encryptedPayload, private_key, encryptMethod);
-        
+        decryptedPayload = await this.authService.decryptData(dataResponse.data.encryptedPayload, private_key, encryptMethod);
+        console.log(decryptedPayload)
 
         if (encryptMethod == "RSA" && decryptedPayload.statusCode === 200){
           return decryptedPayload.data.customer.full_name;
         } if (encryptMethod == "PGP") {
-          return decryptedPayload.data.full_name;
+          return decryptedPayload.fullname;
         } else{
           throw new Error("Error in creating transaction in external server")
         }
