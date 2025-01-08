@@ -36,6 +36,13 @@ export class OtpController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Xác thực mã OTP thành công',
+    schema: {
+      description: 'Kết quả xác thực',
+      example: {
+        message: 'OTP is valid',
+        data: true,
+      },
+    },
   })
   @Post('verify')
   async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {

@@ -1,3 +1,4 @@
+import { ApiSchema } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { IsDateString, IsDefined, IsOptional, IsString } from 'class-validator';
 

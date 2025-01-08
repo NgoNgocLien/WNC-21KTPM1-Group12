@@ -53,6 +53,15 @@ export class NotificationsController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Gửi thông báo thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Gửi thông báo thành công',
+        },
+      },
+    },
   })
   @ApiParam({
     name: 'id',
