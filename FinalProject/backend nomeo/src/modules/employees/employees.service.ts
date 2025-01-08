@@ -24,9 +24,11 @@ export class EmployeesService {
         },
       });
 
+      const { password, ...employeeWithoutPassword } = employee;
+
       return {
         message: 'Thêm mới nhân viên thành công',
-        data: employee,
+        data: employeeWithoutPassword,
       };
     } catch (error) {
         console.log(error.message)
@@ -48,7 +50,7 @@ export class EmployeesService {
       });
 
       return {
-        message: 'Employees fetched successfully',
+        message: 'Lấy thông tin tất cả nhân viên thành công',
         data: employees,
       };
     } catch (error) {
@@ -73,7 +75,7 @@ export class EmployeesService {
         },
       });
       return {
-        message: 'Employee found successfully',
+        message: 'Lấy thông tin nhân viên thành công',
         data: employee,
       };
     } catch (error) {

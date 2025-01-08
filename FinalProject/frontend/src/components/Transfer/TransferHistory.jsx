@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ArrowsRightLeftIcon, BanknotesIcon, CreditCardIcon } from '@heroicons/react/24/outline';
-import { getAccountTransactions, getBankName } from '../../redux/transactionThunk';
+import { getAccountTransactions, getBanks } from '../../redux/transactionThunk';
 import { IDLE, SUCCEEDED } from '../../util/config';
 import DatePicker from 'react-datepicker';
 import { format } from 'date-fns';
@@ -43,21 +43,9 @@ export default function TransferHistory() {
   useEffect(() => {
     if (transactions == null || status == IDLE) {
       dispatch(getAccountTransactions());
+      dispatch(getBanks());
     }
   }, [transactions, status]);
-
-  useEffect(() => {
-    filteredTransactions?.forEach((transaction) => {
-      const bankId =
-        transaction.type === 'Sender' || transaction.type === 'Sender (Debt)'
-          ? transaction.id_recipient_bank
-          : transaction.id_sender_bank;
-
-      if (bankId && !banks[bankId]) {
-        dispatch(getBankName(bankId));
-      }
-    });
-  }, [filteredTransactions, banks, dispatch]);
 
   const renderTransactions = () => {
     if (status === SUCCEEDED) {
@@ -80,8 +68,8 @@ export default function TransferHistory() {
               bankId = transaction.id_recipient_bank;
             }
 
-            const bankName = banks[bankId]?.name;
-            const bankLogo = banks[bankId]?.logo;
+            const bank = banks.find(bank => bank.id === bankId);
+            const bankLogo = bank?.logo;
 
             let transactionLabel = '';
             let labelColor = '';
@@ -97,7 +85,7 @@ export default function TransferHistory() {
               labelColor = 'bg-blue-500';
             }
 
-            const isInternalTransaction = bankId === 1; // Giao dịch nội bộ nếu bankId là 1
+            const isInternalTransaction = transaction.type === 'Deposit' || (transaction.id_sender_bank === 1 && transaction.id_recipient_bank === 1);
             const transactionBgColor = isInternalTransaction ? 'bg-white' : 'bg-red-100';
 
             const formattedAmount = new Intl.NumberFormat().format(transaction.transaction_amount);
@@ -111,13 +99,12 @@ export default function TransferHistory() {
               >
                 <div className="flex items-center space-x-4">
                   <img
-                    src={bankLogo ? bankLogo : `https://logo.clearbit.com/${bankName}.com`}
+                    src={bankLogo ? bankLogo : `https://picsum.photos/id/155/200/300`}
                     alt="Bank Logo"
-                    className="w-10 h-10 rounded-full"
+                    className="w-10 h-10 rounded-full object-cover"
                   />
                   <div>
                     <p className="font-semibold">{transaction.transaction_message || transaction.deposit_message || "(Không có nội dung)"}</p>
-                    {/* <p className="text-sm text-gray-600">{bankName}</p> */}
                     <span className="text-sm text-gray-700 mr-5">{formattedTime}</span>
                     <span className="text-sm">Số dư: {formattedBalance} VNĐ</span>
                   </div>
@@ -290,8 +277,8 @@ export default function TransferHistory() {
             ? selectedTransaction.type === 'Deposit'
               ? null
               : selectedTransaction.type === 'Sender' || selectedTransaction?.type === 'Sender (Debt)'
-              ? banks[selectedTransaction?.id_recipient_bank]?.name
-              : banks[selectedTransaction?.id_sender_bank]?.name
+              ? banks.find(bank => bank.id === selectedTransaction?.id_recipient_bank)?.name
+              : banks.find(bank => bank.id === selectedTransaction?.id_sender_bank)?.name
             : null
         }
       />

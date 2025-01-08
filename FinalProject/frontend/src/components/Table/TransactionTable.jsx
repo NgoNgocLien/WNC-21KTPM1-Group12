@@ -53,7 +53,7 @@ const TransactionTable = ({ transactions, banks }) => {
         <tbody className="divide-y divide-gray-200">
           {sortedTransactions.length > 0 ? sortedTransactions.map((transaction, index) => (
             <tr key={index} onClick={() => handleTransactionClick(transaction)}
-            className="cursor-pointer hover:bg-gray-100">
+            className="cursor-pointer hover:bg-red-50">
               <td className="py-3 pl-2 text-left text-sm text-gray-700 truncate max-w-72">{transaction.id}</td>
               <td className="py-3 text-left text-sm text-gray-700">
                 {transaction.transaction_time ? format(new Date(transaction.transaction_time), 'dd/MM/yyyy HH:mm:ss') : 'N/A'}
@@ -62,7 +62,7 @@ const TransactionTable = ({ transactions, banks }) => {
                 {transaction.id_sender_bank === 1 ? transaction.sender_account_number : transaction.recipient_account_number}
               </td>
               <td className="py-3 px-2 text-left text-sm text-gray-700">
-                {banks[transaction.id_sender_bank === 1 ? transaction.id_recipient_bank : transaction.id_sender_bank]?.name}
+                {banks.find(bank => bank.id === (transaction.id_sender_bank === 1 ? transaction.id_recipient_bank : transaction.id_sender_bank))?.name}
               </td>
               <td className="py-3 px-2 text-left text-sm text-gray-700">
                 {new Intl.NumberFormat().format(transaction.transaction_amount)} VNĐ

@@ -13,11 +13,11 @@ export const getAccountTransactions = createAsyncThunk(
     }
 );
 
-export const getBankName = createAsyncThunk(
-    'transaction/getBankName',
-    async (id_bank, { rejectWithValue }) => {
+export const getBanks = createAsyncThunk(
+    'transaction/getBanks',
+    async (_, { rejectWithValue }) => {
         try {
-            const response = await TransactionService.getBankName(id_bank);
+            const response = await TransactionService.getBanks();
             return response;
         } catch (error) {
         return rejectWithValue(error.message);

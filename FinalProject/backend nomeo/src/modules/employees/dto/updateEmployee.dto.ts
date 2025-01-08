@@ -17,11 +17,11 @@ export class UpdateEmployeeDto extends PartialType(CreateEmployeeDto) {
   @IsOptional()
   status?: employee_status;
 
-  @ApiProperty({
-    description: 'Refresh token',
-    example: 'refresh_token',
-    required: false,
-  })
+  // @ApiProperty({
+  //   description: 'Refresh token',
+  //   example: 'refresh_token',
+  //   required: false,
+  // })
   @IsString()
   @IsOptional()
   refresh_token?: string;

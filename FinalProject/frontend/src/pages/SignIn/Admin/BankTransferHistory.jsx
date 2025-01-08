@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBankName, getExternalTransactions } from '../../../redux/transactionThunk';
+import { getExternalTransactions } from '../../../redux/transactionThunk';
 import { IDLE, SUCCEEDED } from '../../../util/config';
 import TransactionTable from '../../../components/Table/TransactionTable';
 
@@ -11,7 +11,6 @@ const BankTransferHistory = () => {
   const [endDate, setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
   const [selectedBank, setSelectedBank] = useState('');
   const [totalAmount, setTotalAmount] = useState(0);
-  const [sortedTransactions, setSortedTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [error, setError] = useState('');
 
@@ -25,15 +24,8 @@ const BankTransferHistory = () => {
   }, [dispatch, status]);
 
   useEffect(() => {
-    if (transactions) {
-      const sortedTransactions = [...transactions].sort((a, b) => new Date(b.transaction_time) - new Date(a.transaction_time));
-      setSortedTransactions(sortedTransactions);
-    }
-  }, [transactions]);
-
-  useEffect(() => {
     const applyFilters = () => {
-      const newFilteredTransactions = sortedTransactions.filter((t) => {  
+      const newFilteredTransactions = transactions.filter((t) => {  
         const startDateMatch = !startDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) >= startDate.setHours(0, 0, 0, 0);
         const endDateMatch = !endDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) <= endDate.setHours(0, 0, 0, 0);
         const bankMatch = !selectedBank || 
@@ -61,17 +53,7 @@ const BankTransferHistory = () => {
     if (status === SUCCEEDED && transactions.length > 0) {
       applyFilters();
     }
-  }, [sortedTransactions, startDate, endDate, selectedBank, status]);
-
-  useEffect(() => {
-    filteredTransactions.forEach((transaction) => {
-      const bankId = transaction.id_sender_bank === 1 ? transaction.id_recipient_bank : transaction.id_sender_bank;
-  
-      if (bankId && !banks[bankId]) {
-        dispatch(getBankName(bankId));
-      }
-    });
-  }, [filteredTransactions, banks, dispatch]);
+  }, [transactions, startDate, endDate, selectedBank, status]);
 
   const validateDateRange = (start, end) => {
     const diffInDays = (end - start) / (1000 * 3600 * 24);
@@ -106,10 +88,9 @@ const BankTransferHistory = () => {
               <label className="block text-base font-medium mb-2">Ngân hàng</label>
               <select value={selectedBank} onChange={(e) => setSelectedBank(e.target.value)} className="w-full p-3 border border-gray-300 rounded-xl">
                 <option value="">Tất cả</option>
-                {Object.keys(banks).map((bankId) => {
-                  const bank = banks[bankId]; 
+                {banks && banks.filter(bank => bank.id !== 1).map((bank) => {
                   return (
-                    <option key={bankId} value={bankId}>
+                    <option key={bank.id} value={bank.id}>
                       {bank.name}
                     </option>
                   );

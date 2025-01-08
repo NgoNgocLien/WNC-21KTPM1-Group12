@@ -256,7 +256,7 @@ export class AuthService {
         decryptionKeys: privateKeyObj,
       });
 
-      return decrypted.data;
+      return JSON.parse(decrypted.data);
     }
 
     const encryptedBuffer = Buffer.from(data, 'base64');
@@ -279,6 +279,7 @@ export class AuthService {
       const signedMessage = await openpgp.sign({
         message: await openpgp.createMessage({ text: data }), // Message to be signed
         signingKeys: privateKeyObj, // Private key for signing
+        detached: true,
       });
 
       return signedMessage;
@@ -325,8 +326,13 @@ export class AuthService {
   }
 
   verifyTimestamp(timestamp: string) {
-    const currentTime = Math.floor(Date.now() / 1000);
-    const requestTime = parseInt(timestamp, 10);
-    return !(isNaN(requestTime) || currentTime - requestTime > 300000);
+    const currentTime = Date.now();
+    const requestTime = Number(timestamp);
+    return (
+      !isNaN(requestTime) && 
+      requestTime > 0 && // Ensure timestamp is positive
+      currentTime - requestTime <= 60000 && 
+      currentTime >= requestTime // Ensure the timestamp is not in the future
+    );
   }
 }

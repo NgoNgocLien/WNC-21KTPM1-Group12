@@ -39,6 +39,48 @@ export class EmployeesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Tạo nhân viên thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Thêm mới nhân viên thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 1,
+            },
+            username: {
+              type: 'string',
+              example: 'employee20',
+            },
+            fullname: {
+              type: 'string',
+              example: 'Phạm Minh Châu',
+            },
+            email: {
+              type: 'string',
+              example: 'chaupm@example.com',
+            },
+            phone: {
+              type: 'string',
+              example: '0901231234',
+            },
+            status: {
+              type: 'string',
+              enum: ['ACTIVE', 'DELETED'],
+              example: 'ACTIVE',
+              description: 'Trạng thái của nhân viên. ' +
+                           'ACTIVE: Nhân viên đang hoạt động, ' +
+                           'DELETED: Nhân viên đã bị xóa.',
+            },
+          },
+        },
+      },
+    },
   })
   @HttpCode(HttpStatus.OK)
   @Post()
@@ -49,16 +91,122 @@ export class EmployeesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Lấy thông tin tất cả nhân viên thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy thông tin tất cả nhân viên thành công',
+        },
+        data: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'integer',
+                example: 1,
+              },
+              username: {
+                type: 'string',
+                example: 'employee20',
+              },
+              fullname: {
+                type: 'string',
+                example: 'Phạm Minh Châu',
+              },
+              email: {
+                type: 'string',
+                example: 'chaupm@example.com',
+              },
+              phone: {
+                type: 'string',
+                example: '0901231234',
+              },
+              status: {
+                type: 'string',
+                enum: ['ACTIVE', 'DELETED'],
+                example: 'ACTIVE',
+                description: 'Trạng thái của nhân viên. ' +
+                             'ACTIVE: Nhân viên đang hoạt động, ' +
+                             'DELETED: Nhân viên đã bị xóa.',
+              },
+            },
+          },
+          example: [
+            {
+              id: 1,
+              username: 'employee20',
+              fullname: 'Phạm Minh Châu',
+              email: 'chaupm@example.com',
+              phone: '0901231234',
+              status: 'ACTIVE',
+            },
+            {
+              id: 2,
+              username: 'employee21',
+              fullname: 'Nguyễn Thị Mai',
+              email: 'mai@example.com',
+              phone: '0909876543',
+              status: 'DELETED',
+            },
+          ],
+        },
+      },
+    },
   })
   @HttpCode(HttpStatus.OK)
   @Get()
   findAll() {
     return this.employeesService.findAll();
   }
+  
 
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Lấy thông tin nhân viên thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy thông tin nhân viên thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 1,
+            },
+            username: {
+              type: 'string',
+              example: 'employee20',
+            },
+            fullname: {
+              type: 'string',
+              example: 'Phạm Minh Châu',
+            },
+            email: {
+              type: 'string',
+              example: 'chaupm@example.com',
+            },
+            phone: {
+              type: 'string',
+              example: '0901231234',
+            },
+            status: {
+              type: 'string',
+              enum: ['ACTIVE', 'DELETED'],
+              example: 'ACTIVE',
+              description: 'Trạng thái của nhân viên. ' +
+                           'ACTIVE: Nhân viên đang hoạt động, ' +
+                           'DELETED: Nhân viên đã bị xóa.',
+            },
+          },
+        },
+      },
+    },
   })
   @HttpCode(HttpStatus.OK)
   @Get('profile')
@@ -69,6 +217,48 @@ export class EmployeesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Cập nhật nhân viên thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Cập nhật nhân viên thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 1,
+            },
+            username: {
+              type: 'string',
+              example: 'employee20',
+            },
+            fullname: {
+              type: 'string',
+              example: 'Phạm Minh Châu',
+            },
+            email: {
+              type: 'string',
+              example: 'chaupm@example.com',
+            },
+            phone: {
+              type: 'string',
+              example: '0901231234',
+            },
+            status: {
+              type: 'string',
+              enum: ['ACTIVE', 'DELETED'],
+              example: 'ACTIVE',
+              description: 'Trạng thái của nhân viên. ' +
+                           'ACTIVE: Nhân viên đang hoạt động, ' +
+                           'DELETED: Nhân viên đã bị xóa.',
+            },
+          },
+        },
+      },
+    },
   })
   @ApiParam({
     name: 'id',
@@ -88,6 +278,48 @@ export class EmployeesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Xóa nhân viên thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Xóa nhân viên thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 1,
+            },
+            username: {
+              type: 'string',
+              example: 'employee20',
+            },
+            fullname: {
+              type: 'string',
+              example: 'Phạm Minh Châu',
+            },
+            email: {
+              type: 'string',
+              example: 'chaupm@example.com',
+            },
+            phone: {
+              type: 'string',
+              example: '0901231234',
+            },
+            status: {
+              type: 'string',
+              enum: ['ACTIVE', 'DELETED'],
+              example: 'DELETED',
+              description: 'Trạng thái của nhân viên. ' +
+                           'ACTIVE: Nhân viên đang hoạt động, ' +
+                           'DELETED: Nhân viên đã bị xóa.',
+            },
+          },
+        },
+      },
+    },
   })
   @ApiParam({
     name: 'id',

@@ -172,7 +172,7 @@ export class TransactionsService {
 
   async receiveExternalTransaction(sender_signature: string, payload: ExternalTransactionPayload, encryptMethod: string) {
     try {
-      const bank = await this.banksService.getBankByCode(payload.bank_code);
+      const bank = await this.banksService.getBankByInternalCode(payload.bank_code);
 
       console.log(payload.recipient_account_number)
       const customer = await this.customersService.findInternalProfile(payload.recipient_account_number)

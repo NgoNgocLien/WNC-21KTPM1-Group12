@@ -206,8 +206,8 @@ export class TransactionsController {
     status: HttpStatus.OK,
     description: 'Lấy tất cả giao dịch của ngân hàng thành công',
   })
-  @Get('bank/:id_bank')
-  findBankTransactions(@Param('id_bank') id_bank: number) {
-    return this.transactionsService.findBankTransactions(id_bank);
+  @Get('bank')
+  findBankTransactions() {
+    return this.transactionsService.findBankTransactions();
   }
 }

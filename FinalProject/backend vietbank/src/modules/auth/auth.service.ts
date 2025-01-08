@@ -256,7 +256,7 @@ export class AuthService {
         decryptionKeys: privateKeyObj,
       });
 
-      return decrypted.data;
+      return JSON.parse(decrypted.data);
     }
 
     const encryptedBuffer = Buffer.from(data, 'base64');
@@ -325,8 +325,18 @@ export class AuthService {
   }
 
   verifyTimestamp(timestamp: string) {
-    const currentTime = Math.floor(Date.now() / 1000);
-    const requestTime = parseInt(timestamp, 10);
-    return !(isNaN(requestTime) || currentTime - requestTime > 300000);
+    const currentTime = Date.now();
+    const requestTime = Number(timestamp);
+    console.log(currentTime)
+    console.log(requestTime)
+    console.log(requestTime > 0 && // Ensure timestamp is positive
+      currentTime - requestTime <= 60000 && 
+      currentTime >= requestTime)
+    return (
+      !isNaN(requestTime) && 
+      requestTime > 0 && // Ensure timestamp is positive
+      currentTime - requestTime <= 60000 && 
+      currentTime >= requestTime // Ensure the timestamp is not in the future
+    );
   }
 }
