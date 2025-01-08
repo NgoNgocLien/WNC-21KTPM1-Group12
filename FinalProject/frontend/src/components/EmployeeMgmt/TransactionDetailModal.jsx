@@ -2,25 +2,13 @@ import React from 'react';
 import { format } from 'date-fns';
 import { IoIosClose } from 'react-icons/io'
 
-const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_number, bankName }) => {
+const TransactionDetailModal = ({ isOpen, closeModal, transaction, banks }) => {
   if (!isOpen || !transaction) return null;
 
   const formattedTime = format(new Date(transaction.transaction_time), 'dd/MM/yyyy - HH:mm:ss');
   const formattedAmount = new Intl.NumberFormat().format(transaction.transaction_amount);
-  const formattedBalance = new Intl.NumberFormat().format(transaction.current_balance);
   const feePaymentMethod = transaction.fee_payment_method;
-
-  let recipientAccount = '';
-  let recipientName = '';
   let feePayer = '';
-
-  if (transaction.type === 'Sender' || transaction.type === 'Sender (Debt)') {
-    recipientAccount = transaction.recipient_account_number;
-    recipientName = transaction.recipient_name;
-  } else if (transaction.type === 'Recipient' || transaction.type === 'Recipient (Debt)') {
-    recipientAccount = transaction.sender_account_number;
-  }
-
   if (feePaymentMethod === 'SENDER') {
     feePayer = 'Người gửi trả phí';
   } else if (feePaymentMethod === 'RECIPIENT') {
@@ -39,58 +27,30 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_numbe
           <div className="text-gray-600 font-base">Mã giao dịch</div>
           <div className="text-gray-800 font-medium">{transaction.id}</div>
 
-          <div className="text-gray-600 font-base">Tài khoản nguồn</div>
-          <div className="text-gray-800 font-medium">{account_number}</div>
-
           <div className="text-gray-600 font-base">Thời gian giao dịch</div>
           <div className="text-gray-800 font-medium">{formattedTime}</div>
 
+          <div className="text-gray-600 font-base">Tài khoản người gửi</div>
+          <div className="text-gray-800 font-medium">
+            {transaction.sender_account_number} - {transaction.id_sender_bank === 1 ? "NoMeoBank" : banks[transaction.id_sender_bank]?.name}
+          </div>
+
+          <div className="text-gray-600 font-base">Tài khoản người nhận</div>
+          <div className="text-gray-800 font-medium">
+            {transaction.recipient_name} - {transaction.recipient_account_number} - {transaction.id_recipient_bank === 1 ? "NoMeoBank" : banks[transaction.id_recipient_bank]?.name}
+          </div>
           <div className="text-gray-600 font-base">Số tiền giao dịch</div>
           <div className="text-gray-800 font-medium">{formattedAmount} VNĐ</div>
 
-          <div className="text-gray-600 font-base">Số dư sau giao dịch</div>
-          <div className="text-gray-800 font-medium">{formattedBalance} VNĐ</div>
-
-          {transaction.type !== 'Deposit' && (
-            <>
-              <div className="text-gray-600 font-base">
-                {transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? 'Tài khoản thụ hưởng' : 'Tài khoản gửi'}
-              </div>
-              <div className="text-gray-800 font-medium">{recipientAccount}</div>
-
-              {(transaction.type === 'Sender' || transaction.type === 'Sender (Debt)') && (
-                <>
-                  <div className="text-gray-600 font-base">Người thụ hưởng</div>
-                  <div className="text-gray-800 font-medium">{recipientName}</div>
-                </>
-              )}
-
-              <div className="text-gray-600 font-base">Ngân hàng</div>
-              <div className="text-gray-800 font-medium">{bankName}</div>
-            </>
-          )}
-
-          {transaction.type !== 'Deposit' && feePayer && (
-            <>
-              <div className="text-gray-600 font-base">Phí</div>
-              <div className="text-gray-800 font-medium">{feePayer}</div>
-            </>
-          )}
+          <div className="text-gray-600 font-base">Phí</div>
+          <div className="text-gray-800 font-medium">{feePayer}</div>
 
           <div className="text-gray-600 font-base">Nội dung giao dịch</div>
           <div className="text-gray-800 font-medium">
-            {transaction.transaction_message || transaction.deposit_message || "(Không có nội dung)"} 
+            {transaction.transaction_message || "(Không có nội dung)"} 
           </div>
-        </div>
 
-        {/* <div className="mt-6 flex justify-center">
-          <button
-            onClick={closeModal}
-            className="py-2 px-4 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600"
-          >
-            Đóng
-          </button>
-        </div> */}
+        </div>
       </div>
     </div>
   );

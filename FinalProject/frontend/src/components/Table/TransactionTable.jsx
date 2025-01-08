@@ -52,7 +52,8 @@ const TransactionTable = ({ transactions, banks }) => {
         </thead>
         <tbody className="divide-y divide-gray-200">
           {sortedTransactions.length > 0 ? sortedTransactions.map((transaction, index) => (
-            <tr key={index}>
+            <tr key={index} onClick={() => handleTransactionClick(transaction)}
+            className="cursor-pointer hover:bg-gray-100">
               <td className="py-3 pl-2 text-left text-sm text-gray-700 truncate max-w-72">{transaction.id}</td>
               <td className="py-3 text-left text-sm text-gray-700">
                 {transaction.transaction_time ? format(new Date(transaction.transaction_time), 'dd/MM/yyyy HH:mm:ss') : 'N/A'}
@@ -80,21 +81,12 @@ const TransactionTable = ({ transactions, banks }) => {
         </tbody>
       </table>
 
-      {/* <TransactionDetailModal
+      <TransactionDetailModal
           isOpen={isModalOpen}
           closeModal={closeModal}
           transaction={selectedTransaction}
-          account_number={inputAccountNumber}
-          bankName={
-            selectedTransaction
-              ? selectedTransaction.type === 'Deposit'
-                ? null
-                : selectedTransaction.type === 'Sender' || selectedTransaction?.type === 'Sender (Debt)'
-                  ? banks[selectedTransaction?.id_recipient_bank]?.name
-                  : banks[selectedTransaction?.id_sender_bank]?.name
-              : null
-          }
-        /> */}
+          banks={banks}
+        />
     </div>
   );
 };
