@@ -58,7 +58,6 @@ import { FEE_AMOUNT } from 'src/common/utils/config';
           header,
           encryptedPayload,
           integrity,
-          hashedPayload: integrity,
           signature
         }
       }
@@ -67,7 +66,6 @@ import { FEE_AMOUNT } from 'src/common/utils/config';
         header,
         encryptedPayload,
         integrity,
-        hashedPayload: integrity
       }
     }
 
@@ -154,8 +152,11 @@ import { FEE_AMOUNT } from 'src/common/utils/config';
         
         const dataResponse = await response.json();
         let decryptedPayload = null;
-        decryptedPayload = await this.authService.decryptData(dataResponse.data.encryptedPayload, private_key, encryptMethod);
-        console.log(decryptedPayload)
+
+        encryptedPayload = (dataResponse.data) ? dataResponse.data.encryptedPayload : dataResponse.encryptedPayload
+        // console.log(encryptedPayload)
+        decryptedPayload = await this.authService.decryptData(encryptedPayload, private_key, encryptMethod);
+
 
         if (encryptMethod == "RSA" && decryptedPayload.statusCode === 200){
           return {sender_signature: body.signature, recipient_signature: dataResponse.signature};
@@ -193,6 +194,7 @@ import { FEE_AMOUNT } from 'src/common/utils/config';
               account_number,
               timestamp: Date.now() 
             }
+            console.log(payload)
             encryptedPayload = await this.authService.encryptData(JSON.stringify(payload), public_key, encryptMethod )
             body = await this.generateBodyPGP(encryptedPayload, external_bank.secret_key, false, private_key)
             break;
@@ -214,9 +216,10 @@ import { FEE_AMOUNT } from 'src/common/utils/config';
         
         const dataResponse = await response.json();
         let decryptedPayload = null;
- 
-        decryptedPayload = await this.authService.decryptData(dataResponse.data.encryptedPayload, private_key, encryptMethod);
-        console.log(decryptedPayload)
+        encryptedPayload = (dataResponse.data) ? dataResponse.data.encryptedPayload : dataResponse.encryptedPayload
+        // console.log(encryptedPayload)
+        decryptedPayload = await this.authService.decryptData(encryptedPayload, private_key, encryptMethod);
+        
 
         if (encryptMethod == "RSA" && decryptedPayload.statusCode === 200){
           return decryptedPayload.data.customer.full_name;
@@ -227,6 +230,7 @@ import { FEE_AMOUNT } from 'src/common/utils/config';
         }
 
       } catch (error) {
+        console.log(error)
         console.error('Error calling external API:', error.message);
         throw error; // Nếu cần xử lý lỗi ở nơi khác
       }

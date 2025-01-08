@@ -331,7 +331,7 @@ export class AuthService {
     return (
       !isNaN(requestTime) && 
       requestTime > 0 && // Ensure timestamp is positive
-      currentTime - requestTime <= 10000 && 
+      currentTime - requestTime <= 60000 && 
       currentTime >= requestTime // Ensure the timestamp is not in the future
     );
   }
