@@ -38,7 +38,6 @@ export default function TransferExternal() {
       {
         currentStep === 2 && (
           <TransferStep2
-            type={EXTERNAL}
             setCurrentStep={setCurrentStep}
             values={values}
             setTransaction={setTransaction}
@@ -49,7 +48,6 @@ export default function TransferExternal() {
       {
         currentStep === 3 && (
           <TransferStep3
-            type={EXTERNAL}   
             setCurrentStep={setCurrentStep}
             values={values}
             setTransaction={setTransaction}

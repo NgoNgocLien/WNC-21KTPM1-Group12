@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import OtpInputs from '../OtpInputs';
 
-import { BASE_URL, SENDER } from '../../util/config';
+import { BASE_URL, FAILED, INTERNAL_BAND_ID, LOADING, SENDER, SUCCEEDED } from '../../util/config';
 import { getAccessToken } from '../../util/cookie';
 import { payDebt } from '../../redux/debtThunk';
+import { createExternalTransactions, createInternalTransactions } from '../../redux/transactionThunk';
+import { setTransactionStatus } from '../../redux/transactionSlice';
 
 
 
-export default function TransferStep3({ setCurrentStep, values, setTransaction, debt }) {
+export default function TransferStep3({ setCurrentStep, values, setTransaction, transaction, debt }) {
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [invalidOtp, setInvalidOtp] = useState(false);
   const { email } = useSelector((state) => state.user)
@@ -17,36 +19,18 @@ export default function TransferStep3({ setCurrentStep, values, setTransaction, 
 
   const dispatch = useDispatch();
 
-  const makeTransaction = async () => {
-    const newValues = {
-      ...values,
-      transaction_amount: values.fee_payment_method === SENDER ? Number(values.transaction_amount) + 1000 : Number(values.transaction_amount) - 1000
-    }
-
-    const transaction = await fetch(`${BASE_URL}/transactions/internal`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${access_token}`,
-      },
-      body: JSON.stringify(newValues)
-    })
-
-    if (!transaction.ok) {
-      throw new Error('Failed to fetch user account info');
-    } else {
-      const result = await transaction.json();
-      setTransaction(result.data)
-      setCurrentStep(4)
-
-      return result.data;
-    }
+  const handleSuccessfulTransaction = (transaction) => {
+    setTransaction(transaction)
+    setCurrentStep(4)
   }
 
   const handleConfirm = async () => {
     const otpValue = otp.join("");
     console.log("OTP Value:", otpValue);
 
+    dispatch(setTransactionStatus({
+      status: LOADING
+    }));
     const response = await fetch(`${BASE_URL}/otp/verify`, {
       method: 'POST',
       headers: {
@@ -60,20 +44,42 @@ export default function TransferStep3({ setCurrentStep, values, setTransaction, 
     })
 
     if (!response.ok) {
-      throw new Error('Failed to fetch user account info');
+      dispatch(setTransactionStatus({
+        status: FAILED,
+        error: "OTP không hợp lê hoặc hết hạn"
+      }));
+      setInvalidOtp(true);
+      return
     }
 
     const result = await response.json();
     if (result.data) {
-      const transaction = await makeTransaction();
-
-      if (debt) {
-        dispatch(payDebt({ id_debt: debt.id, data: { id_transaction: transaction.id } }))
+      console.log(result.data)
+      const newValues = {
+        ...values,
+        transaction_amount: values.fee_payment_method === SENDER ? Number(values.transaction_amount) + 1000 : Number(values.transaction_amount) - 1000
       }
-    } else {
-      setInvalidOtp(true);
+
+  
+      if (newValues.id_recipient_bank == INTERNAL_BAND_ID){
+        dispatch(createInternalTransactions({
+          data: newValues,
+          handleSuccessfulTransaction,
+        }))
+      } else {
+        dispatch(createExternalTransactions({
+          data: newValues,
+          handleSuccessfulTransaction,
+        }))
+      }
     }
   }
+
+  useEffect(() => {
+    if (debt && transaction) {
+      dispatch(payDebt({ id_debt: debt.id, data: { id_transaction: transaction.id } }))
+    }
+  }, [transaction])
 
   return (
     <>

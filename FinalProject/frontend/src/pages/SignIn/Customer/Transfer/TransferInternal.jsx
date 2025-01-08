@@ -38,10 +38,8 @@ export default function TransferInternal() {
       {
         currentStep === 2 && (
           <TransferStep2
-            type={INTERNAL}
             setCurrentStep={setCurrentStep}
             values={values}
-            setTransaction={setTransaction}
           />
         )
       }
@@ -49,10 +47,10 @@ export default function TransferInternal() {
       {
         currentStep === 3 && (
           <TransferStep3
-            type={INTERNAL}   
             setCurrentStep={setCurrentStep}
             values={values}
             setTransaction={setTransaction}
+            transaction={transaction}
             debt={debt}
 
           />

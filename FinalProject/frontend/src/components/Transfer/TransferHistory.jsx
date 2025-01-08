@@ -7,6 +7,7 @@ import DatePicker from 'react-datepicker';
 import { format } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
 import TransactionDetailModal from './TransactionDetailModal';
+import { isEmptyArray } from 'formik';
 
 export default function TransferHistory() {
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ export default function TransferHistory() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredTransactions = useMemo(() => {
-    return transactions.filter((t) => {
+    return transactions?.filter((t) => {
       const typeMatch = 
         filters.includes('all') || 
         filters.includes('sender') && (t.type === 'Sender') || 
@@ -40,13 +41,13 @@ export default function TransferHistory() {
   }, [transactions, filters, startDate, endDate]);
 
   useEffect(() => {
-    if (status === IDLE) {
+    if (transactions == null || status == IDLE) {
       dispatch(getAccountTransactions());
     }
-  }, [dispatch, status]);
+  }, [transactions, status]);
 
   useEffect(() => {
-    filteredTransactions.forEach((transaction) => {
+    filteredTransactions?.forEach((transaction) => {
       const bankId =
         transaction.type === 'Sender' || transaction.type === 'Sender (Debt)'
           ? transaction.id_recipient_bank
@@ -60,13 +61,13 @@ export default function TransferHistory() {
 
   const renderTransactions = () => {
     if (status === SUCCEEDED) {
-      if (filteredTransactions.length === 0) {
+      if (filteredTransactions?.length === 0) {
         return <p className="text-center text-gray-500">Không có giao dịch nào trong khoảng thời gian này</p>;
       }
 
       return (
         <div className="max-h-96 overflow-y-auto">
-          {filteredTransactions.map((transaction) => {
+          {filteredTransactions?.map((transaction) => {
             const uniqueKey = `${transaction.type}-${transaction.id}`;
             const formattedTime = format(new Date(transaction.transaction_time), 'dd/MM/yyyy - HH:mm:ss');
             const amountSign = transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? '-' : '+';

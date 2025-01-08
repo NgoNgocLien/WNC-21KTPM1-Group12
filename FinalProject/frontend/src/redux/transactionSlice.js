@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getAccountTransactions, getBankName, getCustomerTransactions, getExternalTransactions } from './transactionThunk';
+import { createExternalTransactions, createInternalTransactions, getAccountTransactions, getBankName, getCustomerTransactions, getExternalTransactions } from './transactionThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 
 const initialState = {
-  transactions: [],
+  transactions: null,
   banks: {},
   status: IDLE,
   error: null,
@@ -53,8 +53,8 @@ const transactionSlice = createSlice({
       })
       .addCase(getBankName.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
-        const { id, name, public_key, logo } = action.payload.data;
-        state.banks[id] = { name, public_key, logo };
+        const { id, name, logo } = action.payload.data;
+        state.banks[id] = { name, logo };
       })
       .addCase(getBankName.rejected, (state, action) => {
         state.status = FAILED;
@@ -81,6 +81,28 @@ const transactionSlice = createSlice({
         state.transactions = action.payload.data;
       })
       .addCase(getExternalTransactions.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
+      })
+      .addCase(createInternalTransactions.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(createInternalTransactions.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+      })
+      .addCase(createInternalTransactions.rejected, (state, action) => {
+        state.status = FAILED;
+        state.error = action.payload;
+      })
+      .addCase(createExternalTransactions.pending, (state) => {
+        state.status = LOADING;
+        state.error = null;
+      })
+      .addCase(createExternalTransactions.fulfilled, (state, action) => {
+        state.status = SUCCEEDED;
+      })
+      .addCase(createExternalTransactions.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
       });

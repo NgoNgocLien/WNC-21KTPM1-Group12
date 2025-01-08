@@ -48,3 +48,30 @@ export const getExternalTransactions = createAsyncThunk(
         }
     }
 );
+
+export const createInternalTransactions = createAsyncThunk(
+    'transaction/createInternalTransactions',
+    async ({ data, handleSuccessfulTransaction }, { rejectWithValue }) => {
+        try {
+            console.log(data)
+            const response = await TransactionService.createInternalTransactions(data);
+            handleSuccessfulTransaction(response.data)
+            return response;
+        } catch (error) {
+        return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const createExternalTransactions = createAsyncThunk(
+    'transaction/createExternalTransactions',
+    async ({ data, handleSuccessfulTransaction }, { rejectWithValue }) => {
+        try {
+            const response = await TransactionService.createExternalTransactions(data);
+            handleSuccessfulTransaction(response.data)
+            return response;
+        } catch (error) {
+        return rejectWithValue(error.message);
+        }
+    }
+);

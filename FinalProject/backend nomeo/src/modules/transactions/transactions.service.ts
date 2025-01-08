@@ -357,6 +357,12 @@ export class TransactionsService {
       const bank = await this.prisma.banks.findUnique({
         where:{
           id: Number(id_bank),
+        },
+        select: {
+          id: true,
+          name: true,
+          logo: true,
+          
         }
       })
 

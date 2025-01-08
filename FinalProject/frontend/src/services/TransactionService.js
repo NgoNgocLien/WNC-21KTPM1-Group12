@@ -40,6 +40,26 @@ const TransactionService = {
         throw error;
         }
     },
+
+    async createInternalTransactions(data){
+        try {
+            const jsonObject = await BaseService.post(`transactions/internal`, data);
+            return jsonObject;
+        } catch (error) {
+            console.error(error);
+        throw error;
+        }
+    },
+
+    async createExternalTransactions(data){
+        try {
+            const jsonObject = await BaseService.post(`transactions/external/send`, data);
+            return jsonObject;
+        } catch (error) {
+            console.error(error);
+        throw error;
+        }
+    }
 };
 
 export default TransactionService;

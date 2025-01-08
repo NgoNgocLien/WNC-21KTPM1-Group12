@@ -104,6 +104,7 @@ export class TransactionsController {
   })
   @Post('external/send')
   sendExternalTransaction(@Body() createTransactionDto: CreateTransactionDto) {
+    console.log(createTransactionDto)
     return this.transactionsService.sendExternalTransaction(
       createTransactionDto,
     );

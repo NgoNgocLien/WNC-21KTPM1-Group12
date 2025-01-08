@@ -100,6 +100,8 @@ export default function TransferInternalStep1({ setCurrentStep, setValues, debt,
     if (selectedContact) {
       formik.setFieldValue("recipient_account_number", selectedContact.account_number)
       formik.setFieldValue("recipient_name", selectedContact.contact_fullname)
+      formik.setFieldError("recipient_account_number", undefined)
+      formik.validateForm();
     }
   }, [selectedContact])
 
