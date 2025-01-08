@@ -37,7 +37,7 @@ export class CustomerInfoStrategy extends PassportStrategy(Strategy, 'customer-i
       throw new UnauthorizedException('Error decrypting payload');
     }
 
-    const bank = await this.banksService.getBankByCode(payload.bank_code);
+    const bank = await this.banksService.getBankByInternalCode(payload.bank_code);
     if (!bank) {
       throw new UnauthorizedException('Invalid bank');
     }

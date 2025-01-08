@@ -98,9 +98,9 @@ export class CustomersController {
   @Get('profile/external/:bank_id/:account_number')
   findExternalProfile(
     @Param('account_number') account_number: string,
-    @Param('bank_id') bank_id: number,
+    @Param('bank_id') bank_id: string,
   ) {
-    return this.customersService.findExternalProfile(bank_id, account_number);
+    return this.customersService.findExternalProfile(Number(bank_id), account_number);
   }
 
   @ApiResponse({
