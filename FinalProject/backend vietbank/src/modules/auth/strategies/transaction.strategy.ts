@@ -40,8 +40,6 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
       throw new UnauthorizedException('Error decrypting payload');
     }
 
-    console.log(payload)
-    
     const bank = await this.banksService.getBankByInternalCode(payload.bank_code);
     if (!bank) {
       throw new UnauthorizedException('Invalid bank');
@@ -55,6 +53,9 @@ export class TransactionStrategy extends PassportStrategy(Strategy, 'transaction
       throw new UnauthorizedException('Invalid payload hash');
     }
 
+    if (!signature.startsWith('-----BEGIN PGP SIGNATURE-----')) {
+      throw new Error('Invalid PGP signature format');
+    }
     const publicKey = (encryptMethod == "PGP") ? bank.pgp_public_key :  bank.rsa_public_key;
     const validSignature = await this.authService.verifySignature(encryptedPayload, publicKey, signature, encryptMethod)
     if (!validSignature) {

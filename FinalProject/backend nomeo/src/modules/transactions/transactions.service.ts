@@ -126,19 +126,10 @@ export class TransactionsService {
      
       const external_bank = await this.banksService.getBankById(createTransactionDto.id_recipient_bank);
 
-      const transformedTransasction = {
-        fromBankCode: external_bank.external_code,
-        fromAccountNumber: createTransactionDto.sender_account_number,
-        toBankAccountNumber: createTransactionDto.recipient_account_number,
-        amount: Number(createTransactionDto.transaction_amount),
-        message: createTransactionDto.transaction_message,
-        feePayer: createTransactionDto.fee_payment_method,
-        feeAmount: FEE_AMOUNT,
-      }
 
       const external_bank_base_url = external_bank.base_url + "/partner/transaction";
 
-      const {sender_signature, recipient_signature } = await this.banksService.makeTransaction(JSON.stringify(transformedTransasction), external_bank, external_bank_base_url)
+      const {sender_signature, recipient_signature } = await this.banksService.makeTransaction(createTransactionDto, external_bank, external_bank_base_url)
 
       const transaction = await this.prisma.transactions.create({
         data: {

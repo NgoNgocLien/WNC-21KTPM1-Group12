@@ -8,6 +8,8 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import axios from 'axios';
 import { AuthService } from '../auth/auth.service';
 import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionResponse';
+import { CreateTransactionDto } from '../transactions/dto/createTransaction.dto';
+import { FEE_AMOUNT } from 'src/common/utils/config';
 
   @Injectable()
   export class BanksService {
@@ -56,6 +58,7 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
           header,
           encryptedPayload,
           integrity,
+          hashedPayload: integrity,
           signature
         }
       }
@@ -79,7 +82,9 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
           encryptedPayload, 
           private_key, 
           "PGP")
+        // console.log(signature)
         return {
+          encryptMethod: "PGP",
           encryptedPayload,
           integrity,
           hashedPayload: integrity,
@@ -88,30 +93,47 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
       }
 
       return {
+        encryptMethod: "PGP",
         encryptedPayload,
+        hashedPayload: integrity,
         integrity
       }
     }
     // NoMeo -> 
-    async makeTransaction(data: any, external_bank: any, url: string){
+    async makeTransaction(data: CreateTransactionDto, external_bank: any, url: string){
       try {
         const encryptMethod = (external_bank.rsa_public_key) ? "RSA" : "PGP"
         const private_key = (external_bank.rsa_public_key) ? process.env.RSA_PRIVATE_KEY : process.env.PGP_PRIVATE_KEY
         const public_key = external_bank.rsa_public_key || external_bank.pgp_public_key
               
 
-        let body = null, encryptedPayload = null;
+        let body = null, encryptedPayload = null, transformedTransasction = null;
         switch (encryptMethod){
           case "RSA":
-            encryptedPayload = await this.authService.encryptData(data, public_key, "RSA")
+            transformedTransasction = {
+              fromBankCode: external_bank.external_code,
+              fromAccountNumber: data.sender_account_number,
+              toBankAccountNumber: data.recipient_account_number,
+              amount: Number(data.transaction_amount),
+              message: data.transaction_message,
+              feePayer: data.fee_payment_method,
+              feeAmount: FEE_AMOUNT,
+            }
+            encryptedPayload = await this.authService.encryptData(JSON.stringify(transformedTransasction), public_key, "RSA")
             body = await this.generateBodyRSA(encryptedPayload, external_bank.secret_key, true, private_key)
             break;
           case "PGP":
-            let newData = {
-              ...JSON.parse(data),
+            transformedTransasction = {
+              bank_code: external_bank.external_code,
+              sender_account_number: data.sender_account_number,
+              recipient_account_number: data.recipient_account_number,
+              transaction_amount: Number(data.transaction_amount),
+              transaction_message: data.transaction_message,
+              fee_payment_method: data.fee_payment_method,
+              fee_amount: FEE_AMOUNT,
               timestamp: Date.now()
             }
-            encryptedPayload = await this.authService.encryptData(newData, public_key, "PGP")
+            encryptedPayload = await this.authService.encryptData(JSON.stringify(transformedTransasction), public_key, "PGP")
             body = await this.generateBodyPGP(encryptedPayload, external_bank.secret_key, true, private_key)
             break;
           default:
@@ -132,13 +154,13 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
         
         const dataResponse = await response.json();
         let decryptedPayload = null;
-        decryptedPayload = await this.authService.decryptData(dataResponse.encryptedPayload, private_key, encryptMethod);
+        decryptedPayload = await this.authService.decryptData(dataResponse.data.encryptedPayload, private_key, encryptMethod);
         console.log(decryptedPayload)
 
         if (encryptMethod == "RSA" && decryptedPayload.statusCode === 200){
           return {sender_signature: body.signature, recipient_signature: dataResponse.signature};
         } if (encryptMethod == "PGP") {
-          
+          return {sender_signature: body.signature, recipient_signature: dataResponse.signature};
         } else{
           throw new Error("Error in creating transaction in external server")
         }
@@ -193,13 +215,13 @@ import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionRe
         const dataResponse = await response.json();
         let decryptedPayload = null;
  
-        decryptedPayload = await this.authService.decryptData(dataResponse.encryptedPayload, private_key, encryptMethod);
-        
+        decryptedPayload = await this.authService.decryptData(dataResponse.data.encryptedPayload, private_key, encryptMethod);
+        console.log(decryptedPayload)
 
         if (encryptMethod == "RSA" && decryptedPayload.statusCode === 200){
           return decryptedPayload.data.customer.full_name;
         } if (encryptMethod == "PGP") {
-          return decryptedPayload.data.full_name;
+          return decryptedPayload.fullname;
         } else{
           throw new Error("Error in creating transaction in external server")
         }
