@@ -29,7 +29,12 @@ export class CustomersService {
   async getAllCustomers() {
     try {
       const customers = await this.prisma.customers.findMany({
-        include: {
+        select: {
+          id: true,
+          username: true,
+          fullname: true,
+          email: true,
+          phone: true,
           accounts: {
             select: {
               account_number: true,
@@ -39,7 +44,7 @@ export class CustomersService {
       });
 
       return {
-        message: 'Customers fetched successfully',
+        message: 'Lấy thông tin tất cả khách hàng thành công',
         data: customers,
       };
     } catch (error) {
@@ -244,12 +249,9 @@ export class CustomersService {
         data: {
           id: customer.id,
           username: customer.username,
-          password: customer.password,
           fullname: customer.fullname,
           email: customer.email,
           phone: customer.phone,
-          refresh_token: customer.refresh_token || null,
-          fcm_token: customer.fcm_token || null,
           accounts: [{ account_number: account.account_number }],
         },
       };

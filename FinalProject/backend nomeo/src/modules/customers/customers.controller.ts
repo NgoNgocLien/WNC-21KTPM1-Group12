@@ -20,7 +20,7 @@ import { CreateContactDto } from './dto/createContact.dto';
 import { UpdateContactDto } from './dto/updateContact.dto';
 import { DeleteContactDto } from './dto/deleteContact.dto';
 import { CreateCustomerDto } from './dto/createCustomer.dto';
-import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
 
 @ApiTags('Customers')
 @ApiBearerAuth('access-token')
@@ -47,6 +47,55 @@ export class CustomersController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Lấy thông tin tất cả khách hàng thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy thông tin tất cả khách hàng thành công',
+        },
+        data: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'integer',
+                example: 1,
+              },
+              username: {
+                type: 'string',
+                example: 'nguyenvana',
+              },
+              fullname: {
+                type: 'string',
+                example: 'Nguyễn Văn A',
+              },
+              email: {
+                type: 'string',
+                example: 'nguyenvana@gmail.com',
+              },
+              phone: {
+                type: 'string',
+                example: '0987654321',
+              },
+              accounts: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    account_number: {
+                      type: 'string',
+                      example: 'ACC100000001',
+                    },
+                  },
+                },
+              }
+            },
+          },
+        },
+      },
+    },
   })
   @HttpCode(HttpStatus.OK)
   @Get('')
@@ -116,6 +165,52 @@ export class CustomersController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Tạo khách hàng thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Thêm mới khách hàng và tài khoản thanh toán thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 1,
+            },
+            username: {
+              type: 'string',
+              example: 'nguyenvana',
+            },
+            fullname: {
+              type: 'string',
+              example: 'Nguyễn Văn A',
+            },
+            email: {
+              type: 'string',
+              example: 'nguyenvana@gmail.com',
+            },
+            phone: {
+              type: 'string',
+              example: '0987654321',
+            },
+            accounts: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  account_number: {
+                    type: 'string',
+                    example: 'ACC100000001',
+                  },
+                },
+              },
+            }
+          },
+        },
+      },
+    },
   })
   @HttpCode(HttpStatus.OK)
   @Post()

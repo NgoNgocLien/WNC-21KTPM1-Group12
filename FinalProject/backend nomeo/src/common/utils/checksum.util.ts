@@ -26,7 +26,7 @@ export function generateLuhnChecksum(baseNumber: string): string {
    * @returns A unique account number with checksum.
    */
   export function generateAccountNumber(customerId: number): string {
-    const baseNumber = `100${customerId}${Date.now().toString().slice(-4)}`;
+    const baseNumber = `100${customerId}${Date.now().toString().slice(-3)}`;
     const checksum = generateLuhnChecksum(baseNumber);
-    return baseNumber + checksum;
+    return `ACC${baseNumber}${checksum}`;
   }  
