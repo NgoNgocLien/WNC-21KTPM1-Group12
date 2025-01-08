@@ -170,16 +170,142 @@ export class TransactionsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Lấy tất cả giao dịch với ngân hàng khác thành công',
+    description: 'Lấy tất cả giao dịch với ngân hàng khác thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Giao dịch của các ngân hàng khác đã được tìm thấy.',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            transactions: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  sender_account_number: { type: 'string', example: 'ACC100000001' },
+                  id_sender_bank: { type: 'integer', example: 1 },
+                  recipient_account_number: { type: 'string', example: 'VIE10234567' },
+                  id_recipient_bank: { type: 'integer', example: 3 },
+                  transaction_amount: { type: 'string', example: '22453' },
+                  transaction_message: { type: 'string', example: 'NGAN HA chuyen tien' },
+                  fee_payment_method: {
+                    type: 'string',
+                    enum: ['SENDER', 'RECIPIENT'],
+                    example: 'RECIPIENT',
+                  },
+                  transaction_time: {
+                    type: 'string',
+                    format: 'date-time',
+                    example: '2025-01-08T18:18:42.541Z',
+                  },
+                  recipient_name: { type: 'string', example: 'Phan Trường Ngọc' },
+                  id: { type: 'string', format: 'uuid', example: '496c06e5-f43b-4634-b8d5-a4eec3f8a0a1' },
+                  fee_amount: { type: 'string', example: '1000' },
+                  type: { type: 'string', enum: ['Sender', 'Recipient'], example: 'Sender' },
+                },
+              },
+            },
+            banks: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: { type: 'integer', example: 3 },
+                  name: { type: 'string', example: 'VietBank' },
+                  logo: { type: 'string', nullable: true, example: null },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   })
   @Get('external')
   findExternalTransactions() {
     return this.transactionsService.getExternalTransactions();
   }
+  
 
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Lấy tất cả giao dịch của khách hàng thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy thông tin giao dịch của khách hàng thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            transactions: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  sender_account_number: { type: 'string', example: 'ACC123456789' },
+                  id_sender_bank: { type: 'integer', example: 1 },
+                  recipient_account_number: { type: 'string', example: 'VIE1234567' },
+                  id_recipient_bank: { type: 'integer', example: 3 },
+                  transaction_amount: { type: 'integer', example: 22453 },
+                  transaction_message: { type: 'string', example: 'JOHN DOE chuyen tien' },
+                  fee_payment_method: {
+                    type: 'string',
+                    enum: ['SENDER', 'RECIPIENT'],
+                    example: 'RECIPIENT',
+                  },
+                  transaction_time: {
+                    type: 'string',
+                    format: 'date-time',
+                    example: '2025-01-08T18:18:42.541Z',
+                  },
+                  recipient_name: { type: 'string', example: 'Phan Mỹ Linh' },
+                  id: { type: 'string', format: 'uuid', example: '496c06e5-f43b-4634-b8d5-a4eec3f8a0a1' },
+                  fee_amount: { type: 'string', example: '1000' },
+                  type: { type: 'string', enum: ['Sender', 'Recipient', 'Deposit', 'Sender (Debt)', 'Recipient (Debt)'], example: 'Sender' },
+                  current_balance: { type: 'integer', example: 86712033 },
+                },
+              },
+            },
+          },
+          example: [
+            {
+              sender_account_number: "A1234567",
+              id_sender_bank: 2,
+              recipient_account_number: "ACC1234569",
+              id_recipient_bank: 1,
+              transaction_amount: 100000,
+              transaction_message: "Happy birthday",
+              fee_payment_method: "SENDER",
+              transaction_time: "2025-01-07T07:28:54.780Z",
+              recipient_name: "Ngan Ha",
+              id: "c80a747d-c37e-4fab-9b43-12c86baf6",
+              fee_amount: "1000",
+              type: "Recipient",
+              current_balance: 87744743
+            },
+            {
+              id: 12,
+              id_employee: 1,
+              id_customer: 1,
+              deposit_amount: "444444",
+              deposit_message: "Monthly deposit",
+              deposit_time: "2025-01-04T20:03:21.337Z",
+              type: "Deposit",
+              transaction_time: "2025-01-04T20:03:21.337Z",
+              transaction_amount: 44444,
+              current_balance: 87526332
+            },
+          ],
+        },
+      },
+    },
   })
   @Get('account')
   findAccountTransactions(@Req() req: Request) {
@@ -188,8 +314,79 @@ export class TransactionsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description:
-      'Lấy tất cả giao dịch theo số tài khoản của khách hàng thành công',
+    description: 'Lấy tất cả giao dịch theo số tài khoản của khách hàng thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy tất cả giao dịch theo số tài khoản của khách hàng thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            transactions: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  sender_account_number: { type: 'string', example: 'ACC123456789' },
+                  id_sender_bank: { type: 'integer', example: 1 },
+                  recipient_account_number: { type: 'string', example: 'VIE1234567' },
+                  id_recipient_bank: { type: 'integer', example: 3 },
+                  transaction_amount: { type: 'integer', example: 22453 },
+                  transaction_message: { type: 'string', example: 'JOHN DOE chuyen tien' },
+                  fee_payment_method: {
+                    type: 'string',
+                    enum: ['SENDER', 'RECIPIENT'],
+                    example: 'RECIPIENT',
+                  },
+                  transaction_time: {
+                    type: 'string',
+                    format: 'date-time',
+                    example: '2025-01-08T18:18:42.541Z',
+                  },
+                  recipient_name: { type: 'string', example: 'Phan Mỹ Linh' },
+                  id: { type: 'string', format: 'uuid', example: '496c06e5-f43b-4634-b8d5-a4eec3f8a0a1' },
+                  fee_amount: { type: 'string', example: '1000' },
+                  type: { type: 'string', enum: ['Sender', 'Recipient', 'Deposit', 'Sender (Debt)', 'Recipient (Debt)'], example: 'Sender' },
+                  current_balance: { type: 'integer', example: 86712033 },
+                },
+              },
+            },
+          },
+          example: [
+            {
+              sender_account_number: "A1234567",
+              id_sender_bank: 2,
+              recipient_account_number: "ACC123456789",
+              id_recipient_bank: 1,
+              transaction_amount: 100000,
+              transaction_message: "Happy birthday",
+              fee_payment_method: "SENDER",
+              transaction_time: "2025-01-07T07:28:54.780Z",
+              recipient_name: "Ngan Ha",
+              id: "c80a747d-c37e-4fab-9b43-12c86baf6",
+              fee_amount: "1000",
+              type: "Recipient",
+              current_balance: 87744743
+            },
+            {
+              id: 12,
+              id_employee: 1,
+              id_customer: 1,
+              deposit_amount: "444444",
+              deposit_message: "Monthly deposit",
+              deposit_time: "2025-01-04T20:03:21.337Z",
+              type: "Deposit",
+              transaction_time: "2025-01-04T20:03:21.337Z",
+              transaction_amount: 44444,
+              current_balance: 87526332
+            },
+          ],
+        },
+      },
+    },
   })
   @ApiParam({
     name: 'account_number',
@@ -202,12 +399,12 @@ export class TransactionsController {
     return this.transactionsService.getCustomerTransactions(account_number);
   }
 
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Lấy tất cả giao dịch của ngân hàng thành công',
-  })
-  @Get('bank')
-  findBankTransactions() {
-    return this.transactionsService.findBankTransactions();
-  }
+  // @ApiResponse({
+  //   status: HttpStatus.OK,
+  //   description: 'Lấy tất cả giao dịch của ngân hàng thành công',
+  // })
+  // @Get('bank')
+  // findBankTransactions() {
+  //   return this.transactionsService.findBankTransactions();
+  // }
 }

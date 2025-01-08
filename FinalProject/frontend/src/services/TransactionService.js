@@ -11,15 +11,15 @@ const TransactionService = {
         }
     },
 
-    async getBanks() {
-        try {
-        const jsonObject = await BaseService.get( `transactions/bank`);
-        return jsonObject;
-        } catch (error) {
-        console.error(error);
-        throw error; 
-        }
-    },
+    // async getBanks() {
+    //     try {
+    //     const jsonObject = await BaseService.get( `transactions/bank`);
+    //     return jsonObject;
+    //     } catch (error) {
+    //     console.error(error);
+    //     throw error; 
+    //     }
+    // },
 
     async getCustomerTransactions(account_number) {
         try {
