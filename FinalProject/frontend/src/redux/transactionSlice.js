@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createExternalTransactions, createInternalTransactions, getAccountTransactions, getBankName, getCustomerTransactions, getExternalTransactions } from './transactionThunk';
+import { createExternalTransactions, createInternalTransactions, getAccountTransactions, getBanks, getCustomerTransactions, getExternalTransactions } from './transactionThunk';
 import { IDLE, LOADING, SUCCEEDED, FAILED } from '../util/config'
 
 const initialState = {
   transactions: null,
-  banks: {},
+  banks: null,
   status: IDLE,
   error: null,
 };
@@ -47,16 +47,19 @@ const transactionSlice = createSlice({
         state.status = FAILED;
         state.error = action.payload;
       })
-      .addCase(getBankName.pending, (state) => {
+      .addCase(getBanks.pending, (state) => {
         state.status = LOADING;
         state.error = null;
       })
-      .addCase(getBankName.fulfilled, (state, action) => {
+      .addCase(getBanks.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
-        const { id, name, logo } = action.payload.data;
-        state.banks[id] = { name, logo };
+        state.banks = action.payload.data.map(bank => ({
+          id: bank.id,
+          name: bank.name,
+          logo: bank.logo
+        }));
       })
-      .addCase(getBankName.rejected, (state, action) => {
+      .addCase(getBanks.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
       })
