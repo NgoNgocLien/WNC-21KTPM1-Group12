@@ -25,7 +25,7 @@ export class CreateDebtDto {
 
   @ApiProperty({
     description: 'Số tài khoản người nhận nhắc nợ',
-    example: 'ACC123456789',
+    example: 'ACC100000001',
     required: true,
   })
   @IsString()
