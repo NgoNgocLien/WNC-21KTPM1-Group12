@@ -277,8 +277,8 @@ export default function TransferHistory() {
             ? selectedTransaction.type === 'Deposit'
               ? null
               : selectedTransaction.type === 'Sender' || selectedTransaction?.type === 'Sender (Debt)'
-              ? banks[selectedTransaction?.id_recipient_bank]?.name
-              : banks[selectedTransaction?.id_sender_bank]?.name
+              ? banks.find(bank => bank.id === selectedTransaction?.id_recipient_bank)?.name
+              : banks.find(bank => bank.id === selectedTransaction?.id_sender_bank)?.name
             : null
         }
       />

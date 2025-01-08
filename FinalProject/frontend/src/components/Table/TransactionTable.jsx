@@ -62,7 +62,7 @@ const TransactionTable = ({ transactions, banks }) => {
                 {transaction.id_sender_bank === 1 ? transaction.sender_account_number : transaction.recipient_account_number}
               </td>
               <td className="py-3 px-2 text-left text-sm text-gray-700">
-                {banks[transaction.id_sender_bank === 1 ? transaction.id_recipient_bank : transaction.id_sender_bank]?.name}
+                {banks.find(bank => bank.id === (transaction.id_sender_bank === 1 ? transaction.id_recipient_bank : transaction.id_sender_bank))?.name}
               </td>
               <td className="py-3 px-2 text-left text-sm text-gray-700">
                 {new Intl.NumberFormat().format(transaction.transaction_amount)} VNĐ
