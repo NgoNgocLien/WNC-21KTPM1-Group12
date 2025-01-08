@@ -20,6 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { VerifyCaptchaDto } from './dto/verifyCaptcha';
 
 @ApiTags('Auth')
 @ApiResponse({
@@ -38,7 +39,17 @@ import {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiResponse({ status: HttpStatus.OK, description: 'Đăng nhập thành công' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Đăng nhập thành công',
+    schema: {
+      description: 'Access token và refresh token được trả về',
+      example: {
+        access_token: 'access_token',
+        refresh_token: 'refresh_token',
+      },
+    },
+  })
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -52,7 +63,16 @@ export class AuthController {
   }
 
   @ApiBearerAuth('access-token')
-  @ApiResponse({ status: HttpStatus.OK, description: 'Đăng xuất thành công' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Đăng xuất thành công',
+    schema: {
+      description: 'Xóa refresh token và FCM token khỏi hệ thống',
+      example: {
+        message: 'Logout success',
+      },
+    },
+  })
   @HttpCode(HttpStatus.OK)
   @Post('logout')
   logout(@Req() req: Request) {
@@ -63,6 +83,13 @@ export class AuthController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Refresh token thành công',
+    schema: {
+      description: 'Access token và refresh token mới được trả về',
+      example: {
+        access_token: 'access_token',
+        refresh_token: 'refresh_token',
+      },
+    },
   })
   @Public()
   @UseGuards(RefreshTokenGuard)
@@ -76,20 +103,29 @@ export class AuthController {
     );
   }
 
+  @ApiExcludeEndpoint()
   @ApiBearerAuth('access-token')
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Lấy thông tin tài khoản thành công',
+    description: 'Giải mã access token',
   })
   @Get('profile')
   getProfile(@Req() req: Request) {
     return req.user;
   }
 
-  @ApiExcludeEndpoint()
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Xác thực captcha thành công',
+    schema: {
+      description: 'Trả về kết quả xác thực captcha',
+      example: true,
+    },
+  })
   @Public()
+  @HttpCode(HttpStatus.OK)
   @Post('verify-recaptcha')
-  verifyRecaptcha(@Body() body: { token: string }) {
-    return this.authService.verifyRecaptcha(body.token);
+  verifyRecaptcha(@Body() verifyCaptchaDto: VerifyCaptchaDto) {
+    return this.authService.verifyRecaptcha(verifyCaptchaDto.token);
   }
 }
