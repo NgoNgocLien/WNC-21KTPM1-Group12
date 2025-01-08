@@ -101,7 +101,7 @@ export default function TransferHistory() {
                   <img
                     src={bankLogo ? bankLogo : `https://picsum.photos/id/155/200/300`}
                     alt="Bank Logo"
-                    className="w-10 h-10 rounded-full"
+                    className="w-10 h-10 rounded-full object-cover"
                   />
                   <div>
                     <p className="font-semibold">{transaction.transaction_message || transaction.deposit_message || "(Không có nội dung)"}</p>
@@ -277,8 +277,8 @@ export default function TransferHistory() {
             ? selectedTransaction.type === 'Deposit'
               ? null
               : selectedTransaction.type === 'Sender' || selectedTransaction?.type === 'Sender (Debt)'
-              ? banks[selectedTransaction?.id_recipient_bank]?.name
-              : banks[selectedTransaction?.id_sender_bank]?.name
+              ? banks.find(bank => bank.id === selectedTransaction?.id_recipient_bank)?.name
+              : banks.find(bank => bank.id === selectedTransaction?.id_sender_bank)?.name
             : null
         }
       />

@@ -42,27 +42,28 @@ const transactionSlice = createSlice({
       .addCase(getAccountTransactions.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
         state.transactions = action.payload.data.transactions;
+        state.banks = action.payload.data.banks;
       })
       .addCase(getAccountTransactions.rejected, (state, action) => {
         state.status = FAILED;
         state.error = action.payload;
       })
-      .addCase(getBanks.pending, (state) => {
-        state.status = LOADING;
-        state.error = null;
-      })
-      .addCase(getBanks.fulfilled, (state, action) => {
-        state.status = SUCCEEDED;
-        state.banks = action.payload.data.map(bank => ({
-          id: bank.id,
-          name: bank.name,
-          logo: bank.logo
-        }));
-      })
-      .addCase(getBanks.rejected, (state, action) => {
-        state.status = FAILED;
-        state.error = action.payload;
-      })
+      // .addCase(getBanks.pending, (state) => {
+      //   state.status = LOADING;
+      //   state.error = null;
+      // })
+      // .addCase(getBanks.fulfilled, (state, action) => {
+      //   state.status = SUCCEEDED;
+      //   state.banks = action.payload.data.map(bank => ({
+      //     id: bank.id,
+      //     name: bank.name,
+      //     logo: bank.logo
+      //   }));
+      // })
+      // .addCase(getBanks.rejected, (state, action) => {
+      //   state.status = FAILED;
+      //   state.error = action.payload;
+      // })
       .addCase(getCustomerTransactions.pending, (state) => {
         state.status = LOADING;
         state.error = null;
@@ -70,6 +71,7 @@ const transactionSlice = createSlice({
       .addCase(getCustomerTransactions.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
         state.transactions = action.payload.data.transactions;
+        state.banks = action.payload.data.banks;
       })
       .addCase(getCustomerTransactions.rejected, (state, action) => {
         state.status = FAILED;
@@ -81,7 +83,8 @@ const transactionSlice = createSlice({
       })
       .addCase(getExternalTransactions.fulfilled, (state, action) => {
         state.status = SUCCEEDED;
-        state.transactions = action.payload.data;
+        state.transactions = action.payload.data.transactions;
+        state.banks = action.payload.data.banks;
       })
       .addCase(getExternalTransactions.rejected, (state, action) => {
         state.status = FAILED;

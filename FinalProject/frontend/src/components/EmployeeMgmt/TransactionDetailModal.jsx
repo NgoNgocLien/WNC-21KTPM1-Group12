@@ -10,9 +10,9 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction, banks }) => {
   const feePaymentMethod = transaction.fee_payment_method;
   let feePayer = '';
   if (feePaymentMethod === 'SENDER') {
-    feePayer = 'Người gửi trả phí';
+    feePayer = '(Người gửi trả phí)';
   } else if (feePaymentMethod === 'RECIPIENT') {
-    feePayer = 'Người nhận trả phí';
+    feePayer = '(Người nhận trả phí)';
   }
 
   return (
@@ -32,18 +32,18 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction, banks }) => {
 
           <div className="text-gray-600 font-base">Tài khoản người gửi</div>
           <div className="text-gray-800 font-medium">
-            {transaction.sender_account_number} - {transaction.id_sender_bank === 1 ? "NoMeoBank" : banks[transaction.id_sender_bank]?.name}
+            {transaction.sender_account_number} - {transaction.id_sender_bank === 1 ? "NoMeoBank" : banks.find(bank => bank.id === transaction.id_sender_bank)?.name}
           </div>
 
           <div className="text-gray-600 font-base">Tài khoản người nhận</div>
           <div className="text-gray-800 font-medium">
-            {transaction.recipient_name} - {transaction.recipient_account_number} - {transaction.id_recipient_bank === 1 ? "NoMeoBank" : banks[transaction.id_recipient_bank]?.name}
+            {transaction.recipient_name} - {transaction.recipient_account_number} - {transaction.id_recipient_bank === 1 ? "NoMeoBank" : banks.find(bank => bank.id === transaction.id_recipient_bank)?.name}
           </div>
           <div className="text-gray-600 font-base">Số tiền giao dịch</div>
           <div className="text-gray-800 font-medium">{formattedAmount} VNĐ</div>
 
-          <div className="text-gray-600 font-base">Phí</div>
-          <div className="text-gray-800 font-medium">{feePayer}</div>
+          <div className="text-gray-600 font-base">Phí giao dịch</div>
+          <div className="text-gray-800 font-medium">{new Intl.NumberFormat().format(transaction.fee_amount)} VNĐ {feePayer}</div>
 
           <div className="text-gray-600 font-base">Nội dung giao dịch</div>
           <div className="text-gray-800 font-medium">

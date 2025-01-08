@@ -23,9 +23,9 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_numbe
   }
 
   if (feePaymentMethod === 'SENDER') {
-    feePayer = 'Người gửi trả phí';
+    feePayer = '(Người gửi trả phí)';
   } else if (feePaymentMethod === 'RECIPIENT') {
-    feePayer = 'Người nhận trả phí';
+    feePayer = '(Người nhận trả phí)';
   }
 
   return (
@@ -37,6 +37,9 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_numbe
         </div>
 
         <div className="grid grid-cols-2 gap-y-4">
+          <div className="text-gray-600 font-base">Mã giao dịch</div>
+          <div className="text-gray-800 font-medium">{transaction.id}</div>
+
           <div className="text-gray-600 font-base">Tài khoản nguồn</div>
           <div className="text-gray-800 font-medium">{account_number}</div>
 
@@ -52,26 +55,16 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_numbe
           {transaction.type !== 'Deposit' && (
             <>
               <div className="text-gray-600 font-base">
-                {transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? 'Tài khoản thụ hưởng' : 'Tài khoản gửi'}
+                {transaction.type === 'Sender' || transaction.type === 'Sender (Debt)' ? 'Tài khoản nhận' : 'Tài khoản gửi'}
               </div>
-              <div className="text-gray-800 font-medium">{recipientAccount}</div>
-
-              {(transaction.type === 'Sender' || transaction.type === 'Sender (Debt)') && (
-                <>
-                  <div className="text-gray-600 font-base">Người thụ hưởng</div>
-                  <div className="text-gray-800 font-medium">{recipientName}</div>
-                </>
-              )}
-
-              <div className="text-gray-600 font-base">Ngân hàng</div>
-              <div className="text-gray-800 font-medium">{bankName}</div>
+              <div className="text-gray-800 font-medium">{recipientName ? `${recipientName} - ` : "" }{recipientAccount} - {bankName}</div>
             </>
           )}
 
           {transaction.type !== 'Deposit' && feePayer && (
             <>
               <div className="text-gray-600 font-base">Phí giao dịch</div>
-              <div className="text-gray-800 font-medium">{feePayer}</div>
+              <div className="text-gray-800 font-medium">{new Intl.NumberFormat().format(transaction.fee_amount)} VNĐ {feePayer}</div>
             </>
           )}
 
@@ -80,15 +73,6 @@ const TransactionDetailModal = ({ isOpen, closeModal, transaction, account_numbe
             {transaction.transaction_message || transaction.deposit_message || "(Không có nội dung)"}
           </div>
         </div>
-
-        {/* <div className="mt-6 flex justify-center">
-          <button
-            onClick={closeModal}
-            className="py-2 px-4 bg-red-800 text-white font-medium rounded-lg hover:bg-red-700"
-          >
-            Đóng
-          </button>
-        </div> */}
       </div>
     </div>
   );
