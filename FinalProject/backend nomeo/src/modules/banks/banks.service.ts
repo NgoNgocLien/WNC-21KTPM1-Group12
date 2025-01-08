@@ -194,6 +194,7 @@ import { FEE_AMOUNT } from 'src/common/utils/config';
               account_number,
               timestamp: Date.now() 
             }
+            console.log(payload)
             encryptedPayload = await this.authService.encryptData(JSON.stringify(payload), public_key, encryptMethod )
             body = await this.generateBodyPGP(encryptedPayload, external_bank.secret_key, false, private_key)
             break;
