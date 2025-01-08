@@ -350,7 +350,7 @@ export class TransactionsService {
       })
 
       return {
-        message: 'Lấy thông tin giao dịch thành công',
+        message: 'Lấy thông tin giao dịch của khách hàng thành công',
         data: {
           transactions: transactionsWithBalance,
           banks: banks
