@@ -50,23 +50,37 @@ export class DebtsService {
         },
       });
 
-      // SEND NOTIFICATION TO DEBTOR AND CREDITOR
-      await this.notificationService.sendNotification(
-        debt.id_debtor,
-        `${debt.creditor.fullname} nhắc bạn trả tiền`,
-        `${debt.creditor.fullname} đã nhắc bạn trả số tiền ${debt.debt_amount}đ ${createDebtDto.debt_message ? 'với lời nhắn \"' + createDebtDto.debt_message + '\"' : ''}`,
-      );
+      try {
+        // SEND NOTIFICATION TO DEBTOR AND CREDITOR
+        await this.notificationService.sendNotification(
+          debt.id_debtor,
+          `${debt.creditor.fullname} nhắc bạn trả tiền`,
+          `${debt.creditor.fullname} đã nhắc bạn trả số tiền ${debt.debt_amount}đ ${createDebtDto.debt_message ? 'với lời nhắn \"' + createDebtDto.debt_message + '\"' : ''}`,
+        );
 
-      await this.notificationService.sendNotification(
-        debt.id_creditor,
-        `Gửi nhắc nợ thành công`,
-        `Bạ̣n vừa nhắc ${debt.debtor.fullname} trả số tiền ${debt.debt_amount}đ`,
-      );
-
-      return {
-        message: 'Debt created successfully',
-        data: debt,
-      };
+        await this.notificationService.sendNotification(
+          debt.id_creditor,
+          `Gửi nhắc nợ thành công`,
+          `Bạ̣n vừa nhắc ${debt.debtor.fullname} trả số tiền ${debt.debt_amount}đ`,
+        );
+      } catch (error) {
+        if (
+          (error.message =
+            'The registration token is not a valid FCM registration token')
+        ) {
+          throw new InternalServerErrorException(
+            'FCM Token không hợp lệ, không thể gửi thông báo',
+          );
+        } else {
+          console.log(error.message);
+          throw new InternalServerErrorException('Lỗi hệ thống');
+        }
+      } finally {
+        return {
+          message: 'Debt created successfully',
+          data: debt,
+        };
+      }
     } catch (error) {
       console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
