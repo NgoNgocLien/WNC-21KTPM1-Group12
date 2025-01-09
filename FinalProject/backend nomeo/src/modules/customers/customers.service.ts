@@ -17,6 +17,7 @@ import { DeleteContactDto } from './dto/deleteContact.dto';
 import { CreateCustomerDto } from './dto/createCustomer.dto';
 import { generateAccountNumber } from '../../common/utils/checksum.util';
 import { BanksService } from '../banks/banks.service';
+import { customer_status } from '@prisma/client';
 
 @Injectable()
 export class CustomersService {
@@ -35,6 +36,7 @@ export class CustomersService {
           fullname: true,
           email: true,
           phone: true,
+          status: true,
           accounts: {
             select: {
               account_number: true,
@@ -231,6 +233,7 @@ export class CustomersService {
           fullname: createCustomerDto.fullname,
           email: createCustomerDto.email,
           phone: createCustomerDto.phone,
+          status: customer_status.ACTIVE,
         },
       });
       // account_number có format kèm checksum sử dụng Luhn Algorithm để đảm bảo tính hợp lệ của số tài khoản
@@ -252,6 +255,7 @@ export class CustomersService {
           fullname: customer.fullname,
           email: customer.email,
           phone: customer.phone,
+          status: true,
           accounts: [{ account_number: account.account_number }],
         },
       };

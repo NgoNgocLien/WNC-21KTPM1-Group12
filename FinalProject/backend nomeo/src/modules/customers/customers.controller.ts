@@ -79,6 +79,14 @@ export class CustomersController {
                 type: 'string',
                 example: '0987654321',
               },
+              status: {
+                type: 'string',
+                enum: ['ACTIVE', 'DELETED'],
+                example: 'ACTIVE',
+                description: 'Trạng thái của khách hàng. ' +
+                             'ACTIVE: Tài khoản đang hoạt động, ' +
+                             'DELETED: Tài khoản đã bị đóng.',
+              },
               accounts: {
                 type: 'array',
                 items: {
@@ -311,6 +319,14 @@ export class CustomersController {
             phone: {
               type: 'string',
               example: '0987654321',
+            },
+            status: {
+              type: 'string',
+              enum: ['ACTIVE', 'DELETED'],
+              example: 'ACTIVE',
+              description: 'Trạng thái của khách hàng. ' +
+                           'ACTIVE: Tài khoản đang hoạt động, ' +
+                           'DELETED: Tài khoản đã bị đóng.',
             },
             accounts: {
               type: 'array',
