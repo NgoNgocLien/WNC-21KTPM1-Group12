@@ -20,7 +20,9 @@ export default function TransferStep3({ setCurrentStep, values, setTransaction, 
   const dispatch = useDispatch();
 
   const handleSuccessfulTransaction = (transaction) => {
+    // console.log("handleSuccessfulTransaction:", transaction)
     setTransaction(transaction)
+    dispatch(payDebt({ id_debt: debt.id, data: { id_transaction: transaction.id } }))
     setCurrentStep(4)
   }
 
@@ -75,11 +77,12 @@ export default function TransferStep3({ setCurrentStep, values, setTransaction, 
     }
   }
 
-  useEffect(() => {
-    if (debt && transaction) {
-      dispatch(payDebt({ id_debt: debt.id, data: { id_transaction: transaction.id } }))
-    }
-  }, [transaction])
+  // useEffect(() => {
+  //   if (debt && transaction) {
+  //     console.log("pay debt")
+  //     console.log(transaction, debt)
+  //   }
+  // }, [transaction])
 
   return (
     <>

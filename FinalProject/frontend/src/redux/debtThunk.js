@@ -41,6 +41,7 @@ export const createDebt = createAsyncThunk(
 export const payDebt = createAsyncThunk(
   'debt/payDebt',
   async ({ id_debt, data }, { rejectWithValue, getState }) => {
+    // console.log(id_debt)
     try {
       await DebtService.payDebt(id_debt, data);
       const response = await DebtService.getIncomingDebts();
