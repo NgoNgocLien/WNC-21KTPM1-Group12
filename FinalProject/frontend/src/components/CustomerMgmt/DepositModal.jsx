@@ -16,7 +16,7 @@ const DepositModal = ({ isOpen, closeModal, id_customer }) => {
   const formik = useFormik({
     initialValues: {
       deposit_amount: null,
-      deposit_message: '',
+      deposit_message: 'Nạp tiền vào tài khoản',
     },
     validationSchema: Yup.object({
       deposit_amount: Yup.number()
@@ -115,7 +115,6 @@ const DepositModal = ({ isOpen, closeModal, id_customer }) => {
                 id="deposit_message"
                 name="deposit_message"
                 required
-                placeholder="Nhập số tiền"
                 value={formik.values.deposit_message}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
