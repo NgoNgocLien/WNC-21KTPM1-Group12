@@ -38,7 +38,8 @@ const CustomerTable = ({ customers, openDialog, setSelectedCustomerId }) => {
               </td>
               <td className="py-2 px-3 text-sm text-gray-700">
                 <button
-                  className="h-fit p-2 text-red-800 border-[1px] border-red-800 rounded-full hover:bg-red-100 transition">
+                  className={`h-fit p-2 text-red-800 border-[1px] border-red-800 rounded-full hover:bg-red-100 transition ${customer.status === 'DELETED' ? 'cursor-not-allowed' : ''}`}
+                  disabled={customer.status === 'DELETED'}>
                   <div className="flex size-4 flex-none items-center justify-center rounded-3xl" 
                     onClick={() => {
                       setSelectedCustomerId(customer.id)
