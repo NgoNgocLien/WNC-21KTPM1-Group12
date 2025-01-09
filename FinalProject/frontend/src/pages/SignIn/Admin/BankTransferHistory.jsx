@@ -17,7 +17,7 @@ const BankTransferHistory = () => {
 
   const dispatch = useDispatch();
   const { transactions, banks, status } = useSelector((state) => state.transaction);
-  
+
   useEffect(() => {
     if (status === IDLE) {
       dispatch(getExternalTransactions());
@@ -26,32 +26,32 @@ const BankTransferHistory = () => {
 
   useEffect(() => {
     const applyFilters = () => {
-      const newFilteredTransactions = transactions.filter((t) => {  
+      const newFilteredTransactions = transactions.filter((t) => {
         const startDateMatch = !startDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) >= startDate.setHours(0, 0, 0, 0);
         const endDateMatch = !endDate || new Date(t.transaction_time).setHours(0, 0, 0, 0) <= endDate.setHours(0, 0, 0, 0);
-        const bankMatch = !selectedBank || 
+        const bankMatch = !selectedBank ||
           (t.id_sender_bank === 1 ? t.id_recipient_bank === parseInt(selectedBank) : t.id_sender_bank === parseInt(selectedBank));
-  
+
         return startDateMatch && endDateMatch && bankMatch;
       });
-      
+
       let totalAmountReceived = 0;
       let totalAmountSent = 0;
-      
+
       newFilteredTransactions.forEach((transaction) => {
         if (transaction.id_sender_bank === 1) {
-          
+
           totalAmountSent += parseInt(transaction.transaction_amount);
         } else {
           totalAmountReceived += parseInt(transaction.transaction_amount);
         }
       });
-      
+
       setTotalAmountReceived(totalAmountReceived);
       setTotalAmountSent(totalAmountSent);
       setFilteredTransactions(newFilteredTransactions);
     };
-  
+
     if (status === SUCCEEDED && transactions.length > 0) {
       applyFilters();
     }
@@ -84,13 +84,13 @@ const BankTransferHistory = () => {
     <>
       <div className="mx-auto w-full max-w-screen-xl flex flex-col gap-6">
         <h2 className="text-xl font-bold">Lịch sử giao dịch với ngân hàng khác</h2>
-        <div className="p-6 bg-white rounded-xl">   
+        <div className="p-6 bg-white rounded-xl">
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-base font-medium mb-2">Ngân hàng</label>
               <select value={selectedBank} onChange={(e) => setSelectedBank(e.target.value)} className="w-full p-3 border border-gray-300 rounded-xl">
                 <option value="">Tất cả</option>
-                {banks && banks.filter(bank => bank.id !== 1).map((bank) => {
+                {banks && banks.filter(bank => bank.id !== 1 && bank.id !== 5).map((bank) => {
                   return (
                     <option key={bank.id} value={bank.id}>
                       {bank.name}
@@ -120,13 +120,13 @@ const BankTransferHistory = () => {
                 className={`w-full p-3 border border-gray-300 rounded-xl`}
                 wrapperClassName="react-datepicker-wrapper w-full"
               />
-            </div> 
+            </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
           </div>
           {/* <div className="text-base font-medium">Tổng số tiền đã giao dịch: {new Intl.NumberFormat().format(totalAmount)} VNĐ</div> */}
           <div className="mt-4 text-base font-medium">Tổng số tiền đã chuyển: {new Intl.NumberFormat().format(totalAmountSent)} VNĐ</div>
           <div className="mt-1 mb-4 text-base font-medium">Tổng số tiền đã nhận: {new Intl.NumberFormat().format(totalAmountReceived)} VNĐ</div>
-          <TransactionTable transactions={filteredTransactions} banks={banks}/>
+          <TransactionTable transactions={filteredTransactions} banks={banks} />
         </div>
       </div>
     </>

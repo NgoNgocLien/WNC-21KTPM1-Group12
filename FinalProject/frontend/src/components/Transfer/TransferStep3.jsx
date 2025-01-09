@@ -62,8 +62,8 @@ export default function TransferStep3({ setCurrentStep, values, setTransaction, 
         transaction_amount: values.fee_payment_method === SENDER ? Number(values.transaction_amount) + 1000 : Number(values.transaction_amount) - 1000
       }
 
-  
-      if (newValues.id_recipient_bank == INTERNAL_BAND_ID){
+
+      if (newValues.id_recipient_bank == INTERNAL_BAND_ID) {
         dispatch(createInternalTransactions({
           data: newValues,
           handleSuccessfulTransaction,
@@ -77,12 +77,11 @@ export default function TransferStep3({ setCurrentStep, values, setTransaction, 
     }
   }
 
-  // useEffect(() => {
-  //   if (debt && transaction) {
-  //     console.log("pay debt")
-  //     console.log(transaction, debt)
-  //   }
-  // }, [transaction])
+  useEffect(() => {
+    if (debt && transaction) {
+      dispatch(payDebt({ id_debt: debt.id, data: { id_transaction: transaction.id } }))
+    }
+  }, [transaction, debt])
 
   return (
     <>

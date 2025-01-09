@@ -646,42 +646,41 @@ export class DebtsService {
         }),
       ]);
 
-      try {
-        // SEND NOTIFICATION TO DEBTOR AND CREDITOR
-        await this.notificationService.sendNotification(
-          debt.id_creditor,
-          `${debt.debtor.fullname} thanh toán nợ cho bạn`,
-          `${debt.id}`,
-          // `${debt.debtor.fullname} đã trả bạn ${debt.debt_amount}đ ${debtPayment.transactions.transaction_message ? 'với lời nhắn \"' + debtPayment.transactions.transaction_message + '\"' : ''}`,
-        );
+      // SEND NOTIFICATION TO DEBTOR AND CREDITOR
+      await this.notificationService.sendNotification(
+        debt.id_creditor,
+        `${debt.debtor.fullname} thanh toán nợ cho bạn`,
+        `${debt.id}`,
+        // `${debt.debtor.fullname} đã trả bạn ${debt.debt_amount}đ ${debtPayment.transactions.transaction_message ? 'với lời nhắn \"' + debtPayment.transactions.transaction_message + '\"' : ''}`,
+      );
 
-        await this.notificationService.sendNotification(
-          debt.id_debtor,
-          `Trả nợ thành công`,
-          `${debt.id}`,
-          // `Bạ̣n vừa thanh toán cho ${debt.creditor.fullname} số tiền ${debt.debt_amount}đ`,
-        );
-      } catch (error) {
-        if (
-          (error.message =
-            'The registration token is not a valid FCM registration token')
-        ) {
-          throw new InternalServerErrorException(
-            'FCM Token không hợp lệ, không thể gửi thông báo',
-          );
-        } else {
-          console.log(error.message);
-          throw new InternalServerErrorException('Lỗi hệ thống');
-        }
-      } finally {
-        return {
-          message: 'Debt paid successfully',
-          data: {
-            debt,
-            debtPayment,
-          },
-        };
-      }
+      await this.notificationService.sendNotification(
+        debt.id_debtor,
+        `Trả nợ thành công`,
+        `${debt.id}`,
+        // `Bạ̣n vừa thanh toán cho ${debt.creditor.fullname} số tiền ${debt.debt_amount}đ`,
+      );
+      // } catch (error) {
+      //   if (
+      //     (error.message =
+      //       'The registration token is not a valid FCM registration token')
+      //   ) {
+      //     throw new InternalServerErrorException(
+      //       'FCM Token không hợp lệ, không thể gửi thông báo',
+      //     );
+      //   } else {
+      //   console.log(error.message);
+      //   throw new InternalServerErrorException('Lỗi hệ thống');
+      // }
+      // } finally {
+      return {
+        message: 'Debt paid successfully',
+        data: {
+          debt,
+          debtPayment,
+        },
+        // };
+      };
     } catch (error) {
       console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');
