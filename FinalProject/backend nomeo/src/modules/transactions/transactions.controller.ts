@@ -12,11 +12,12 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { TransactionsService } from './transactions.service';
-import { CreateTransactionDto } from './dto/createTransaction.dto';
 import { TransactionGuard } from '../auth/guards/transaction.guard';
 import { Public } from 'src/common/decorators/public.decorator';
 import { CustomerInfoGuard } from '../auth/guards/customerInfo.guard';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateInternalTransactionDto } from './dto/createInternalTransaction.dto';
+import { CreateExternalTransactionDto } from './dto/createExternalTransaction.dto';
 
 @ApiTags('Transactions')
 @ApiBearerAuth('access-token')
@@ -86,12 +87,104 @@ export class TransactionsController {
   }
 
   @ApiResponse({
-    status: HttpStatus.CREATED,
+    status: HttpStatus.OK,
     description: 'Tạo giao dịch nội bộ thành công',
+    schema: {
+  type: 'object',
+  properties: {
+    message: {
+      type: 'string',
+      example: 'Tạo giao dịch nội bộ thành công',
+    },
+    data: {
+      type: 'object',
+      properties: {
+        sender_account_number: {
+          type: 'string',
+          example: 'ACC123456789',
+        },
+        id_sender_bank: {
+          type: 'integer',
+          example: 1,
+        },
+        recipient_account_number: {
+          type: 'string',
+          example: 'ACC100000001',
+        },
+        id_recipient_bank: {
+          type: 'integer',
+          example: 1,
+        },
+        transaction_amount: {
+          type: 'string',
+          example: '100000',
+        },
+        transaction_message: {
+          type: 'string',
+          example: 'Tiền thanh toán hóa đơn điện tháng 12',
+        },
+        fee_payment_method: {
+          type: 'string',
+          example: 'SENDER',
+        },
+        transaction_time: {
+          type: 'string',
+          format: 'date-time',
+          example: '2025-01-09T05:37:29.719Z',
+        },
+        sender_signature: {
+          oneOf:
+          [
+            {
+              type: "string"
+            },
+            {
+              type: "null",
+              example: null
+            }
+          ]
+        },
+        recipient_name: {
+          type: 'string',
+          example: 'Nguyễn Văn A',
+        },
+        id: {
+          type: 'string',
+          example: 'a61bed03-300c-45d2-8647-989e437882e8',
+        },
+        recipient_signature: {
+          oneOf:
+          [
+            {
+              type: "string"
+            },
+            {
+              type: "null",
+              example: null
+            }
+          ]
+        },
+        fee_amount: {
+          type: 'string',
+          example: '1000',
+        },
+        type: {
+          type: 'string',
+          example: 'Sender',
+        },
+        current_balance: {
+          type: 'string',
+          example: '86661033',
+        },
+      },
+    },
+  },
+}
+
   })
   @Post('internal')
   createInternalTransaction(
-    @Body() createTransactionDto: CreateTransactionDto,
+    @Body() createTransactionDto: CreateInternalTransactionDto,
   ) {
     return this.transactionsService.createInternalTransaction(
       createTransactionDto,
@@ -99,11 +192,87 @@ export class TransactionsController {
   }
 
   @ApiResponse({
-    status: HttpStatus.CREATED,
+    status: HttpStatus.OK,
     description: 'Tạo giao dịch với ngân hàng khác thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Tạo giao dịch với ngân hàng khác thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            sender_account_number: {
+              type: 'string',
+              example: 'ACC123456789',
+            },
+            id_sender_bank: {
+              type: 'integer',
+              example: 1,
+            },
+            recipient_account_number: {
+              type: 'string',
+              example: 'A12345',
+            },
+            id_recipient_bank: {
+              type: 'integer',
+              example: 2,
+            },
+            transaction_amount: {
+              type: 'string',
+              example: '101000',
+            },
+            transaction_message: {
+              type: 'string',
+              example: 'Tiền thanh toán hóa đơn điện tháng 1',
+            },
+            fee_payment_method: {
+              type: 'string',
+              example: 'SENDER',
+            },
+            transaction_time: {
+              type: 'string',
+              format: 'date-time',
+              example: '2025-01-09T05:34:41.162Z',
+            },
+            sender_signature: {
+              type: 'string',
+              example: '(sender_signature)',
+            },
+            recipient_name: {
+              type: 'string',
+              example: 'Nguyen Muoi Ba',
+            },
+            id: {
+              type: 'string',
+              example: 'eeeecb3a-f232-410e-a0a3-94882e201c93',
+            },
+            recipient_signature: {
+              type: 'string',
+              example: '(recipient_signature)',
+            },
+            fee_amount: {
+              type: 'string',
+              example: '1000',
+            },
+            type: {
+              type: 'string',
+              example: 'Sender',
+            },
+            current_balance: {
+              type: 'string',
+              example: '86761033',
+            },
+          },
+        },
+      },
+    }
+    
   })
   @Post('external/send')
-  sendExternalTransaction(@Body() createTransactionDto: CreateTransactionDto) {
+  sendExternalTransaction(@Body() createTransactionDto: CreateExternalTransactionDto) {
     console.log(JSON.stringify(createTransactionDto))
     return this.transactionsService.sendExternalTransaction(
       createTransactionDto,

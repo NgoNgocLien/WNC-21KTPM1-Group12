@@ -1,17 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-
-import { CreateTransactionDto } from './dto/createTransaction.dto';
 import { Prisma } from '@prisma/client';
 
 import { FEE_AMOUNT, INTERNAL_BAND_ID } from 'src/common/utils/config';
 import { BanksService } from '../banks/banks.service';
 import { CustomersService } from '../customers/customers.service';
 import { ExternalTransactionPayload } from '../auth/types/ExternalTransactionPayload';
-import { time } from 'console';
 import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionResponse';
 import { AuthService } from '../auth/auth.service';
-import { timestamp } from 'rxjs';
+import { CreateInternalTransactionDto } from './dto/createInternalTransaction.dto';
+import { CreateExternalTransactionDto } from './dto/CreateExternalTransaction.dto';
 
 @Injectable()
 export class TransactionsService {
@@ -59,7 +57,7 @@ export class TransactionsService {
     }
   }
 
-  async createInternalTransaction(createTransactionDto: CreateTransactionDto) {
+  async createInternalTransaction(createTransactionDto: CreateInternalTransactionDto) {
     try{
       const senderExists = await this.prisma.accounts.findUnique({
         where: { account_number: createTransactionDto.sender_account_number },
@@ -108,7 +106,7 @@ export class TransactionsService {
       });
 
       return {
-        message: 'Transaction created successfully',
+        message: 'Tạo giao dịch nội bộ thành công',
         data: {
           ...transaction,
           type: "Sender",
@@ -121,7 +119,7 @@ export class TransactionsService {
   }
 
 
-  async sendExternalTransaction(createTransactionDto: CreateTransactionDto) {
+  async sendExternalTransaction(createTransactionDto: CreateExternalTransactionDto) {
     try {
      
       const external_bank = await this.banksService.getBankById(createTransactionDto.id_recipient_bank);
@@ -159,7 +157,7 @@ export class TransactionsService {
       })
 
       return {
-        message: 'Transaction created successfully',
+        message: 'Tạo giao dịch với ngân hàng khác thành công',
         data: {
           ...transaction,
           type: "Sender",

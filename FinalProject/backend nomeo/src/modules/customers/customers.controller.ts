@@ -106,6 +106,61 @@ export class CustomersController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Lấy thông tin khách hàng thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy thông tin khách hàng thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 1,
+            },
+            username: {
+              type: 'string',
+              example: 'john_doe',
+            },
+            fullname: {
+              type: 'string',
+              example: 'John Doe',
+            },
+            email: {
+              type: 'string',
+              example: 'myleoovls@gmail.com',
+            },
+            phone: {
+              type: 'string',
+              example: '1234567890',
+            },
+            fcm_token: {
+              type: 'string',
+              example: 'fcm_token',
+            },
+            accounts: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  account_number: {
+                    type: 'string',
+                    example: 'ACC123456789',
+                  },
+                  account_balance: {
+                    type: 'string',
+                    example: '86662033',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    }
+    
   })
   @HttpCode(HttpStatus.OK)
   @Get('profile')
@@ -116,6 +171,20 @@ export class CustomersController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Lấy thông tin khách hàng nội bộ thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy thông tin khách hàng nội bộ thành công',
+        },
+        data: {
+          type: 'string',
+          example: 'Ngô Ngọc Liên',
+        },
+      },
+    }
+    
   })
   @ApiParam({
     name: 'account_number',
@@ -131,12 +200,26 @@ export class CustomersController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Lấy thông tin khách hàng ngân hàng khác thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy thông tin khách hàng ngân hàng khác thành công',
+        },
+        data: {
+          type: 'string',
+          example: 'Nguyen Muoi Ba',
+        },
+      },
+    }
+    
   })
   @ApiParam({
     name: 'account_number',
     description: 'Số tài khoản khách hàng',
     required: true,
-    example: 'ACC100000001',
+    example: 'A12345',
   })
   @ApiParam({
     name: 'bank_id',
@@ -155,6 +238,40 @@ export class CustomersController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Lấy thông tin tài khoản ngân hàng thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy thông tin tài khoản ngân hàng thành công',
+        },
+        data: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'integer',
+                example: 1,
+              },
+              account_number: {
+                type: 'string',
+                example: 'ACC123456789',
+              },
+              account_balance: {
+                type: 'string',
+                example: '86662033',
+              },
+              id_customer: {
+                type: 'integer',
+                example: 1,
+              },
+            },
+          },
+        },
+      },
+    }
+    
   })
   @HttpCode(HttpStatus.OK)
   @Get('accounts')
@@ -221,6 +338,50 @@ export class CustomersController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Lấy thông tin liên hệ thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy thông tin liên hệ thành công',
+        },
+        data: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'integer',
+                example: 24,
+              },
+              nickname: {
+                type: 'string',
+                example: 'Nguyen 13',
+              },
+              account_number: {
+                type: 'string',
+                example: 'A12345',
+              },
+              contact_fullname: {
+                type: 'string',
+                example: 'Nguyen Muoi Ba',
+              },
+              bank_name: {
+                type: 'string',
+                example: 'TechBank',
+              },
+              bank_logo: {
+                type: 'string',
+                format: 'url',
+                example: 'https://inkythuatso.com/uploads/thumbnails/800/2021/09/logo-techcombank-inkythuatso-10-15-17-50.jpg',
+              },
+            },
+          },
+        },
+      },
+    }
+    
+    
   })
   @HttpCode(HttpStatus.OK)
   @Get('contacts')
@@ -231,6 +392,46 @@ export class CustomersController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Lưu thông tin liên hệ thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Thêm mới người nhận thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 26,
+            },
+            nickname: {
+              type: 'string',
+              example: 'Nguyễn Văn A',
+            },
+            account_number: {
+              type: 'string',
+              example: 'ACC100000001',
+            },
+            contact_fullname: {
+              type: 'string',
+              example: 'Nguyễn Văn A',
+            },
+            bank_name: {
+              type: 'string',
+              example: 'NoMeoBank',
+            },
+            bank_logo: {
+              type: 'string',
+              format: 'url',
+              example: 'https://trumsiaz.com/upload/product/meonangluongmattroitrumsiaz-6135.jpg',
+            },
+          },
+        },
+      },
+    }
+    
   })
   @Post('contacts')
   createOneContact(@Req() req: Request, @Body() body: CreateContactDto) {
@@ -243,6 +444,29 @@ export class CustomersController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Cập nhật thông tin liên hệ thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Chỉnh sửa tên gợi nhớ thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 26,
+            },
+            nickname: {
+              type: 'string',
+              example: 'Văn A',
+            },
+          },
+        },
+      },
+    }
+    
   })
   @Patch('contacts')
   updateOneContact(@Req() req: Request, @Body() body: UpdateContactDto) {
@@ -252,6 +476,26 @@ export class CustomersController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Xóa thông tin liên hệ thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Lấy thông tin liên hệ thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'number',
+              example: '1'
+            }
+            
+          },
+        },
+      },
+    }
+    
   })
   @Delete('contacts')
   deleteOneContact(@Body() body: DeleteContactDto) {

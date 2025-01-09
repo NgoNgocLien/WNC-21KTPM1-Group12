@@ -19,7 +19,7 @@ import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 @ApiSchema({
   description: 'Tạo giao dịch mới',
 })
-export class CreateTransactionDto {
+export class CreateInternalTransactionDto {
   @ApiProperty({
     description: 'Số tài khoản người gửi',
     example: 'ACC123456789',
@@ -83,7 +83,7 @@ export class CreateTransactionDto {
 
   @ApiProperty({
     description: 'Phương thức thanh toán phí',
-    example: '2021-08-24T00:00:00.000Z',
+    example: 'SENDER',
     required: true,
     enum: FeePayment,
   })
@@ -95,20 +95,12 @@ export class CreateTransactionDto {
   fee_payment_method?: FeePayment;
 
   @ApiProperty({
-    description: 'Phí giao dịch',
-    example: '1000',
-    required: false,
-    minimum: 0,
-  })
-
-
-  @ApiProperty({
     description: 'Tên người nhận',
     example: 'Nguyễn Văn A',
     required: false,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @MaxLength(100, { message: 'Recipient name must not exceed 100 characters.' })
-  recipient_name?: string;
+  recipient_name: string;
 }

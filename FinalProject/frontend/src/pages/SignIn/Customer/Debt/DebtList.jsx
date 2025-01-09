@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { fetchIncomingDebts, fetchOutgoingDebts, createDebt } from "../../../../redux/debtThunk"
-import { IDLE } from "../../../../util/config"
+import { FAILED, IDLE, LOADING, SUCCEEDED } from "../../../../util/config"
 import DebtItem from "../../../../components/Debt/DebtItem"
 import { FaAddressBook } from "react-icons/fa"
 import ContactList from "../../../../components/Account/ContactList"
@@ -9,6 +9,7 @@ import { getCustomerContacts } from "../../../../redux/userThunk"
 import { useFormik } from "formik"
 import * as Yup from 'yup';
 import CustomerService from "../../../../services/CustomerService"
+import { setUserStatus } from "../../../../redux/userSlice"
 
 const INCOMING = 'INCOMING'
 const OUTGOING = 'OUTGOING'
@@ -91,11 +92,20 @@ export default function DebtList() {
     try {
       formik.handleBlur(e);
       if (accountNumber !== '') {
+        dispatch(setUserStatus({
+          status: LOADING
+        }));
         const recipient_name = await CustomerService.getInternalRecipientInfo(accountNumber);
         setRecipientName(recipient_name);
+        dispatch(setUserStatus({
+          status: SUCCEEDED
+        }));
       }
     } catch (error) {
       setRecipientName(undefined);
+      dispatch(setUserStatus({
+        status: FAILED
+      }));
     }
   };
 

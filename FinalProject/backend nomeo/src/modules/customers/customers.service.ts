@@ -112,7 +112,7 @@ export class CustomersService {
       });
 
       return {
-        message: 'Customer found successfully',
+        message: 'Lấy thông tin khách hàng thành công',
         data: customer,
       };
     } catch (error) {
@@ -142,7 +142,7 @@ export class CustomersService {
       }
 
       return {
-        message: 'Profile fetched successfully',
+        message: 'Lấy thông tin khách hàng nội bộ thành công',
         data: profile.customers.fullname,
       };
     } catch (error) {
@@ -170,7 +170,7 @@ export class CustomersService {
       }
 
       return {
-        message: "Profile fetched successfully",
+        message: "Lấy thông tin khách hàng ngân hàng khác thành công",
         data: fullname
       }
     } catch (error) {
@@ -277,7 +277,7 @@ export class CustomersService {
       });
 
       return {
-        message: 'Accounts found successfully',
+        message: 'Lấy thông tin tài khoản ngân hàng thành công',
         data: accounts,
       };
     } catch (error) {
@@ -328,7 +328,7 @@ export class CustomersService {
         .sort((a, b) => a.nickname.localeCompare(b.nickname));
 
       return {
-        message: 'Contacts found successfully',
+        message: 'Lấy thông tin liên hệ thành công',
         data: transformedContacts,
       };
     } catch (error) {

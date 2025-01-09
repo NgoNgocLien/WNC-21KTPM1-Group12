@@ -5,11 +5,10 @@ import {
     UnauthorizedException,
   } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import axios from 'axios';
 import { AuthService } from '../auth/auth.service';
 import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionResponse';
-import { CreateTransactionDto } from '../transactions/dto/createTransaction.dto';
 import { FEE_AMOUNT } from 'src/common/utils/config';
+import { CreateExternalTransactionDto } from '../transactions/dto/CreateExternalTransaction.dto';
 
   @Injectable()
   export class BanksService {
@@ -98,7 +97,7 @@ import { FEE_AMOUNT } from 'src/common/utils/config';
       }
     }
     // NoMeo -> 
-    async makeTransaction(data: CreateTransactionDto, external_bank: any, url: string){
+    async makeTransaction(data: CreateExternalTransactionDto, external_bank: any, url: string){
       try {
         const encryptMethod = (external_bank.rsa_public_key) ? "RSA" : "PGP"
         const private_key = (external_bank.rsa_public_key) ? process.env.RSA_PRIVATE_KEY : process.env.PGP_PRIVATE_KEY

@@ -336,6 +336,45 @@ export class EmployeesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Nạp tiền thành công',
+    schema: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Nạp tiền thành công',
+        },
+        data: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              example: 15,
+            },
+            id_employee: {
+              type: 'integer',
+              example: 2,
+            },
+            id_customer: {
+              type: 'integer',
+              example: 1,
+            },
+            deposit_amount: {
+              type: 'string',
+              example: '200000',
+            },
+            deposit_message: {
+              type: 'string',
+              example: 'Nạp tiền',
+            },
+            deposit_time: {
+              type: 'string',
+              format: 'date-time',
+              example: '2025-01-09T05:23:50.272Z',
+            },
+          },
+        },
+      },
+    }    
   })
   @HttpCode(HttpStatus.OK)
   @Post('/deposit')
