@@ -1,11 +1,12 @@
-import { useSelector } from 'react-redux'
-import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { formatMoney, formatTime } from '../../util/format'
 import DebtDetailModal from './DebtDetailModal'
 import Avatar from '../Avatar'
 import DebtMessageDialog from './DebtMessageDialog'
+import { resetRequiredDebtDetail } from "../../redux/debtSlice"
 
 export default function DebtItem({ debt, type }) {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function DebtItem({ debt, type }) {
   const [detailIsOpen, setDetailIsOpen] = useState(false)
   const [messageIsOpen, setMessageIsOpen] = useState(false)
   const [debtDetail, setDebtDetail] = useState(null)
+
   const openDebtDetail = () => {
     if (type === 'INCOMING') {
       setDebtDetail({
@@ -36,10 +38,20 @@ export default function DebtItem({ debt, type }) {
       })
     }
     setDetailIsOpen(true)
-
   }
+
+  const { requiredDebtDetail } = useSelector((state) => state.debt)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (requiredDebtDetail == debt.id) {
+      openDebtDetail()
+    }
+  }, [requiredDebtDetail])
+
   const closeDebtDetail = () => {
     setDetailIsOpen(false)
+    dispatch(resetRequiredDebtDetail())
   }
   const openMessageDialog = () => {
     setMessageIsOpen(true)

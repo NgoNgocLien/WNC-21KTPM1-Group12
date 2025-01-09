@@ -55,13 +55,15 @@ export class DebtsService {
         await this.notificationService.sendNotification(
           debt.id_debtor,
           `${debt.creditor.fullname} nhắc bạn trả tiền`,
-          `${debt.creditor.fullname} đã nhắc bạn trả số tiền ${debt.debt_amount}đ ${createDebtDto.debt_message ? 'với lời nhắn \"' + createDebtDto.debt_message + '\"' : ''}`,
+          `${debt.id}`,
+          // `${debt.creditor.fullname} đã nhắc bạn trả số tiền ${debt.debt_amount}đ ${createDebtDto.debt_message ? 'với lời nhắn \"' + createDebtDto.debt_message + '\"' : ''}`,
         );
 
         await this.notificationService.sendNotification(
           debt.id_creditor,
           `Gửi nhắc nợ thành công`,
-          `Bạ̣n vừa nhắc ${debt.debtor.fullname} trả số tiền ${debt.debt_amount}đ`,
+          `${debt.id}`,
+          // `Bạ̣n vừa nhắc ${debt.debtor.fullname} trả số tiền ${debt.debt_amount}đ`,
         );
       } catch (error) {
         if (
@@ -470,13 +472,15 @@ export class DebtsService {
       await this.notificationService.sendNotification(
         debt.id_debtor,
         `${debt.creditor.fullname} hủy yêu cầu trả tiền`,
-        `${debt.creditor.fullname} đã hủy yêu cầu trả số tiền ${debt.debt_amount}đ ${deleteDebtDto.deletion_message ? 'với lời nhắn \"' + deleteDebtDto.deletion_message + '\"' : ''}`,
+        `${debt.id}`,
+        // `${debt.creditor.fullname} đã hủy yêu cầu trả số tiền ${debt.debt_amount}đ ${deleteDebtDto.deletion_message ? 'với lời nhắn \"' + deleteDebtDto.deletion_message + '\"' : ''}`,
       );
 
       await this.notificationService.sendNotification(
         debt.id_creditor,
         'Hủy nhắc nợ thành công',
-        `Bạ̣n vừa hủy yêu cầu trả số tiền ${debt.debt_amount}đ cho ${debt.debtor.fullname}`,
+        `${debt.id}`,
+        // `Bạ̣n vừa hủy yêu cầu trả số tiền ${debt.debt_amount}đ cho ${debt.debtor.fullname}`,
       );
 
       return {
@@ -542,27 +546,42 @@ export class DebtsService {
           },
         }),
       ]);
+      try {
+        // SEND NOTIFICATION TO DEBTOR AND CREDITOR
+        await this.notificationService.sendNotification(
+          debt.id_creditor,
+          `${debt.debtor.fullname} từ chối yêu cầu trả tiền`,
+          `${debt.id}`,
+          // `${debt.debtor.fullname} đã từ chối trả số tiền ${debt.debt_amount}đ ${deleteDebtDto.deletion_message ? 'với lời nhắn \"' + deleteDebtDto.deletion_message + '\"' : ''}`,
+        );
 
-      // SEND NOTIFICATION TO DEBTOR AND CREDITOR
-      await this.notificationService.sendNotification(
-        debt.id_creditor,
-        `${debt.debtor.fullname} từ chối yêu cầu trả tiền`,
-        `${debt.debtor.fullname} đã từ chối trả số tiền ${debt.debt_amount}đ ${deleteDebtDto.deletion_message ? 'với lời nhắn \"' + deleteDebtDto.deletion_message + '\"' : ''}`,
-      );
-
-      await this.notificationService.sendNotification(
-        debt.id_debtor,
-        `Từ chối nợ thành công`,
-        `Bạ̣n vừa từ chối yêu cầu trả số tiền ${debt.debt_amount}đ từ ${debt.creditor.fullname}`,
-      );
-
-      return {
-        message: 'Debt canceled successfully',
-        data: {
-          debt,
-          debtDeletion,
-        },
-      };
+        await this.notificationService.sendNotification(
+          debt.id_debtor,
+          `Từ chối nợ thành công`,
+          `${debt.id}`,
+          // `Bạ̣n vừa từ chối yêu cầu trả số tiền ${debt.debt_amount}đ từ ${debt.creditor.fullname}`,
+        );
+      } catch (error) {
+        if (
+          (error.message =
+            'The registration token is not a valid FCM registration token')
+        ) {
+          throw new InternalServerErrorException(
+            'FCM Token không hợp lệ, không thể gửi thông báo',
+          );
+        } else {
+          console.log(error.message);
+          throw new InternalServerErrorException('Lỗi hệ thống');
+        }
+      } finally {
+        return {
+          message: 'Debt canceled successfully',
+          data: {
+            debt,
+            debtDeletion,
+          },
+        };
+      }
     } catch (error) {
       switch (error.code) {
         case 'P2025':
@@ -627,26 +646,42 @@ export class DebtsService {
         }),
       ]);
 
-      // SEND NOTIFICATION TO DEBTOR AND CREDITOR
-      await this.notificationService.sendNotification(
-        debt.id_creditor,
-        `${debt.debtor.fullname} thanh toán nợ cho bạn`,
-        `${debt.debtor.fullname} đã trả bạn ${debt.debt_amount}đ ${debtPayment.transactions.transaction_message ? 'với lời nhắn \"' + debtPayment.transactions.transaction_message + '\"' : ''}`,
-      );
+      try {
+        // SEND NOTIFICATION TO DEBTOR AND CREDITOR
+        await this.notificationService.sendNotification(
+          debt.id_creditor,
+          `${debt.debtor.fullname} thanh toán nợ cho bạn`,
+          `${debt.id}`,
+          // `${debt.debtor.fullname} đã trả bạn ${debt.debt_amount}đ ${debtPayment.transactions.transaction_message ? 'với lời nhắn \"' + debtPayment.transactions.transaction_message + '\"' : ''}`,
+        );
 
-      await this.notificationService.sendNotification(
-        debt.id_debtor,
-        `Trả nợ thành công`,
-        `Bạ̣n vừa thanh toán cho ${debt.creditor.fullname} số tiền ${debt.debt_amount}đ`,
-      );
-
-      return {
-        message: 'Debt paid successfully',
-        data: {
-          debt,
-          debtPayment,
-        },
-      };
+        await this.notificationService.sendNotification(
+          debt.id_debtor,
+          `Trả nợ thành công`,
+          `${debt.id}`,
+          // `Bạ̣n vừa thanh toán cho ${debt.creditor.fullname} số tiền ${debt.debt_amount}đ`,
+        );
+      } catch (error) {
+        if (
+          (error.message =
+            'The registration token is not a valid FCM registration token')
+        ) {
+          throw new InternalServerErrorException(
+            'FCM Token không hợp lệ, không thể gửi thông báo',
+          );
+        } else {
+          console.log(error.message);
+          throw new InternalServerErrorException('Lỗi hệ thống');
+        }
+      } finally {
+        return {
+          message: 'Debt paid successfully',
+          data: {
+            debt,
+            debtPayment,
+          },
+        };
+      }
     } catch (error) {
       console.log(error.message);
       throw new InternalServerErrorException('Lỗi hệ thống');

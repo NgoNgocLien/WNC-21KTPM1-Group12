@@ -38,7 +38,7 @@ export class NotificationsService {
   //   return `This action removes a #${id} notification`;
   // }
 
-  async sendNotification(id: number, title: string, body: string) {
+  async sendNotification(id: number, title: string, id_debt: string) {
     try {
       const customer = await this.prisma.customers.findUnique({
         where: { id },
@@ -54,7 +54,7 @@ export class NotificationsService {
       return admin.messaging().send({
         notification: {
           title,
-          body,
+          body: id_debt,
         },
         token: fcm_token,
       });

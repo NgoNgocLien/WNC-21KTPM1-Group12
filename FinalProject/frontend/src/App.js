@@ -27,12 +27,11 @@ import BankTransferHistory from './pages/SignIn/Admin/BankTransferHistory';
 import NotFound from './pages/NotFound';
 
 import { login } from './redux/authSlice';
-import { addNotification, removeNotification } from './redux/notificationSlice';
 import { getAccessToken, getRoleFromToken } from './util/cookie';
 import { onMessageListener } from './util/fcm';
 import { SUCCEEDED } from './util/config'
-import PopupNoti from './components/PopupNoti';
 import notify from './util/notification';
+import { fetchIncomingDebts, fetchOutgoingDebts } from './redux/debtThunk';
 
 
 const GuestRoute = ({ element }) => {
@@ -88,11 +87,10 @@ function AuthenticatedLayout() {
 
   onMessageListener().then((payload) => {
     console.log('Message received. ', payload);
-    notify(payload.notification.title);
-    // dispatch(addNotification(payload.notification));
-    // setTimeout(() => {
-    //   dispatch(removeNotification());
-    // }, 8000);
+    notify(payload.notification.title, payload.notification.body);
+
+    dispatch(fetchIncomingDebts());
+    dispatch(fetchOutgoingDebts())
   });
 
   return (
@@ -136,6 +134,7 @@ function App() {
             <Route path="transfer" element={<Transfer />} />
             <Route path="transfer-internal" element={<TransferInternal />} />
             <Route path="transfer-external" element={<TransferExternal />} />
+            <Route path="debt/:id_debt" element={<DebtList />} />
             <Route path="debt" element={<DebtList />} />
           </Route>
 

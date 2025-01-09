@@ -10,12 +10,23 @@ import { useFormik } from "formik"
 import * as Yup from 'yup';
 import CustomerService from "../../../../services/CustomerService"
 import { setUserStatus } from "../../../../redux/userSlice"
+import { useParams } from "react-router-dom"
+import { setRequiredDebtDetail } from "../../../../redux/debtSlice"
 
 const INCOMING = 'INCOMING'
 const OUTGOING = 'OUTGOING'
 
 export default function DebtList() {
   const dispatch = useDispatch()
+  const { id_debt } = useParams("id_debt");
+
+  console.log(id_debt)
+
+  useEffect(() => {
+    if (id_debt) {
+      dispatch(setRequiredDebtDetail(id_debt))
+    }
+  }, [id_debt])
 
   const [activeTab, setActiveTab] = useState(INCOMING)
   const [displayContacts, setDisplayContacts] = useState(false)

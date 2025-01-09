@@ -13,6 +13,7 @@ const initialState = {
   },
   status: IDLE,
   error: null,
+  requiredDebtDetail: null
 }
 
 const debtSlice = createSlice({
@@ -36,6 +37,18 @@ const debtSlice = createSlice({
         ...state,
         status: IDLE,
         error: null
+      }
+    },
+    setRequiredDebtDetail: (state, action) => {
+      return {
+        ...state,
+        requiredDebtDetail: action.payload
+      }
+    },
+    resetRequiredDebtDetail: (state) => {
+      return {
+        ...state,
+        requiredDebtDetail: null
       }
     }
   },
@@ -116,5 +129,5 @@ const debtSlice = createSlice({
   }
 })
 
-export const { reset, resetDebtStatus, setDebtStatus } = debtSlice.actions;
+export const { reset, resetDebtStatus, setDebtStatus, setRequiredDebtDetail, resetRequiredDebtDetail } = debtSlice.actions;
 export default debtSlice.reducer;
