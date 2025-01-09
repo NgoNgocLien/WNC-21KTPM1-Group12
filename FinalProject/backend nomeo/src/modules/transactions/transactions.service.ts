@@ -9,7 +9,7 @@ import { ExternalTransactionPayload } from '../auth/types/ExternalTransactionPay
 import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionResponse';
 import { AuthService } from '../auth/auth.service';
 import { CreateInternalTransactionDto } from './dto/createInternalTransaction.dto';
-import { CreateExternalTransactionDto } from './dto/CreateExternalTransaction.dto';
+import { CreateExternalTransactionDto } from './dto/createExternalTransaction.dto';
 
 @Injectable()
 export class TransactionsService {
