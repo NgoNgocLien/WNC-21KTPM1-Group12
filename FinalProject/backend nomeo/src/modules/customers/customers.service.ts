@@ -255,7 +255,7 @@ export class CustomersService {
           fullname: customer.fullname,
           email: customer.email,
           phone: customer.phone,
-          status: true,
+          status: customer.status,
           accounts: [{ account_number: account.account_number }],
         },
       };
