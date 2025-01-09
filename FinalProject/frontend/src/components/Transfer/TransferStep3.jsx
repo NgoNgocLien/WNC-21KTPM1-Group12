@@ -12,6 +12,7 @@ import { setTransactionStatus } from '../../redux/transactionSlice';
 
 
 export default function TransferStep3({ setCurrentStep, values, setTransaction, transaction, debt }) {
+  console.log("TransferStep3:", debt)
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [invalidOtp, setInvalidOtp] = useState(false);
   const { email } = useSelector((state) => state.user)
@@ -22,7 +23,10 @@ export default function TransferStep3({ setCurrentStep, values, setTransaction, 
   const handleSuccessfulTransaction = (transaction) => {
     // console.log("handleSuccessfulTransaction:", transaction)
     setTransaction(transaction)
-    dispatch(payDebt({ id_debt: debt.id, data: { id_transaction: transaction.id } }))
+    if (debt) {
+      dispatch(payDebt({ id_debt: debt.id, data: { id_transaction: transaction.id } }))
+
+    }
     setCurrentStep(4)
   }
 
