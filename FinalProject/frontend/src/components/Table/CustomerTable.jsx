@@ -14,6 +14,7 @@ const CustomerTable = ({ customers, openDialog, setSelectedCustomerId }) => {
             <th className="py-3 px-4 text-center text-sm font-semibold text-gray-700">Số điện thoại</th>
             <th className="py-3 px-4 text-center text-sm font-semibold text-gray-700">Tài khoản thanh toán</th>
             <th className="py-3 px-4 text-center text-sm font-semibold text-gray-700"></th>
+            <th className="py-3 px-4 text-center text-sm font-semibold text-gray-700"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
@@ -29,6 +30,11 @@ const CustomerTable = ({ customers, openDialog, setSelectedCustomerId }) => {
               <td className="py-3 px-4 text-center text-sm text-gray-700">{customer.phone}</td>
               <td className="py-3 px-4 text-center text-sm text-gray-700">
                 {customer.accounts[0]?.account_number || 'Chưa có'}
+              </td>
+              <td className="py-1 px-2 text-center text-xs text-gray-700">
+                <span className={`px-2 py-1 rounded-lg ${customer.status === 'ACTIVE' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
+                  {customer.status}
+                </span>
               </td>
               <td className="py-2 px-3 text-sm text-gray-700">
                 <button
