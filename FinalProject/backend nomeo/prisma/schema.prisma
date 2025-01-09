@@ -101,12 +101,12 @@ model debts {
 }
 
 model deposits {
-  id              Int       @id @default(autoincrement())
   id_employee     Int
   id_customer     Int
   deposit_amount  Decimal   @db.Decimal(15, 2)
   deposit_message String?
   deposit_time    DateTime  @default(now()) @db.Timestamp(6)
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   customers       customers @relation(fields: [id_customer], references: [id], onDelete: NoAction, onUpdate: NoAction)
   employees       employees @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
