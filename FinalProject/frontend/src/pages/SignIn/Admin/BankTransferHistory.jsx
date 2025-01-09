@@ -10,7 +10,8 @@ const BankTransferHistory = () => {
   const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   const [endDate, setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
   const [selectedBank, setSelectedBank] = useState('');
-  const [totalAmount, setTotalAmount] = useState(0);
+  const [totalAmountReceived, setTotalAmountReceived] = useState(0);
+  const [totalAmountSent, setTotalAmountSent] = useState(0);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [error, setError] = useState('');
 
@@ -46,7 +47,8 @@ const BankTransferHistory = () => {
         }
       });
       
-      setTotalAmount(totalAmountReceived - totalAmountSent);
+      setTotalAmountReceived(totalAmountReceived);
+      setTotalAmountSent(totalAmountSent);
       setFilteredTransactions(newFilteredTransactions);
     };
   
@@ -82,7 +84,7 @@ const BankTransferHistory = () => {
     <>
       <div className="mx-auto w-full max-w-screen-xl flex flex-col gap-6">
         <h2 className="text-xl font-bold">Lịch sử giao dịch với ngân hàng khác</h2>
-        <div className="p-6 bg-white rounded-xl space-y-7">   
+        <div className="p-6 bg-white rounded-xl">   
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-base font-medium mb-2">Ngân hàng</label>
@@ -121,7 +123,9 @@ const BankTransferHistory = () => {
             </div> 
             {error && <p className="text-red-500 text-sm">{error}</p>}
           </div>
-          <div className="text-base font-medium">Tổng số tiền đã giao dịch: {new Intl.NumberFormat().format(totalAmount)} VNĐ</div>
+          {/* <div className="text-base font-medium">Tổng số tiền đã giao dịch: {new Intl.NumberFormat().format(totalAmount)} VNĐ</div> */}
+          <div className="mt-4 text-base font-medium">Tổng số tiền đã chuyển: {new Intl.NumberFormat().format(totalAmountSent)} VNĐ</div>
+          <div className="mt-1 mb-4 text-base font-medium">Tổng số tiền đã nhận: {new Intl.NumberFormat().format(totalAmountReceived)} VNĐ</div>
           <TransactionTable transactions={filteredTransactions} banks={banks}/>
         </div>
       </div>
