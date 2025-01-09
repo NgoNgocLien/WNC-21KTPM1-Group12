@@ -15,9 +15,10 @@ import { AdminsService } from './admins.service';
 import { CreateAdminDto } from './dto/createAdmin.dto';
 import { UpdateAdminDto } from './dto/updateAdmin.dto';
 import { Request } from 'express';
-import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('Admins')
+@ApiBearerAuth('access-token')
 @ApiResponse({
   status: HttpStatus.BAD_REQUEST,
   description: 'Yêu cầu không hợp lệ',
