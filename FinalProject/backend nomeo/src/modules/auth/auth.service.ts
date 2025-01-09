@@ -133,6 +133,40 @@ export class AuthService {
     return { access_token, refresh_token };
   }
 
+  async deactivate(id: number, role: Role) {
+    try {
+      switch (role) {
+        case Role.CUSTOMER:
+          const response = await this.customersService.update(id, {
+            status: 'DELETED',
+            refresh_token: null,
+            fcm_token: null,
+          });
+
+          return {
+            message: 'Account deactivated',
+            data: response,
+          };
+        case Role.EMPLOYEE:
+          return {
+            message: 'Employee cannot be deactivated',
+            data: null,
+          };
+        case Role.ADMIN:
+          return {
+            message: 'Admin cannot be deactivated',
+            data: null,
+          };
+        // return this.adminsService.update(id, { status: 'DELETED' });
+        default:
+          throw new UnauthorizedException('Invalid role');
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error('Failed to deactivate account');
+    }
+  }
+
   async hashData(data: string): Promise<string> {
     return bcrypt.hash(data, 10);
   }
@@ -329,9 +363,9 @@ export class AuthService {
     const currentTime = Date.now();
     const requestTime = Number(timestamp);
     return (
-      !isNaN(requestTime) && 
+      !isNaN(requestTime) &&
       requestTime > 0 && // Ensure timestamp is positive
-      currentTime - requestTime <= 60000 && 
+      currentTime - requestTime <= 60000 &&
       currentTime >= requestTime // Ensure the timestamp is not in the future
     );
   }

@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateContactDto } from './createContact.dto';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 
 @ApiSchema({
@@ -18,7 +18,7 @@ export class UpdateContactDto extends PartialType(CreateContactDto) {
 
   @ApiProperty({
     description: 'Tên gợi nhớ mới',
-    example: "Văn A",
+    example: 'Văn A',
     required: true,
   })
   nickname: string;

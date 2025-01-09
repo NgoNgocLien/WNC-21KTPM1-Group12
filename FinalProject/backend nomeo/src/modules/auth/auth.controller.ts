@@ -103,6 +103,23 @@ export class AuthController {
     );
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Đóng tài khoản thành công',
+    schema: {
+      description: 'Cập nhật trạng thái tài khoản thành inactive',
+      example: {
+        message: 'Account deactivated',
+      },
+    },
+  })
+  @HttpCode(HttpStatus.OK)
+  @Post('deactivate')
+  deactivate(@Req() req: Request) {
+    return this.authService.deactivate(req.user['sub'], req.user['role']);
+  }
+
   @ApiExcludeEndpoint()
   @ApiBearerAuth('access-token')
   @ApiResponse({

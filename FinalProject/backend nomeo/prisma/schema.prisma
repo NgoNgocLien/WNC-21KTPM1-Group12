@@ -57,6 +57,7 @@ model customers {
   phone                              String           @unique @db.VarChar(15)
   refresh_token                      String?
   fcm_token                          String?
+  status                             customer_status  @default(ACTIVE)
   accounts                           accounts[]
   contacts                           contacts[]
   debt_deletions                     debt_deletions[]
@@ -172,4 +173,9 @@ enum debt_status {
   PAID
   CANCELED
   DECLINED
+}
+
+enum customer_status {
+  ACTIVE
+  DELETED
 }
