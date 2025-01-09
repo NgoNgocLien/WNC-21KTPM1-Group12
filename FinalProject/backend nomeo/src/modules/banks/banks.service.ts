@@ -8,7 +8,7 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { AuthService } from '../auth/auth.service';
 import { ExternalTransactionResponse } from '../auth/types/ExternalTransactionResponse';
 import { FEE_AMOUNT } from 'src/common/utils/config';
-import { CreateExternalTransactionDto } from '../transactions/dto/CreateExternalTransaction.dto';
+import { CreateExternalTransactionDto } from '../transactions/dto/createExternalTransaction.dto';
 
   @Injectable()
   export class BanksService {
